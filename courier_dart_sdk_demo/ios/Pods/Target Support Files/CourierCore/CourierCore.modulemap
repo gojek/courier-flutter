@@ -1,0 +1,6 @@
+framework module CourierCore {
+  umbrella header "CourierCore-umbrella.h"
+
+  export *
+  module * { export * }
+}
