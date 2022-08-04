@@ -120,7 +120,7 @@
        prism: {
          theme: lightCodeTheme,
          darkTheme: darkCodeTheme,
-         additionalLanguages: ['swift', 'ruby'],
+         additionalLanguages: ['dart'],
        },
      }),
  };
