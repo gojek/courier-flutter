@@ -1,6 +1,6 @@
 ## Create CourierClient
 
-CourierClient is the class that we use for any MQTT tasks such as connection, subscription, send and receive message. To initialize an instance of CourierClient we can use the static method like so.
+`CourierClient` is the class that we use for any MQTT tasks such as connection, subscription, send and receive message. To initialize an instance of CourierClient we can use the static method like so.
 
 ```dart
 final CourierClient courierClient = CourierClient.create(
@@ -14,7 +14,7 @@ final CourierClient courierClient = CourierClient.create(
   );
 ```
 
-To learn more about the Dio, tokenAPI, and authResponseMapper, please read the [Setup Connection](./Setup%20Connection.md) article.
+To learn more about the `Dio`, `tokenAPI`, and `authResponseMapper`, please read the [Setup Connection](./Setup%20Connection.md) article.
 
 ## Required Configs
 - **Dio** : We use [dio](https://pub.dev/packages/dio) package for making HTTP request. This will provide you flexibility to use your own Dio instance in case you have various custom headers need to be sent to the server (e.g Authentication, etc). 
@@ -29,9 +29,9 @@ To learn more about the Dio, tokenAPI, and authResponseMapper, please read the [
 ## Optional Configs
 - **timerPingSenderEnabled**: Whether Courier should use timerPingSender internally (Android only). It defines the logic of sending ping requests over the MQTT connection. Default to `true`.
 
-- **activityCheckIntervalSeconds**: When acknowledgement for an MQTT packet is not received within this interval, the connection is reestablished. Default to `12`.
+- **activityCheckIntervalSeconds**: Interval at which channel activity is checked for unacknowledged MQTT packets.. Default to `12`.
 
-- **inactivityTimeoutSeconds**: The inactivity timeout of the connection. Default to `10`.
+- **inactivityTimeoutSeconds**: When acknowledgement for an MQTT packet is not received within this interval, the connection is reestablished. Default to `10`.
 
 - **readTimeoutSeconds**: The read timeout of the connection. Default to `40`.
 
