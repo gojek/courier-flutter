@@ -21,7 +21,8 @@ abstract class CourierClient {
   void publishCourierMessage(CourierMessage message);
   Stream<CourierEvent> courierEventStream();
 
-  static CourierClient create({required Dio dio, required CourierConfiguration config}) {
+  static CourierClient create(
+      {required Dio dio, required CourierConfiguration config}) {
     return _CourierClientImpl(dio, config);
   }
 }
@@ -32,8 +33,10 @@ class _CourierClientImpl implements CourierClient {
 
   static const _platform = MethodChannel('courier');
 
-  final StreamController<CourierMessage> messageStreamController = StreamController();
-  final StreamController<CourierEvent> eventStreamController = StreamController();
+  final StreamController<CourierMessage> messageStreamController =
+      StreamController();
+  final StreamController<CourierEvent> eventStreamController =
+      StreamController();
 
   // This state is used only for avoiding multiple api calls due to multiple connect invocations
   ConnectionState _state = ConnectionState.disconnected;
@@ -90,7 +93,6 @@ class _CourierClientImpl implements CourierClient {
         .map((event) => event.bytes);
   }
 
-
   @override
   Stream<CourierEvent> courierEventStream() {
     log('courier event stream');
@@ -114,7 +116,8 @@ class _CourierClientImpl implements CourierClient {
       _platform.invokeMethod('connect', _options.convertToMap());
       _state = ConnectionState.connected;
     } on Exception catch (error) {
-      final retrySeconds = courierConfiguration.authRetryPolicy.getRetrySeconds(error);
+      final retrySeconds =
+          courierConfiguration.authRetryPolicy.getRetrySeconds(error);
       if (retrySeconds != -1) {
         log("Auth retry policy in action after: $retrySeconds");
         Timer(Duration(seconds: retrySeconds), connect);
@@ -199,7 +202,8 @@ class _CourierClientImpl implements CourierClient {
     String topic = (arguments)["topic"] as String;
 
     log('Message receive: ${utf8.decode(bytes)} on topic: $topic');
-    messageStreamController.add(CourierMessage(bytes: bytes, topic: topic, qos: QoS.zero));
+    messageStreamController
+        .add(CourierMessage(bytes: bytes, topic: topic, qos: QoS.zero));
   }
 
   void _handleEvent(Map<dynamic, dynamic> arguments) {
