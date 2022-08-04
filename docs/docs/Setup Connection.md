@@ -52,19 +52,22 @@ We use [dio](https://pub.dev/packages/dio) package for making HTTP request. This
 
 ## Connect Options properties
 
+`CourierConnectOptions` represents the properties of the underlying MQTT connection in Courier.
+
+- **IP**: host URI of an MQTT broker.
+- **Port**: port of an MQTT broker.
+- **Client Id**: Unique ID of the MQTT client.
+- **Username**: Username of the MQTT client.
+- **Password**: Password of the MQTT client.
+- **KeepAlive Interval**: Interval at which keep alive packets are sent for the MQTT connection.
+- **Clean Session Flag**: When clean session is false, a persistent connection is created. Otherwise, non-persistent connection is created and all persisted information is cleared from both client and broker.
+
 ```dart
-/// IP Host address of the broker
 final String host;
-/// Port of the broker
 final int port;
-/// Keep Alive interval used to ping the broker over time to maintain the long run connection
 final int keepAliveSeconds;
-/// Unique Client ID used by broker to identify connected clients
 final String clientId;
-/// Username of the client
 final String username;
-/// Password of the client used for authentication by the broker
 final String password;
-/// Tells broker whether to clear the previous session by the clients
 final Bool isCleanSession;
 ```
