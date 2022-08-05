@@ -1,4 +1,4 @@
-![Build and Smoketest Status](https://github.com/gojek/courier-flutter/actions/workflows/flutter.yml/badge.svg)
+![Build and Smoketest Status](https://github.com/gojek/courier-flutter/actions/workflows/release.yml/badge.svg)
 <a href="https://gojek.github.io/courier-flutter/">
 		<img alt="Documentation" src="https://img.shields.io/badge/documentation-yes-brightgreen.svg" target="_blank" />
 	</a>
@@ -11,11 +11,13 @@
 <img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/gojek/courier-flutter"></a>
 [![Discord : Gojek Courier](https://img.shields.io/badge/Discord-Gojek%20Courier-blue.svg)](https://discord.gg/C823qK4AK7)
 
+<p align="center">
+<img src="https://github.com/gojek/courier-flutter/blob/main/docs/static/img/courier-logo-full-black.svg#gh-light-mode-only" width="500"/>
+</p>
 
-
-<div align="center">
-<h3 align="center">Courier Flutter SDK</h3>
-</div>
+<p align="center">
+<img src="https://github.com/gojek/courier-flutter/blob/main/docs/static/img/courier-logo-full-white.svg#gh-dark-mode-only" width="500"/>
+</p>
 
 ## About Courier
 
