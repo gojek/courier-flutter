@@ -26,3 +26,11 @@ Now in your Dart code, you can use:
 ```dart
 import 'package:courier_dart_sdk/courier_client.dart';
 ```
+
+### To integrate iOS Courier SDK
+
+Add the following snippet to Podfile in your project's iOS folder:
+```shell
+      pod 'CourierCore', '0.0.7', :modular_headers => true
+      pod 'CourierMqtt', '0.0.7', :modular_headers => true
+```
