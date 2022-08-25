@@ -1,0 +1,20 @@
+name: Publish to Pub.dev
+
+on:
+  push:
+    tags: 
+      - '*'   
+
+jobs:
+  publishing:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 'Checkout'
+        uses: actions/checkout@v2
+        
+      - name: '>> Dart package <<'
+        uses: k-paxian/dart-package-publisher@master
+        with:
+          credentialJson: ${{ secrets.CREDENTIAL_JSON }}
+          relativePath: courier_dart_sdk
+          dryRunOnly: true # set to false for real publishing later
