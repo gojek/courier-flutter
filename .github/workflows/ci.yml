@@ -1,0 +1,18 @@
+name: Courier CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+ test:
+    name: Build and Run Unit Test
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - uses: subosito/flutter-action@v2
+      with:
+        channel: 'stable'
+    - run: cd courier_dart_sdk && flutter test --coverage
