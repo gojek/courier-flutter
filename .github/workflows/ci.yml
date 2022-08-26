@@ -7,12 +7,35 @@ on:
     branches: [ main ]
 
 jobs:
- test:
-    name: Build and Run Unit Test
+  test:
+    name: Run Unit Tests with Coverage
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
     - uses: subosito/flutter-action@v2
       with:
+        flutter-version: '3.0.3'
         channel: 'stable'
     - run: cd courier_dart_sdk && flutter test --coverage
+
+  build_android:
+    name: Build Demo App Android APK
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - uses: subosito/flutter-action@v2
+      with:
+        flutter-version: '3.0.3'
+        channel: 'stable'
+    - run: cd courier_dart_sdk_demo && flutter build apk --release
+
+  build_ios:
+    name: Build Demo App iOS APK
+    runs-on: macos-latest
+    steps:
+    - uses: actions/checkout@v3
+    - uses: subosito/flutter-action@v2
+      with:
+        flutter-version: '3.0.3'
+        channel: 'stable'
+    - run: cd courier_dart_sdk_demo && flutter build ios --release --no-codesign
