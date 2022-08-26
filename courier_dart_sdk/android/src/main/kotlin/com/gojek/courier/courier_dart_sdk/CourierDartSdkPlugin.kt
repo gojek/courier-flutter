@@ -30,6 +30,7 @@ import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
+import java.util.concurrent.TimeUnit
 
 /** CourierDartSdkPlugin */
 class CourierDartSdkPlugin: FlutterPlugin, MethodCallHandler {
@@ -43,6 +44,12 @@ class CourierDartSdkPlugin: FlutterPlugin, MethodCallHandler {
   private lateinit var methodChannel: MethodChannel
   private val handler = Handler(Looper.getMainLooper())
   private var readTimeoutSeconds: Int = 0
+  private var disconnectDelaySeconds: Int = 0
+  private val mainThreadHandler = Handler(Looper.getMainLooper())
+
+  private val disconnectRunnable = Runnable {
+    mqttClientDelegate.disconnect(false)
+  }
 
   override fun onAttachedToEngine(@NonNull flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
     methodChannel = MethodChannel(flutterPluginBinding.binaryMessenger, "courier")
@@ -94,6 +101,7 @@ class CourierDartSdkPlugin: FlutterPlugin, MethodCallHandler {
     val connectTimeoutPolicyConfig = arguments["connectTimeoutConfig"]!! as Map<String, Any>
 
     readTimeoutSeconds = arguments["readTimeoutSeconds"]!! as Int
+    disconnectDelaySeconds = arguments["disconnectDelaySeconds"]!! as Int
 
     mqttConfiguration = MqttV3Configuration(
         connectTimeoutPolicy = ConnectTimeoutPolicy(ConnectTimeoutConfig(
@@ -134,6 +142,7 @@ class CourierDartSdkPlugin: FlutterPlugin, MethodCallHandler {
     if (arguments.isNullOrEmpty()) {
       throw IllegalArgumentException("Arguments must be present while connecting")
     }
+    mainThreadHandler.removeCallbacks(disconnectRunnable)
     val mqttConnectOptions = MqttConnectOptions(
         clientId = arguments["clientId"]!! as String,
         username = arguments["username"]!! as String,
@@ -151,7 +160,14 @@ class CourierDartSdkPlugin: FlutterPlugin, MethodCallHandler {
       throw IllegalArgumentException("Arguments must be present while disconnecting")
     }
     val clearState = arguments["clearState"]!! as Boolean
-    mqttClientDelegate.disconnect(clearState)
+    if (disconnectDelaySeconds > 0 && clearState.not()) {
+      mainThreadHandler.postDelayed(
+        disconnectRunnable,
+        TimeUnit.SECONDS.toMillis(disconnectDelaySeconds.toLong())
+      )
+    } else {
+      mqttClientDelegate.disconnect(clearState)
+    }
   }
 
   private fun subscribe(arguments: Map<String, Any>?) {

@@ -59,6 +59,7 @@ class MyHomePage extends StatelessWidget {
           authResponseMapper: CourierResponseMapper(),
           authRetryPolicy: DefaultAuthRetryPolicy(),
           readTimeoutSeconds: 60,
+          disconnectDelaySeconds: 10,
       )
   );
 

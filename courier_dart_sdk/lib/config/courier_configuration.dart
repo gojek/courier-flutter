@@ -10,6 +10,7 @@ class CourierConfiguration {
   final int activityCheckIntervalSeconds;
   final int inactivityTimeoutSeconds;
   final int readTimeoutSeconds;
+  final int disconnectDelaySeconds;
   final ConnectRetryPolicyConfig connectRetryPolicyConfig;
   final ConnectTimeoutConfig connectTimeoutConfig;
   final AuthRetryPolicy authRetryPolicy;
@@ -22,6 +23,7 @@ class CourierConfiguration {
     this.activityCheckIntervalSeconds = 12,
     this.inactivityTimeoutSeconds = 10,
     this.readTimeoutSeconds = 40,
+    this.disconnectDelaySeconds = 0,
     this.connectRetryPolicyConfig = const ConnectRetryPolicyConfig(),
     this.connectTimeoutConfig = const ConnectTimeoutConfig(),
   });
@@ -32,6 +34,7 @@ class CourierConfiguration {
       "activityCheckIntervalSeconds": activityCheckIntervalSeconds,
       "inactivityTimeoutSeconds": inactivityTimeoutSeconds,
       "readTimeoutSeconds": readTimeoutSeconds,
+      "disconnectDelaySeconds": disconnectDelaySeconds,
       "connectRetryPolicyConfig": connectRetryPolicyConfig.convertToMap(),
       "connectTimeoutConfig": connectTimeoutConfig.convertToMap(),
     };
