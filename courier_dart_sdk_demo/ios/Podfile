@@ -29,8 +29,8 @@ require File.expand_path(File.join('packages', 'flutter_tools', 'bin', 'podhelpe
 target 'Runner' do
   use_frameworks!
   use_modular_headers!
-  pod 'CourierCore', '0.0.7', :modular_headers => true
-  pod 'CourierMQTT', '0.0.7', :modular_headers => true
+  pod 'CourierCore', '0.0.8', :modular_headers => true
+  pod 'CourierMQTT', '0.0.8', :modular_headers => true
   flutter_install_all_ios_pods File.dirname(File.realpath(__FILE__))
 end
 

@@ -35,8 +35,7 @@ final class EventHandler: ICourierEventHandler {
                 "port": Int(connectionInfo.port),
                 "keepAlive": Int(connectionInfo.keepAlive),
                 "clientId": connectionInfo.clientId,
-                "username": connectionInfo.username,
-                "isCleanSession": connectionInfo.isCleanSession
+                "username": connectionInfo.username
             ]
         }
         switch event.type {

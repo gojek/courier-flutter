@@ -4,7 +4,11 @@ import Reachability
 
 class MQTTClient: IMQTTClient {
     let connection: IMQTTConnection
-    private(set) var connectOptions: ConnectOptions?
+    private var _connectOptions = Atomic<ConnectOptions?>(nil)
+    private(set) var connectOptions: ConnectOptions? {
+        get { _connectOptions.value }
+        set { _connectOptions.mutate { $0 = newValue } }
+    }
     private(set) var isInitialized = false
     private let eventHandler: ICourierEventHandler
 
@@ -70,13 +74,13 @@ class MQTTClient: IMQTTClient {
         guard let options = self.connectOptions, !isConnected, !isConnecting else {
             return
         }
-        eventHandler.onEvent(.reconnect)
+        eventHandler.onEvent(.init(connectionInfo: options, event: .reconnect))
         disconnect()
         connect(connectOptions: options)
     }
 
     func disconnect() {
-        eventHandler.onEvent(.connectionDisconnect)
+        eventHandler.onEvent(.init(connectionInfo: connectOptions, event: .connectionDisconnect))
         isInitialized = false
         disconnectMqtt()
     }
@@ -125,9 +129,10 @@ class MQTTClient: IMQTTClient {
 
     func handleConnectionChange() {
         if reachability?.connection == .unavailable {
-            eventHandler.onEvent(.connectionUnavailable)
+            eventHandler.onEvent(.init(connectionInfo: connectOptions, event: .connectionUnavailable))
+            
         } else {
-            eventHandler.onEvent(.connectionAvailable)
+            eventHandler.onEvent(.init(connectionInfo: connectOptions, event: .connectionAvailable))
         }
     }
 
@@ -164,11 +169,11 @@ class MQTTClient: IMQTTClient {
     }
 
     @objc func onForeground() {
-        eventHandler.onEvent(.appForeground)
+        eventHandler.onEvent(.init(connectionInfo: connectOptions, event: .appForeground))
     }
 
     @objc func onBackground() {
-        eventHandler.onEvent(.appBackground)
+        eventHandler.onEvent(.init(connectionInfo: connectOptions, event: .appBackground))
     }
 
     func reset() {

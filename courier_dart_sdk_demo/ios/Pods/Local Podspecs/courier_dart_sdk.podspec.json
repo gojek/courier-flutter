@@ -19,10 +19,10 @@
 
     ],
     "CourierCore": [
-      "0.0.7"
+      "0.0.8"
     ],
     "CourierMQTT": [
-      "0.0.7"
+      "0.0.8"
     ]
   },
   "platforms": {
