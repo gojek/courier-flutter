@@ -104,7 +104,7 @@ class MqttEventHandler(val eventConsumer: (Map<String, Any>) -> Unit) : EventHan
                     "port" to it.port,
                     "keepAlive" to it.keepaliveSeconds,
                     "clientId" to it.clientId,
-                    "isCleanSession" to it.username,
+                    "username" to it.username,
                     "connectTimeout" to it.connectTimeout,
                     "scheme" to it.scheme
             )
