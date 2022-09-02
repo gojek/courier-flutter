@@ -5,6 +5,7 @@ abstract class CourierEvent {
   final ConnectionInfo? connectionInfo;
 
   CourierEvent(this.name, this.connectionInfo);
+  Map<String, Object> toMap();
 }
 
 class MQTTConnectAtttemptEvent implements CourierEvent {
@@ -15,6 +16,11 @@ class MQTTConnectAtttemptEvent implements CourierEvent {
   final ConnectionInfo? connectionInfo;
 
   MQTTConnectAtttemptEvent(this.name, this.connectionInfo);
+
+  @override
+  Map<String, Object> toMap() {
+    return {};
+  }
 }
 
 class MQTTConnectSuccessEvent implements CourierEvent {
@@ -25,6 +31,11 @@ class MQTTConnectSuccessEvent implements CourierEvent {
   final ConnectionInfo? connectionInfo;
 
   MQTTConnectSuccessEvent(this.name, this.connectionInfo);
+
+  @override
+  Map<String, Object> toMap() {
+    return {};
+  }
 }
 
 class MQTTConnectFailureEvent implements CourierEvent {
@@ -37,6 +48,11 @@ class MQTTConnectFailureEvent implements CourierEvent {
   final int reason;
 
   MQTTConnectFailureEvent(this.name, this.connectionInfo, this.reason);
+
+  @override
+  Map<String, Object> toMap() {
+    return {"reason": reason};
+  }
 }
 
 class MQTTConnectionLostEvent implements CourierEvent {
@@ -49,6 +65,11 @@ class MQTTConnectionLostEvent implements CourierEvent {
   final int reason;
 
   MQTTConnectionLostEvent(this.name, this.connectionInfo, this.reason);
+
+  @override
+  Map<String, Object> toMap() {
+    return {"reason": reason};
+  }
 }
 
 class MQTTDisconnectEvent implements CourierEvent {
@@ -59,6 +80,11 @@ class MQTTDisconnectEvent implements CourierEvent {
   final ConnectionInfo? connectionInfo;
 
   MQTTDisconnectEvent(this.name, this.connectionInfo);
+
+  @override
+  Map<String, Object> toMap() {
+    return {};
+  }
 }
 
 class MQTTSubscribeAttemptEvent implements CourierEvent {
@@ -71,6 +97,11 @@ class MQTTSubscribeAttemptEvent implements CourierEvent {
   final String topic;
 
   MQTTSubscribeAttemptEvent(this.name, this.connectionInfo, this.topic);
+
+  @override
+  Map<String, Object> toMap() {
+    return {"topic": topic};
+  }
 }
 
 class MQTTSubscribeSuccessEvent implements CourierEvent {
@@ -83,6 +114,11 @@ class MQTTSubscribeSuccessEvent implements CourierEvent {
   final String topic;
 
   MQTTSubscribeSuccessEvent(this.name, this.connectionInfo, this.topic);
+
+  @override
+  Map<String, Object> toMap() {
+    return {"topic": topic};
+  }
 }
 
 class MQTTSubscribeFailureEvent implements CourierEvent {
@@ -97,6 +133,11 @@ class MQTTSubscribeFailureEvent implements CourierEvent {
 
   MQTTSubscribeFailureEvent(
       this.name, this.connectionInfo, this.topic, this.reason);
+
+  @override
+  Map<String, Object> toMap() {
+    return {"topic": topic, "reason": reason};
+  }
 }
 
 class MQTTUnsubscribeAttemptEvent implements CourierEvent {
@@ -109,6 +150,11 @@ class MQTTUnsubscribeAttemptEvent implements CourierEvent {
   final String topic;
 
   MQTTUnsubscribeAttemptEvent(this.name, this.connectionInfo, this.topic);
+
+  @override
+  Map<String, Object> toMap() {
+    return {"topic": topic};
+  }
 }
 
 class MQTTUnsubscribeSuccessEvent implements CourierEvent {
@@ -121,6 +167,11 @@ class MQTTUnsubscribeSuccessEvent implements CourierEvent {
   final String topic;
 
   MQTTUnsubscribeSuccessEvent(this.name, this.connectionInfo, this.topic);
+
+  @override
+  Map<String, Object> toMap() {
+    return {"topic": topic};
+  }
 }
 
 class MQTTUnsubscribeFailureEvent implements CourierEvent {
@@ -135,6 +186,11 @@ class MQTTUnsubscribeFailureEvent implements CourierEvent {
 
   MQTTUnsubscribeFailureEvent(
       this.name, this.connectionInfo, this.topic, this.reason);
+
+  @override
+  Map<String, Object> toMap() {
+    return {"topic": topic, "reason": reason};
+  }
 }
 
 class MQTTMessageReceive implements CourierEvent {
@@ -149,6 +205,11 @@ class MQTTMessageReceive implements CourierEvent {
 
   MQTTMessageReceive(
       this.name, this.connectionInfo, this.topic, this.sizeBytes);
+
+  @override
+  Map<String, Object> toMap() {
+    return {"topic": topic, "sizeBytes": sizeBytes};
+  }
 }
 
 class MQTTMessageReceiveError implements CourierEvent {
@@ -164,6 +225,11 @@ class MQTTMessageReceiveError implements CourierEvent {
 
   MQTTMessageReceiveError(
       this.name, this.connectionInfo, this.topic, this.reason, this.sizeBytes);
+
+  @override
+  Map<String, Object> toMap() {
+    return {"topic": topic, "reason": reason, "sizeBytes": sizeBytes};
+  }
 }
 
 class MQTTMessageSend implements CourierEvent {
@@ -179,6 +245,11 @@ class MQTTMessageSend implements CourierEvent {
 
   MQTTMessageSend(
       this.name, this.connectionInfo, this.topic, this.qos, this.sizeBytes);
+
+  @override
+  Map<String, Object> toMap() {
+    return {"topic": topic, "qos": qos, "sizeBytes": sizeBytes};
+  }
 }
 
 class MQTTMessageSendSuccess implements CourierEvent {
@@ -194,6 +265,11 @@ class MQTTMessageSendSuccess implements CourierEvent {
 
   MQTTMessageSendSuccess(
       this.name, this.connectionInfo, this.topic, this.qos, this.sizeBytes);
+
+  @override
+  Map<String, Object> toMap() {
+    return {"topic": topic, "qos": qos, "sizeBytes": sizeBytes};
+  }
 }
 
 class MQTTMessageSendFailure implements CourierEvent {
@@ -210,6 +286,16 @@ class MQTTMessageSendFailure implements CourierEvent {
 
   MQTTMessageSendFailure(this.name, this.connectionInfo, this.topic, this.qos,
       this.reason, this.sizeBytes);
+
+  @override
+  Map<String, Object> toMap() {
+    return {
+      "topic": topic,
+      "qos": qos,
+      "reason": reason,
+      "sizeBytes": sizeBytes
+    };
+  }
 }
 
 class MQTTPingInitiatedEvent implements CourierEvent {
@@ -220,6 +306,11 @@ class MQTTPingInitiatedEvent implements CourierEvent {
   final ConnectionInfo? connectionInfo;
 
   MQTTPingInitiatedEvent(this.name, this.connectionInfo);
+
+  @override
+  Map<String, Object> toMap() {
+    return {};
+  }
 }
 
 class MQTTPingSuccessEvent implements CourierEvent {
@@ -230,6 +321,11 @@ class MQTTPingSuccessEvent implements CourierEvent {
   final ConnectionInfo? connectionInfo;
 
   MQTTPingSuccessEvent(this.name, this.connectionInfo);
+
+  @override
+  Map<String, Object> toMap() {
+    return {};
+  }
 }
 
 class MQTTPingFailureEvent implements CourierEvent {
@@ -241,4 +337,9 @@ class MQTTPingFailureEvent implements CourierEvent {
   final int reason;
 
   MQTTPingFailureEvent(this.name, this.connectionInfo, this.reason);
+
+  @override
+  Map<String, Object> toMap() {
+    return {"reason": reason};
+  }
 }
