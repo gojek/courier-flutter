@@ -15,4 +15,16 @@ class ConnectionInfo {
       required this.host,
       required this.port,
       required this.scheme});
+
+  Map<String, dynamic> convertToMap() {
+    return {
+      "clientId": clientId,
+      "username": username,
+      "keepAlive": keepAliveSeconds,
+      "connectTimeout": connectTimeout,
+      "host": host,
+      "port": port,
+      "scheme": scheme
+    };
+  }
 }

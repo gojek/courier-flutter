@@ -19,7 +19,7 @@ class MQTTConnectAtttemptEvent implements CourierEvent {
 
   @override
   Map<String, dynamic> getEventPropertiesMap() {
-    return {};
+    return connectionInfo?.convertToMap() ?? {};
   }
 }
 
@@ -34,7 +34,7 @@ class MQTTConnectSuccessEvent implements CourierEvent {
 
   @override
   Map<String, dynamic> getEventPropertiesMap() {
-    return {};
+    return connectionInfo?.convertToMap() ?? {};
   }
 }
 
@@ -51,7 +51,10 @@ class MQTTConnectFailureEvent implements CourierEvent {
 
   @override
   Map<String, dynamic> getEventPropertiesMap() {
-    return {"reason": reason};
+    return {
+      ...{"reason": reason},
+      ...connectionInfo?.convertToMap() ?? {}
+    };
   }
 }
 
@@ -68,7 +71,10 @@ class MQTTConnectionLostEvent implements CourierEvent {
 
   @override
   Map<String, dynamic> getEventPropertiesMap() {
-    return {"reason": reason};
+    return {
+      ...{"reason": reason},
+      ...connectionInfo?.convertToMap() ?? {}
+    };
   }
 }
 
@@ -83,7 +89,7 @@ class MQTTDisconnectEvent implements CourierEvent {
 
   @override
   Map<String, dynamic> getEventPropertiesMap() {
-    return {};
+    return connectionInfo?.convertToMap() ?? {};
   }
 }
 
@@ -100,7 +106,10 @@ class MQTTSubscribeAttemptEvent implements CourierEvent {
 
   @override
   Map<String, dynamic> getEventPropertiesMap() {
-    return {"topic": topic};
+    return {
+      ...{"topic": topic},
+      ...connectionInfo?.convertToMap() ?? {}
+    };
   }
 }
 
@@ -117,7 +126,10 @@ class MQTTSubscribeSuccessEvent implements CourierEvent {
 
   @override
   Map<String, dynamic> getEventPropertiesMap() {
-    return {"topic": topic};
+    return {
+      ...{"topic": topic},
+      ...connectionInfo?.convertToMap() ?? {}
+    };
   }
 }
 
@@ -136,7 +148,10 @@ class MQTTSubscribeFailureEvent implements CourierEvent {
 
   @override
   Map<String, dynamic> getEventPropertiesMap() {
-    return {"topic": topic, "reason": reason};
+    return {
+      ...{"topic": topic, "reason": reason},
+      ...connectionInfo?.convertToMap() ?? {}
+    };
   }
 }
 
@@ -153,7 +168,10 @@ class MQTTUnsubscribeAttemptEvent implements CourierEvent {
 
   @override
   Map<String, dynamic> getEventPropertiesMap() {
-    return {"topic": topic};
+    return {
+      ...{"topic": topic},
+      ...connectionInfo?.convertToMap() ?? {}
+    };
   }
 }
 
@@ -170,7 +188,10 @@ class MQTTUnsubscribeSuccessEvent implements CourierEvent {
 
   @override
   Map<String, dynamic> getEventPropertiesMap() {
-    return {"topic": topic};
+    return {
+      ...{"topic": topic},
+      ...connectionInfo?.convertToMap() ?? {}
+    };
   }
 }
 
@@ -208,7 +229,10 @@ class MQTTMessageReceive implements CourierEvent {
 
   @override
   Map<String, dynamic> getEventPropertiesMap() {
-    return {"topic": topic, "sizeBytes": sizeBytes};
+    return {
+      ...{"topic": topic, "sizeBytes": sizeBytes},
+      ...connectionInfo?.convertToMap() ?? {}
+    };
   }
 }
 
@@ -228,7 +252,10 @@ class MQTTMessageReceiveError implements CourierEvent {
 
   @override
   Map<String, dynamic> getEventPropertiesMap() {
-    return {"topic": topic, "reason": reason, "sizeBytes": sizeBytes};
+    return {
+      ...{"topic": topic, "reason": reason, "sizeBytes": sizeBytes},
+      ...connectionInfo?.convertToMap() ?? {}
+    };
   }
 }
 
@@ -248,7 +275,10 @@ class MQTTMessageSend implements CourierEvent {
 
   @override
   Map<String, dynamic> getEventPropertiesMap() {
-    return {"topic": topic, "qos": qos, "sizeBytes": sizeBytes};
+    return {
+      ...{"topic": topic, "qos": qos, "sizeBytes": sizeBytes},
+      ...connectionInfo?.convertToMap() ?? {}
+    };
   }
 }
 
@@ -268,7 +298,10 @@ class MQTTMessageSendSuccess implements CourierEvent {
 
   @override
   Map<String, dynamic> getEventPropertiesMap() {
-    return {"topic": topic, "qos": qos, "sizeBytes": sizeBytes};
+    return {
+      ...{"topic": topic, "qos": qos, "sizeBytes": sizeBytes},
+      ...connectionInfo?.convertToMap() ?? {}
+    };
   }
 }
 
@@ -290,10 +323,8 @@ class MQTTMessageSendFailure implements CourierEvent {
   @override
   Map<String, dynamic> getEventPropertiesMap() {
     return {
-      "topic": topic,
-      "qos": qos,
-      "reason": reason,
-      "sizeBytes": sizeBytes
+      ...{"topic": topic, "qos": qos, "reason": reason, "sizeBytes": sizeBytes},
+      ...connectionInfo?.convertToMap() ?? {}
     };
   }
 }
@@ -309,7 +340,7 @@ class MQTTPingInitiatedEvent implements CourierEvent {
 
   @override
   Map<String, dynamic> getEventPropertiesMap() {
-    return {};
+    return connectionInfo?.convertToMap() ?? {};
   }
 }
 
@@ -324,7 +355,7 @@ class MQTTPingSuccessEvent implements CourierEvent {
 
   @override
   Map<String, dynamic> getEventPropertiesMap() {
-    return {};
+    return connectionInfo?.convertToMap() ?? {};
   }
 }
 
@@ -340,6 +371,9 @@ class MQTTPingFailureEvent implements CourierEvent {
 
   @override
   Map<String, dynamic> getEventPropertiesMap() {
-    return {"reason": reason};
+    return {
+      ...{"reason": reason},
+      ...connectionInfo?.convertToMap() ?? {}
+    };
   }
 }
