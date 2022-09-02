@@ -5,10 +5,10 @@ import 'dart:typed_data';
 
 import 'package:courier_dart_sdk/config/courier_configuration.dart';
 import 'package:courier_dart_sdk/connection_state.dart';
-import 'package:courier_dart_sdk/courier_connect_info.dart';
 import 'package:courier_dart_sdk/courier_connect_options.dart';
 import 'package:courier_dart_sdk/courier_message.dart';
 import 'package:courier_dart_sdk/event/courier_event.dart';
+import 'package:courier_dart_sdk/event/courier_event_handler.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/services.dart';
 
@@ -36,8 +36,7 @@ class _CourierClientImpl implements CourierClient {
 
   final StreamController<CourierMessage> messageStreamController =
       StreamController();
-  final StreamController<CourierEvent> eventStreamController =
-      StreamController();
+  final ICourierEventHandler eventHandler = CourierEventHandler();
 
   // This state is used only for avoiding multiple api calls due to multiple connect invocations
   ConnectionState _state = ConnectionState.disconnected;
@@ -97,7 +96,7 @@ class _CourierClientImpl implements CourierClient {
   @override
   Stream<CourierEvent> courierEventStream() {
     log('courier event stream');
-    return eventStreamController.stream;
+    return eventHandler.courierEventStream();
   }
 
   Future<void> _initialiseCourier() async {
@@ -187,7 +186,7 @@ class _CourierClientImpl implements CourierClient {
         _handleMessage(methodCall.arguments);
         return;
       case 'handleEvent':
-        _handleEvent(methodCall.arguments);
+        eventHandler.handleEvent(methodCall.arguments);
         return;
       default:
         throw MissingPluginException('notImplemented');
@@ -205,151 +204,5 @@ class _CourierClientImpl implements CourierClient {
     log('Message receive: ${utf8.decode(bytes)} on topic: $topic');
     messageStreamController
         .add(CourierMessage(bytes: bytes, topic: topic, qos: QoS.zero));
-  }
-
-  void _handleEvent(Map<dynamic, dynamic> arguments) {
-    String eventName = (arguments)["name"] as String;
-    Map<String, dynamic> eventProps = {};
-    if ((arguments)["properties"] != null) {
-      eventProps = Map<String, dynamic>.from((arguments)["properties"]);
-    }
-    log('Event received: $eventName with properties: $eventProps');
-
-    final connectionInfoMap = eventProps["connectionInfo"];
-    ConnectionInfo? connectionInfo;
-    if (connectionInfoMap != null) {
-      connectionInfo = ConnectionInfo(
-        clientId: connectionInfoMap['clientId'] ?? "",
-        username: connectionInfoMap['username'] ?? "",
-        keepAliveSeconds: connectionInfoMap['keepAlive'] ?? -1,
-        connectTimeout: connectionInfoMap['connectTimeout'] ?? -1,
-        host: connectionInfoMap['host'] ?? "",
-        port: connectionInfoMap['port'] ?? "",
-        scheme: connectionInfoMap['scheme'] ?? "",
-      );
-    }
-
-    switch (eventName) {
-      case "Mqtt Connect Attempt":
-        eventStreamController
-            .add(MQTTConnectAtttemptEvent(eventName, connectionInfo));
-        break;
-
-      case "Mqtt Connect Success":
-        eventStreamController
-            .add(MQTTConnectSuccessEvent(eventName, connectionInfo));
-        break;
-
-      case "Mqtt Disconnect":
-        eventStreamController
-            .add(MQTTDisconnectEvent(eventName, connectionInfo));
-        break;
-
-      case "Mqtt Ping Initiated":
-        eventStreamController
-            .add(MQTTPingInitiatedEvent(eventName, connectionInfo));
-        break;
-
-      case "Mqtt Ping Success":
-        eventStreamController
-            .add(MQTTPingSuccessEvent(eventName, connectionInfo));
-        break;
-
-      case "Mqtt Ping Failure":
-        eventStreamController.add(MQTTPingFailureEvent(
-            eventName, connectionInfo, eventProps['reason'] ?? -1));
-        break;
-
-      case "Mqtt Connect Failure":
-        eventStreamController.add(MQTTConnectFailureEvent(
-            eventName, connectionInfo, eventProps['reason'] ?? -1));
-        break;
-
-      case "Mqtt Connection Lost":
-        eventStreamController.add(MQTTConnectionLostEvent(
-            eventName, connectionInfo, eventProps['reason'] ?? ""));
-        break;
-
-      case "Mqtt Subscribe Attempt":
-        eventStreamController.add(MQTTSubscribeAttemptEvent(
-            eventName, connectionInfo, eventProps['topic'] ?? ""));
-        break;
-
-      case "Mqtt Subscribe Success":
-        eventStreamController.add(MQTTSubscribeSuccessEvent(
-            eventName, connectionInfo, eventProps['topic'] ?? ""));
-        break;
-
-      case "Mqtt Subscribe Failure":
-        eventStreamController.add(MQTTSubscribeFailureEvent(
-            eventName,
-            connectionInfo,
-            eventProps['topic'] ?? "",
-            eventProps['reason'] ?? -1));
-        break;
-
-      case "Mqtt Unsubscribe Attempt":
-        eventStreamController.add(MQTTUnsubscribeAttemptEvent(
-            eventName, connectionInfo, eventProps['topic'] ?? ""));
-        break;
-
-      case "Mqtt Unsubscribe Success":
-        eventStreamController.add(MQTTUnsubscribeSuccessEvent(
-            eventName, connectionInfo, eventProps['topic'] ?? ""));
-        break;
-
-      case "Mqtt Unsubscribe Failure":
-        eventStreamController.add(MQTTUnsubscribeFailureEvent(
-            eventName,
-            connectionInfo,
-            eventProps['topic'] ?? "",
-            eventProps['reason'] ?? -1));
-        break;
-
-      case "Mqtt Message Receive":
-        eventStreamController.add(MQTTMessageReceive(eventName, connectionInfo,
-            eventProps['topic'] ?? "", eventProps['sizeBytes'] ?? -1));
-        break;
-
-      case "Mqtt Message Receive Failure":
-        eventStreamController.add(MQTTMessageReceiveError(
-            eventName,
-            connectionInfo,
-            eventProps['topic'] ?? "",
-            eventProps['reason'] ?? -1,
-            eventProps['sizeBytes'] ?? -1));
-        break;
-
-      case "Mqtt Message Send Attempt":
-        eventStreamController.add(MQTTMessageSend(
-            eventName,
-            connectionInfo,
-            eventProps['topic'] ?? "",
-            eventProps['qos'] ?? -1,
-            eventProps['sizeBytes'] ?? -1));
-        break;
-
-      case "Mqtt Message Send Success":
-        eventStreamController.add(MQTTMessageSendSuccess(
-            eventName,
-            connectionInfo,
-            eventProps['topic'] ?? "",
-            eventProps['qos'] ?? -1,
-            eventProps['sizeBytes'] ?? -1));
-        break;
-
-      case "Mqtt Message Send Failure":
-        eventStreamController.add(MQTTMessageSendFailure(
-            eventName,
-            connectionInfo,
-            eventProps['topic'] ?? "",
-            eventProps['qos'] ?? -1,
-            eventProps['reason'] ?? -1,
-            eventProps['sizeBytes'] ?? -1));
-        break;
-
-      default:
-        break;
-    }
   }
 }
