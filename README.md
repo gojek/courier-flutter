@@ -1,4 +1,4 @@
-![Build and Smoketest Status](https://github.com/gojekfarm/courier-flutter/actions/workflows/release.yml/badge.svg)
+![Build and Smoketest Status](https://github.com/gojekfarm/courier-flutter/actions/workflows/ci.yml/badge.svg)
 <a href="https://gojek.github.io/courier-flutter/">
 		<img alt="Documentation" src="https://img.shields.io/badge/documentation-yes-brightgreen.svg" target="_blank" />
 	</a>
