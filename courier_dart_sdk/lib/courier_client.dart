@@ -8,6 +8,7 @@ import 'package:courier_dart_sdk/connection_state.dart';
 import 'package:courier_dart_sdk/courier_connect_options.dart';
 import 'package:courier_dart_sdk/courier_message.dart';
 import 'package:courier_dart_sdk/event/courier_event.dart';
+import 'package:courier_dart_sdk/event/courier_event_handler.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/services.dart';
 
@@ -35,8 +36,7 @@ class _CourierClientImpl implements CourierClient {
 
   final StreamController<CourierMessage> messageStreamController =
       StreamController();
-  final StreamController<CourierEvent> eventStreamController =
-      StreamController();
+  final ICourierEventHandler eventHandler = CourierEventHandler();
 
   // This state is used only for avoiding multiple api calls due to multiple connect invocations
   ConnectionState _state = ConnectionState.disconnected;
@@ -96,7 +96,7 @@ class _CourierClientImpl implements CourierClient {
   @override
   Stream<CourierEvent> courierEventStream() {
     log('courier event stream');
-    return eventStreamController.stream;
+    return eventHandler.courierEventStream();
   }
 
   Future<void> _initialiseCourier() async {
@@ -186,7 +186,7 @@ class _CourierClientImpl implements CourierClient {
         _handleMessage(methodCall.arguments);
         return;
       case 'handleEvent':
-        _handleEvent(methodCall.arguments);
+        eventHandler.handleEvent(methodCall.arguments);
         return;
       default:
         throw MissingPluginException('notImplemented');
@@ -204,15 +204,5 @@ class _CourierClientImpl implements CourierClient {
     log('Message receive: ${utf8.decode(bytes)} on topic: $topic');
     messageStreamController
         .add(CourierMessage(bytes: bytes, topic: topic, qos: QoS.zero));
-  }
-
-  void _handleEvent(Map<dynamic, dynamic> arguments) {
-    String eventName = (arguments)["name"] as String;
-    Map<String, dynamic> eventProps = {};
-    if ((arguments)["properties"] != null) {
-      eventProps = Map<String, dynamic>.from((arguments)["properties"]);
-    }
-    log('Event received: $eventName with properties: $eventProps');
-    eventStreamController.add(CourierEvent(eventName, eventProps));
   }
 }

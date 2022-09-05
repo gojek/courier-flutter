@@ -4,7 +4,7 @@ import UIKit
 extension MQTTCourierClient: ICourierEventHandler {
 
     func onEvent(_ event: CourierEvent) {
-        switch event {
+        switch event.type {
         case .connectionAttempt:
             onMQTTConnectAttempt()
         case .connectionSuccess:
@@ -52,7 +52,7 @@ extension MQTTCourierClient: ICourierEventHandler {
     }
 
     private func onMQTTDisconnect() {
-        courierEventHandler.onEvent(.courierDisconnect(clearState: isDestroyed))
+        courierEventHandler.onEvent(.init(connectionInfo: client.connectOptions, event: .courierDisconnect(clearState: isDestroyed)))
         publishConnectionState(connectionState)
     }
 

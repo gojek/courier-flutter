@@ -28,7 +28,17 @@ final class EventHandler: ICourierEventHandler {
     
     private func handleCourierEvent(_ event: CourierEvent) {
         var eventMap = Dictionary<String, Any>()
-        switch event {
+        if let connectionInfo =
+            event.connectionInfo {
+            eventMap["connectionInfo"] = [
+                "host": connectionInfo.host,
+                "port": Int(connectionInfo.port),
+                "keepAlive": Int(connectionInfo.keepAlive),
+                "clientId": connectionInfo.clientId,
+                "username": connectionInfo.username
+            ]
+        }
+        switch event.type {
         case .connectionDisconnect:
             os_log("Courier event: connectionDisconnect event")
             eventMap["name"] = "Mqtt Disconnect"
@@ -80,26 +90,46 @@ final class EventHandler: ICourierEventHandler {
             os_log("Courier event: unsubscribeFailure event")
             eventMap["name"] = "Mqtt Unsubscribe Failure"
             eventMap["properties"] = ["topic": topic, "reason": (error as? NSError)?.code ?? 0]
-        case .messageReceive(let topic, _):
+        case .messageReceive(let topic, let sizeBytes):
             os_log("Courier event: messageReceive event")
             eventMap["name"] = "Mqtt Message Receive"
-            eventMap["properties"] = ["topic": topic]
-        case let .messageReceiveFailure(topic, error, _):
+            eventMap["properties"] = [
+                "topic": topic,
+                "sizeBytes": sizeBytes
+            ]
+        case let .messageReceiveFailure(topic, error, sizeBytes):
             os_log("Courier event: messageReceiveFailure event")
             eventMap["name"] = "Mqtt Message Receive Failure"
-            eventMap["properties"] = ["topic": topic, "reason": (error as? NSError)?.code ?? 0]
-        case .messageSend(let topic, _, _):
+            eventMap["properties"] = [
+                "topic": topic,
+                "reason": (error as? NSError)?.code ?? 0,
+                "sizeBytets": sizeBytes
+            ]
+        case let .messageSend(topic, qos, sizeBytes):
             os_log("Courier event: messageSend event")
             eventMap["name"] = "Mqtt Message Send Attempt"
-            eventMap["properties"] = ["topic": topic]
-        case .messageSendSuccess(let topic, _, _):
+            eventMap["properties"] = [
+                "topic": topic,
+                "qos": qos.rawValue,
+                "sizeBytes": sizeBytes
+            ]
+        case let .messageSendSuccess(topic, qos, sizeBytes):
             os_log("Courier event: messageSendSuccess event")
             eventMap["name"] = "Mqtt Message Send Success"
-            eventMap["properties"] = ["topic": topic]
-        case let .messageSendFailure(topic, _, error, _):
+            eventMap["properties"] = [
+                "topic": topic,
+                "qos": qos.rawValue,
+                "sizeBytes": sizeBytes
+            ]
+        case let .messageSendFailure(topic, qos, error, sizeBytes):
             os_log("Courier event: messageSendFailure event")
             eventMap["name"] = "Mqtt Message Send Failure"
-            eventMap["properties"] = ["topic": topic, "reason": (error as? NSError)?.code ?? 0]
+            eventMap["properties"] = [
+                "topic": topic,
+                "qos": qos.rawValue,
+                "reason": (error as? NSError)?.code ?? 0,
+                "sizeBytes": sizeBytes
+            ]
         default:
             os_log("Courier event: Unhandled event")
         }

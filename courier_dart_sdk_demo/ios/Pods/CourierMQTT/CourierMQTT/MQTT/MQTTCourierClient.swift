@@ -100,16 +100,16 @@ class MQTTCourierClient: CourierClient {
         let connectionState = self.connectionState
         switch connectionState {
         case .connecting, .connected:
-            courierEventHandler.onEvent(.connectDiscarded(reason: connectionState.discardedReason ?? ""))
+            courierEventHandler.onEvent(.init(connectionInfo: client.connectOptions, event: .connectDiscarded(reason: connectionState.discardedReason ?? "")))
             return
         case .disconnected:
             guard !self.isAuthenticating else {
-                courierEventHandler.onEvent(.connectDiscarded(reason: "Client is authenticating"))
+                courierEventHandler.onEvent(.init(connectionInfo: client.connectOptions, event: .connectDiscarded(reason: "Client is authenticating")))
                 return
             }
         }
-
-        courierEventHandler.onEvent(.connectionServiceAuthStart(source: connectSource))
+        
+        courierEventHandler.onEvent(.init(connectionInfo: client.connectOptions, event: .connectionServiceAuthStart(source: connectSource)))
         isAuthenticating = true
         isDestroyed = false
 
@@ -131,7 +131,7 @@ class MQTTCourierClient: CourierClient {
                 self.authenticationTimeoutTimer = nil
                 self.isAuthenticating = false
                 if self.isDestroyed {
-                    self.courierEventHandler.onEvent(.connectDiscarded(reason: "Courier client is destroyed"))
+                    self.courierEventHandler.onEvent(.init(connectionInfo: self.client.connectOptions, event: .connectDiscarded(reason: "Courier client is destroyed")))
                     return
                 }
                 self.handleAuthenticationResult(result)
@@ -152,12 +152,11 @@ class MQTTCourierClient: CourierClient {
     private func handleAuthenticationResult(_ result: Result<ConnectOptions, AuthError>) {
         switch result {
         case let .success(connectOptions):
-            courierEventHandler.onEvent(
-                .connectionServiceAuthSuccess(
-                    host: connectOptions.host,
-                    port: Int(connectOptions.port)
-                )
-            )
+            courierEventHandler.onEvent(.init(connectionInfo: client.connectOptions, event: .connectionServiceAuthSuccess(
+                host: connectOptions.host,
+                port: Int(connectOptions.port)
+            )))
+       
             authRetryPolicy.resetParams()
             authFailureReconnectTimer?.resetRetryInterval()
             client.reset()
@@ -165,10 +164,10 @@ class MQTTCourierClient: CourierClient {
 
         case let .failure(error):
             let nsError = error.asNSError()
-            courierEventHandler.onEvent(.connectionServiceAuthFailure(error: nsError))
+            courierEventHandler.onEvent(.init(connectionInfo: client.connectOptions, event: .connectionServiceAuthFailure(error: nsError)))
             let networkErrors = [NSURLErrorNetworkConnectionLost, NSURLErrorNotConnectedToInternet]
             if nsError.domain == NSURLErrorDomain, networkErrors.contains(nsError.code) {
-                courierEventHandler.onEvent(.connectionUnavailable)
+                courierEventHandler.onEvent(.init(connectionInfo: client.connectOptions, event: .connectionUnavailable))
             }
 
             if authRetryPolicy.shouldRetry(error: error) {
@@ -191,7 +190,7 @@ class MQTTCourierClient: CourierClient {
                 if let message: D = self.messageAdaptersCoordinator.decodeMessage(packet.data) {
                     return message
                 }
-                self.courierEventHandler.onEvent(.messageReceiveFailure(topic: topic, error: CourierError.decodingError.asNSError, sizeBytes: packet.data.count))
+                self.courierEventHandler.onEvent(.init(connectionInfo: self.client.connectOptions, event: .messageReceiveFailure(topic: topic, error: CourierError.decodingError.asNSError, sizeBytes: packet.data.count)))
                 return nil
             }
         return PassthroughSubject(observable: observable,
@@ -212,7 +211,7 @@ class MQTTCourierClient: CourierClient {
                 } else if let decodedError: E = self.messageAdaptersCoordinator.decodeMessage(packet.data) {
                     return .failure(errorDecodeHandler(decodedError) as NSError)
                 } else {
-                    self.courierEventHandler.onEvent(.messageReceiveFailure(topic: topic, error: CourierError.decodingError.asNSError, sizeBytes: packet.data.count))
+                    self.courierEventHandler.onEvent(.init(connectionInfo: self.client.connectOptions, event: .messageReceiveFailure(topic: topic, error: CourierError.decodingError.asNSError, sizeBytes: packet.data.count)))
                     return nil
                 }
             }
@@ -239,7 +238,7 @@ class MQTTCourierClient: CourierClient {
             printDebug("COURIER Publish - topic:\(topic), payload: \(String(data: data, encoding: .utf8) ?? "")")
             client.send(packet: MQTTPacket(data: data, topic: topic, qos: qos))
         } catch {
-            courierEventHandler.onEvent(.messageSendFailure(topic: topic, qos: qos, error: error, sizeBytes: 0))
+            courierEventHandler.onEvent(.init(connectionInfo: client.connectOptions, event: .messageSendFailure(topic: topic, qos: qos, error: error, sizeBytes: 0)))
             throw error
         }
     }

@@ -1,6 +1,16 @@
 import Foundation
 
-public enum CourierEvent {
+public struct CourierEvent {
+    public let connectionInfo: ConnectOptions?
+    public let type: CourierEventType
+    
+    public init(connectionInfo: ConnectOptions?, event: CourierEventType) {
+        self.connectionInfo = connectionInfo
+        self.type = event
+    }
+}
+
+public enum CourierEventType {
 
     case connectionServiceAuthStart(source: String? = nil)
     case connectionServiceAuthSuccess(host: String, port: Int)
