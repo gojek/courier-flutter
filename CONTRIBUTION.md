@@ -35,9 +35,9 @@ Much Thanks! ❤❤❤
 
 GO-JEK Tech
 
-[1]: https://github.com/gojekfarm/courier-flutter
+[1]: https://github.com/gojek/courier-flutter
 [2]: https://opensource.org/licenses/MIT
-[3]: https://github.com/gojekfarm/courier-flutter/issues
+[3]: https://github.com/gojek/courier-flutter/issues
 [4]: https://google.github.io/swift/
 [5]: http://gun.io/blog/how-to-github-fork-branch-and-pull-request
 [6]: http://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html
