@@ -8,6 +8,17 @@ courierClient.courierEventStream().listen((event) {
 });
 ```
 
-The type of the parameter is `CourierEvent` with 2 properties:
+The type of the parameter is an abstract class `CourierEvent` with these public interfaces:
 - **name**: Name of the event.
-- **properties**: A key value map containing the properties related to the event.
+- **connectionInfo** Connection Info tied to the event
+- **getEventPropertiesMap**: A key value map containing the properties related to the event.
+
+You can try to Cast the `CourierEvent` to concrete implementation that provides additional properties such as:
+- MQTTConnectAttemptEvent
+- MQTTConnectSuccessEvent
+- MQTTConnectFailureEvent
+- MQTTConnectionLostEvent
+- MQTTDisconnectEvent
+- MQTTSubscribeAttemptEvent
+- MQTTSubscribeSuccessEvent
+- ...
