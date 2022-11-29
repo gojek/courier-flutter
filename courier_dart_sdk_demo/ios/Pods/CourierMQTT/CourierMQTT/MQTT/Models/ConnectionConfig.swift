@@ -7,4 +7,7 @@ struct ConnectionConfig {
     var authFailureHandler: IAuthFailureHandler
     var connectTimeoutPolicy: IConnectTimeoutPolicy
     var idleActivityTimeoutPolicy: IdleActivityTimeoutPolicyProtocol
+    
+    var isPersistent: Bool
+    var shouldInitializeCoreDataPersistenceContext: Bool
 }

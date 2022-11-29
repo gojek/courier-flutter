@@ -1,13 +1,30 @@
 import Foundation
 import MQTTClientGJ
 
-protocol IMQTTPersistenceFactory {
+protocol IMQTTPersistenceFactory {    
     func makePersistence() -> MQTTPersistence
 }
 
 struct MQTTPersistenceFactory: IMQTTPersistenceFactory {
 
+    let isPersistent: Bool
+    let shouldInitializeCoreDataPersistenceContext: Bool
+
+    private let maxWindowSize: Int = 16
+    private let maxMessages: Int = 5000
+    private let maxSize: Int = 128 * 1024 * 1024
+    
+    init(isPersistent: Bool = false, shouldInitializeCoreDataPersistenceContext: Bool = true) {
+        self.isPersistent = isPersistent
+        self.shouldInitializeCoreDataPersistenceContext = shouldInitializeCoreDataPersistenceContext
+    }
+    
     func makePersistence() -> MQTTPersistence {
-        MQTTCoreDataPersistence()
+        let persistence = MQTTCoreDataPersistence()
+        persistence.persistent = isPersistent
+        persistence.maxWindowSize = UInt(self.maxWindowSize)
+        persistence.maxSize = UInt(self.maxSize)
+        persistence.maxMessages = UInt(self.maxMessages)
+        return persistence
     }
 }

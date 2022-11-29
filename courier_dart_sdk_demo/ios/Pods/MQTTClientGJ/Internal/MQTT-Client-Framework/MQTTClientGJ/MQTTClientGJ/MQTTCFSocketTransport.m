@@ -24,12 +24,14 @@
 @synthesize streamSSLLevel;
 @synthesize host;
 @synthesize port;
+@synthesize alpn;
 
 - (instancetype)init {
     self = [super init];
     self.host = @"localhost";
     self.port = 1883;
     self.tls = false;
+    self.alpn = nil;
     self.voip = false;
     self.certificates = nil;
     self.queue = dispatch_get_main_queue();

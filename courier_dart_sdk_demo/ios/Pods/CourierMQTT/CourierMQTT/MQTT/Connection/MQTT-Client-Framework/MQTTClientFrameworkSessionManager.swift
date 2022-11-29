@@ -38,6 +38,8 @@ protocol IMQTTClientFrameworkSessionManager {
         certificates: [Any]?,
         protocolLevel: MQTTProtocolVersion,
         userProperties: [String: String]?,
+        alpn: [String]?,
+        connectOptions: ConnectOptions,
         connectHandler: MQTTConnectHandler?)
 
     func disconnect(with disconnectHandler: MQTTDisconnectHandler?)
@@ -45,6 +47,8 @@ protocol IMQTTClientFrameworkSessionManager {
 
     func subscribe(_ topics: [(topic: String, qos: QoS)])
     func unsubscribe(_ topics: [String])
+    
+    func deleteAllPersistedMessages()
 }
 
 class MQTTClientFrameworkSessionManager: NSObject, IMQTTClientFrameworkSessionManager {
@@ -52,17 +56,14 @@ class MQTTClientFrameworkSessionManager: NSObject, IMQTTClientFrameworkSessionMa
     private(set) var host: String?
     private(set) var port: UInt32?
     weak var delegate: MQTTClientFrameworkSessionManagerDelegate?
+    private let persistence: MQTTPersistence
     private let mqttSessionFactory: IMQTTSessionFactory
-    private let mqttPersistenceFactory: IMQTTPersistenceFactory
+    private let eventHandler: ICourierEventHandler
 
-    private let _state = Atomic<MQTTSessionManagerState?>(nil)
-    private(set) var state: MQTTSessionManagerState? {
-        get { _state.value }
-        set {
-            _state.mutate { $0 = newValue }
-        }
-    }
+    @Atomic<MQTTSessionManagerState?>(nil) private(set) var state
+
     private(set) var lastError: NSError?
+    @Atomic<ConnectOptions?>(nil) var connectOptions
 
     private var reconnectTimer: ReconnectTimer?
     private var reconnectFlag = false
@@ -82,45 +83,42 @@ class MQTTClientFrameworkSessionManager: NSObject, IMQTTClientFrameworkSessionMa
     private var securityPolicy: MQTTSSLSecurityPolicy?
     private var certificates: [Any]?
     private var protocolLevel: MQTTProtocolVersion?
+    private var alpn: [String]?
 
-    private var persistent = false
-    private var maxWindowSize: Int
-    private var maxSize: Int
-    private var maxMessages: Int
     private var streamSSLLevel: String
 
     private var connectTimeoutPolicy: IConnectTimeoutPolicy
     private var idleActivityTimeoutPolicy: IdleActivityTimeoutPolicyProtocol
+    
 
     var requiresTeardown: Bool {
         state != .closed && state != .starting
     }
 
-    init(persistence: Bool = false,
-         maxWindowSize: Int = 16,
-         maxMessages: Int = 5000,
-         maxSize: Int = 128 * 1024 * 1024,
-         retryInterval: TimeInterval = 10.0,
+    init(retryInterval: TimeInterval = 10.0,
          maxRetryInterval: TimeInterval = 12.0,
          streamSSLLevel: String = kCFStreamSocketSecurityLevelNegotiatedSSL as String,
          queue: DispatchQueue = .main,
          mqttSessionFactory: IMQTTSessionFactory = MQTTSessionFactory(),
          mqttPersistenceFactory: IMQTTPersistenceFactory = MQTTPersistenceFactory(),
          connectTimeoutPolicy: IConnectTimeoutPolicy,
-         idleActivityTimeoutPolicy: IdleActivityTimeoutPolicyProtocol
+         idleActivityTimeoutPolicy: IdleActivityTimeoutPolicyProtocol,
+         eventHandler: ICourierEventHandler
     ) {
         self.streamSSLLevel = streamSSLLevel
         self.queue = queue
-        self.persistent = persistence
-        self.maxWindowSize = maxWindowSize
-        self.maxSize = maxSize
-        self.maxMessages = maxMessages
+        self.persistence = mqttPersistenceFactory.makePersistence()
         self.mqttSessionFactory = mqttSessionFactory
-        self.mqttPersistenceFactory = mqttPersistenceFactory
         self.connectTimeoutPolicy = connectTimeoutPolicy
         self.idleActivityTimeoutPolicy = idleActivityTimeoutPolicy
-
+        self.eventHandler = eventHandler
+        
         super.init()
+        if let coreDataPersistence = persistence as? MQTTCoreDataPersistence,
+           let persistenceFactory = mqttPersistenceFactory as? MQTTPersistenceFactory,
+           persistenceFactory.shouldInitializeCoreDataPersistenceContext {
+            queue.async { coreDataPersistence.initializeManagedObjectContext() }
+        }
 
         self.updateState(to: .starting)
         self.reconnectTimer = ReconnectTimer(retryInterval: retryInterval, maxRetryInterval: maxRetryInterval, queue: queue, reconnect: { [weak self] in
@@ -146,8 +144,11 @@ class MQTTClientFrameworkSessionManager: NSObject, IMQTTClientFrameworkSessionMa
         certificates: [Any]? = nil,
         protocolLevel: MQTTProtocolVersion = .version311,
         userProperties: [String: String]? = nil,
+        alpn: [String]? = nil,
+        connectOptions: ConnectOptions,
         connectHandler: MQTTConnectHandler? = nil) {
         printDebug("MQTT - COURIER: Client Session Manager connect to: \(host)")
+        self.connectOptions = connectOptions
         let shouldReconnect = self.session != nil
         let isTls = port == 443
 
@@ -164,7 +165,8 @@ class MQTTClientFrameworkSessionManager: NSObject, IMQTTClientFrameworkSessionMa
             Int(lastWillQoS?.rawValue ?? 0) != self.willQoS ||
             lastWillRetainFlag != self.willRetainFlag ||
             clientId != self.clientId ||
-            securityPolicy != self.securityPolicy {
+            securityPolicy != self.securityPolicy ||
+            alpn != self.alpn {
             self.host = host
             self.port = UInt32(port)
             self.tls = isTls
@@ -182,6 +184,7 @@ class MQTTClientFrameworkSessionManager: NSObject, IMQTTClientFrameworkSessionMa
             self.securityPolicy = securityPolicy
             self.certificates = certificates
             self.protocolLevel = protocolLevel
+            self.alpn = alpn
 
             self.session = mqttSessionFactory.makeSession()
             session?.clientId = clientId
@@ -208,11 +211,6 @@ class MQTTClientFrameworkSessionManager: NSObject, IMQTTClientFrameworkSessionMa
             session?.inactivityTimeout = self.idleActivityTimeoutPolicy.inactivityTimeout
             session?.readTimeout = self.idleActivityTimeoutPolicy.readTimeout
 
-            let persistence = mqttPersistenceFactory.makePersistence()
-            persistence.persistent = self.persistent
-            persistence.maxWindowSize = UInt(self.maxWindowSize)
-            persistence.maxSize = UInt(self.maxSize)
-            persistence.maxMessages = UInt(self.maxMessages)
             session?.persistence = persistence
 
             session?.delegate = self
@@ -272,6 +270,9 @@ class MQTTClientFrameworkSessionManager: NSObject, IMQTTClientFrameworkSessionMa
         } else {
             transport = MQTTCFSocketTransport()
         }
+        if let alpn = alpn {
+            transport.alpn = alpn
+        }
         transport.host = host
         transport.port = port
         transport.tls = self.tls
@@ -299,27 +300,39 @@ class MQTTClientFrameworkSessionManager: NSObject, IMQTTClientFrameworkSessionMa
 
     func subscribe(_ topics: [(topic: String, qos: QoS)]) {
         var topicsDict = [String: NSNumber]()
+        var eventTopics: [String] = []
         topics.forEach { topicQoS in
+            eventTopics.append(topicQoS.topic)
             topicsDict[topicQoS.topic] = NSNumber(value: topicQoS.qos.rawValue)
         }
 
+        let connectOptions = self.connectOptions
+        let attemptTimestamp = Date()
+        eventHandler.onEvent(.init(connectionInfo: connectOptions, event: .subscribeAttempt(topics: eventTopics)))
         session?.subscribe(toTopics: topicsDict, subscribeHandler: { [weak self] (error, _) in
             guard let self = self else { return }
             let topicsArray = topics.map { $0.topic }
             if let error = error {
+                self.eventHandler.onEvent(.init(connectionInfo: connectOptions, event: .subscribeFailure(topics: topics, timeTaken: attemptTimestamp.timeTaken, error: error)))
                 self.delegate?.sessionManager(self, didFailToSubscribeTopics: topicsArray, error: error)
             } else {
+                self.eventHandler.onEvent(.init(connectionInfo: connectOptions, event: .subscribeSuccess(topics: topics, timeTaken: attemptTimestamp.timeTaken)))
                 self.delegate?.sessionManager(self, didSubscribeTopics: topicsArray)
             }
         })
     }
 
     func unsubscribe(_ topics: [String]) {
+        let connectOptions = self.connectOptions
+        let attemptTimestamp = Date()
+        eventHandler.onEvent(.init(connectionInfo: connectOptions, event: .unsubscribeAttempt(topics: topics)))
         session?.unsubscribeTopics(topics, unsubscribeHandler: { [weak self] error in
             guard let self = self else { return }
             if let error = error {
+                self.eventHandler.onEvent(.init(connectionInfo: connectOptions, event: .unsubscribeFailure(topics: topics, timeTaken: attemptTimestamp.timeTaken, error: error)))
                 self.delegate?.sessionManager(self, didFailToUnsubscribeTopics: topics, error: error)
             } else {
+                self.eventHandler.onEvent(.init(connectionInfo: connectOptions, event: .unsubscribeSuccess(topics: topics, timeTaken: attemptTimestamp.timeTaken)))
                 self.delegate?.sessionManager(self, didUnsubscribeTopics: topics)
             }
         })
@@ -327,6 +340,19 @@ class MQTTClientFrameworkSessionManager: NSObject, IMQTTClientFrameworkSessionMa
 
     func publish(packet: MQTTPacket) {
         sendData(packet.data, topic: packet.topic, qos: MQTTQosLevel(qos: packet.qos), retainFlag: false)
+    }
+    
+    func deleteAllPersistedMessages() {
+        let _persistence: MQTTCoreDataPersistence
+        if self.persistence.persistent, let coreDataPeristence = self.persistence as? MQTTCoreDataPersistence {
+            _persistence = coreDataPeristence
+        } else {
+            _persistence = MQTTCoreDataPersistence()
+            _persistence.persistent = true
+        }
+        queue.async {
+            _persistence.deleteAllFlows()
+        }
     }
 }
 

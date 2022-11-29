@@ -36,6 +36,10 @@
  */
 @property (nonatomic) BOOL tls;
 
+/** ALPN to use, default to not use ALPN
+ */
+@property (strong, nonatomic) NSArray *alpn;
+
 /** Require for VoIP background service
  * defaults to NO
  */

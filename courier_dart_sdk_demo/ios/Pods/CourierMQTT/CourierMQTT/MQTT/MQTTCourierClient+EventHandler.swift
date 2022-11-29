@@ -15,8 +15,8 @@ extension MQTTCourierClient: ICourierEventHandler {
             onMQTTConnectionLost()
         case .connectionDisconnect:
             onMQTTDisconnect()
-        case .unsubscribeSuccess(let topic):
-            onMQTTUnsubscribeSuccess(topic: topic)
+        case .unsubscribeSuccess(let topics, _):
+            onMQTTUnsubscribeSuccess(topics: topics)
         case .appForeground:
             onAppForeground()
         case .appBackground:
@@ -56,8 +56,8 @@ extension MQTTCourierClient: ICourierEventHandler {
         publishConnectionState(connectionState)
     }
 
-    private func onMQTTUnsubscribeSuccess(topic: String) {
-        subscriptionStore.unsubscribeAcked([topic])
+    private func onMQTTUnsubscribeSuccess(topics: [String]) {
+        subscriptionStore.unsubscribeAcked(topics)
     }
 
     private func onAppBackground() {

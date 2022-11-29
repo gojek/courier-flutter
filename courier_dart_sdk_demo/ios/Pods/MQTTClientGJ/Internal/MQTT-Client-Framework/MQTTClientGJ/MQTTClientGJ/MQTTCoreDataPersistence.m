@@ -192,11 +192,17 @@
     return self;
 }
 
+- (void)initializeManagedObjectContext {
+    [self managedObjectContext];
+}
+
 - (NSManagedObjectContext *)managedObjectContext {
     if (!_managedObjectContext) {
-        NSPersistentStoreCoordinator *coordinator = [self createPersistentStoreCoordinator];
-        _managedObjectContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
-       _managedObjectContext.persistentStoreCoordinator = coordinator;
+        @synchronized (self) {
+            NSPersistentStoreCoordinator *coordinator = [self createPersistentStoreCoordinator];
+            _managedObjectContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
+           _managedObjectContext.persistentStoreCoordinator = coordinator;
+        }
     }
     return _managedObjectContext;
 }
@@ -255,6 +261,28 @@
         }
         for (MQTTCoreDataFlow *flow in [self allFlowsforClientId:clientId incomingFlag:FALSE]) {
             [self.managedObjectContext deleteObject:(NSManagedObject *)flow.object];
+        }
+    }];
+    [self sync];
+}
+
+- (void)deleteAllFlows {
+    [self.managedObjectContext performBlockAndWait:^{
+        NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"MQTTFlow"];
+        NSBatchDeleteRequest *deleteRequest = [[NSBatchDeleteRequest alloc] initWithFetchRequest:fetchRequest];
+        deleteRequest.resultType = NSBatchDeleteResultTypeObjectIDs;
+
+        NSError *error = nil;
+        NSBatchDeleteResult *batchDelete = [self.managedObjectContext executeRequest:deleteRequest error:&error];
+        
+        if (error) {
+            DDLogInfo(@"[MQTTCoreDataPersistence] Failed to delete all flows %@", error);
+            return;
+        }
+        NSArray *deletedIds = batchDelete.result;
+        if (deletedIds && deletedIds.count > 0) {
+            NSDictionary *deletedObjects = @{ NSDeletedObjectsKey: deletedIds };
+            [NSManagedObjectContext mergeChangesFromRemoteContextSave: deletedObjects intoContexts:@[self.managedObjectContext]];
         }
     }];
     [self sync];
@@ -475,12 +503,14 @@
                                                         options:options
                                                           error:&error]) {
         DDLogError(@"[MQTTPersistence] managedObjectContext save: %@", error);
+        if (error) {
+            [[NSNotificationCenter defaultCenter]
+             postNotificationName:@"MQTTPersistenceFailedToAddStore" object:nil userInfo: @{NSLocalizedDescriptionKey: error.localizedDescription}];
+        }
         persistentStoreCoordinator = nil;
     }
-
-      
-      
-     if (persistentStoreCoordinator == nil && error != nil && self.persistent) {
+    
+    if (persistentStoreCoordinator == nil && error != nil && self.persistent) {
         DDLogError(@"[MQTTPersistence] Initializing Persistent Store with SQLite failed, will try to use inMemory instead to avoid crashes");
         persistentStoreCoordinator = [[NSPersistentStoreCoordinator alloc]
                                       initWithManagedObjectModel:model];
@@ -491,6 +521,10 @@
                                                             options:options
                                                               error:&error]) {
             DDLogError(@"[MQTTPersistence] managedObjectContext save: %@", error);
+            if (error) {
+                [[NSNotificationCenter defaultCenter]
+                 postNotificationName:@"MQTTPersistenceFailedToAddStore" object:nil userInfo: @{NSLocalizedDescriptionKey: error.localizedDescription}];
+            }
             persistentStoreCoordinator = nil;
         }
     }

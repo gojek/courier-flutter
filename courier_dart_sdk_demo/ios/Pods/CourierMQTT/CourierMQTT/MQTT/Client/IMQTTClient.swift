@@ -18,7 +18,7 @@ protocol IMQTTClient {
     func unsubscribe(_ topics: [String])
 
     func send(packet: MQTTPacket)
-    func deleteAllPersistedMessages(clientId: String)
+    func deleteAllPersistedMessages()
 
     func reset()
     func destroy()

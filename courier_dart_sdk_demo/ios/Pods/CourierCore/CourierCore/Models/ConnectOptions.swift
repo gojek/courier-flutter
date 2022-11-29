@@ -17,6 +17,8 @@ public struct ConnectOptions: Equatable {
     public let isCleanSession: Bool
     
     public let userProperties: [String: String]?
+    
+    public let alpn: [String]?
 
     public init(
         host: String,
@@ -26,7 +28,8 @@ public struct ConnectOptions: Equatable {
         username: String,
         password: String,
         isCleanSession: Bool = false,
-        userProperties: [String: String]? = nil
+        userProperties: [String: String]? = nil,
+        alpn: [String]? = nil
     ) {
         self.host = host
         self.port = port
@@ -36,5 +39,6 @@ public struct ConnectOptions: Equatable {
         self.password = password
         self.isCleanSession = isCleanSession
         self.userProperties = userProperties
+        self.alpn = alpn
     }
 }

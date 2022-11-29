@@ -7,10 +7,8 @@ protocol IMQTTClientFactory {
 
 struct MQTTClientFactory: IMQTTClientFactory {
 
-    let isPersistenceEnabled: Bool
-
     func makeClient(configuration: IMQTTConfiguration, reachability: Reachability?, dispatchQueue: DispatchQueue) -> IMQTTClient {
-        let factory = MQTTClientFrameworkConnectionFactory(clientFactory: MQTTClientFrameworkFactory(isPersistenceEnabled: isPersistenceEnabled))
+        let factory = MQTTClientFrameworkConnectionFactory(clientFactory: MQTTClientFrameworkFactory())
         return MQTTClient(configuration: configuration, mqttConnectionFactory: factory, reachability: reachability, dispatchQueue: dispatchQueue)
     }
 }

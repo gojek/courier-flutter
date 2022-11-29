@@ -74,8 +74,8 @@ import 'package:courier_dart_sdk/courier_client.dart';
 
 Add the following snippet to Podfile in your project's iOS folder:
 ```shell
-      pod 'CourierCore', '0.0.8', :modular_headers => true
-      pod 'CourierMqtt', '0.0.8', :modular_headers => true
+      pod 'CourierCore', '0.0.14', :modular_headers => true
+      pod 'CourierMqtt', '0.0.14', :modular_headers => true
 ```
 
 ### Create CourierClient

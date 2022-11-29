@@ -41,10 +41,7 @@
 
     if (self.tls) {
         NSMutableDictionary *sslOptions = [[NSMutableDictionary alloc] init];
-        
-          
-          
-          
+   
         sslOptions[(NSString *)kCFStreamSSLValidatesCertificateChain] = @NO;
         sslOptions[(NSString *)kCFStreamSSLLevel] = self.streamSSLLevel;
 
@@ -61,6 +58,23 @@
             connectError = [NSError errorWithDomain:@"MQTT"
                                                code:errSSLInternal
                                            userInfo:@{NSLocalizedDescriptionKey : @"Fail to init ssl output stream!"}];
+        }
+        
+        if (@available(iOS 11, *)) {
+            if (self.alpn != nil && [self.alpn count] > 0) {
+                OSStatus err;
+                SSLContextRef sslContext = CFReadStreamCopyProperty(readStream, kCFStreamPropertySSLContext);
+                if ((err = SSLSetALPNProtocols(sslContext, (__bridge CFArrayRef) self.alpn))) {
+                    connectError = [NSError errorWithDomain:@"MQTT" code:err userInfo:@{
+                        NSLocalizedDescriptionKey : @"ALPN error"}];
+                }
+                
+                sslContext = CFWriteStreamCopyProperty(writeStream, kCFStreamPropertySSLContext);
+                if ((err = SSLSetALPNProtocols(sslContext, (__bridge CFArrayRef) self.alpn))) {
+                    connectError = [NSError errorWithDomain:@"MQTT" code:err userInfo:@{
+                        NSLocalizedDescriptionKey : @"ALPN error"}];
+                }
+            }
         }
     }
     
