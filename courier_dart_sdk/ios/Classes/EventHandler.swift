@@ -108,6 +108,7 @@ final class EventHandler: ICourierEventHandler {
                 eventMap["name"] = "Mqtt Subscribe Success"
                 eventMap["properties"] = [
                     "topic": topic.topic,
+                    "qos": topic.qos.rawValue,
                     "timeTaken": timeTaken
                 ]
                 handler(eventMap)
@@ -134,6 +135,7 @@ final class EventHandler: ICourierEventHandler {
                 eventMap["name"] = "Mqtt Subscribe Failure"
                 eventMap["properties"] = [
                     "topic": topic.topic,
+                    "qos": topic.qos.rawValue,
                     "timeTaken": timeTaken,
                     "reason": (error as? NSError)?.code ?? 0
                 ]
