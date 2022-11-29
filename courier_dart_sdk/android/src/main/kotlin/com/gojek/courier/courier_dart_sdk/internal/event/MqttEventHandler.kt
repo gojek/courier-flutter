@@ -129,7 +129,7 @@ class MqttEventHandler(val eventConsumer: (Map<String, Any>) -> Unit) : EventHan
                 handleEvent("Mqtt Background Alarm Ping Limit Reached", connectionInfo)
             }
             is MqttEvent.OptimalKeepAliveFoundEvent -> {
-                handleEvent("Mqtt Optimal Keep Alive Found", mapOf("timeMinutes" to mqttEvent.timeMinutes, "probeCount" to mqttEvent.probeCount, "covergenceTime" to mqttEvent.convergenceTime), connectionInfo)
+                handleEvent("Mqtt Optimal Keep Alive Found", mapOf("timeMinutes" to mqttEvent.timeMinutes, "probeCount" to mqttEvent.probeCount, "convergenceTime" to mqttEvent.convergenceTime), connectionInfo)
             }
             is MqttEvent.MqttReconnectEvent -> {
                 handleEvent("Mqtt Reconnect", connectionInfo)
@@ -142,9 +142,6 @@ class MqttEventHandler(val eventConsumer: (Map<String, Any>) -> Unit) : EventHan
             }
             is MqttEvent.MqttDisconnectCompleteEvent -> {
                 handleEvent("Mqtt Disconnect Complete", connectionInfo)
-            }
-            is MqttEvent.OfflineMessageDiscardedEvent -> {
-                handleEvent("Mqtt Offline Message Discarded", connectionInfo)
             }
             is MqttEvent.OfflineMessageDiscardedEvent -> {
                 handleEvent("Mqtt Offline Message Discarded", connectionInfo)
