@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
+import 'dart:typed_data';
 
 import 'package:courier_dart_sdk/config/courier_configuration.dart';
 import 'package:courier_dart_sdk/connection_state.dart';
