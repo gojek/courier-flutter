@@ -3,7 +3,6 @@ package com.gojek.courier.courier_dart_sdk.internal.event
 import android.util.Log
 import com.gojek.mqtt.event.EventHandler
 import com.gojek.mqtt.event.MqttEvent
-import com.gojek.mqtt.network.ActiveNetInfo
 
 class MqttEventHandler(val eventConsumer: (Map<String, Any>) -> Unit) : EventHandler {
     override fun onEvent(mqttEvent: MqttEvent) {

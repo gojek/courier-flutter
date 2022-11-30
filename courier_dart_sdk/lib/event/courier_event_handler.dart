@@ -6,6 +6,7 @@ import 'package:courier_dart_sdk/event/courier_event.dart';
 
 abstract class ICourierEventHandler {
   Stream<CourierEvent> courierEventStream();
+  handleCourierEvent(CourierEvent event);
   handleEvent(Map<dynamic, dynamic> arguments);
 }
 
@@ -16,6 +17,11 @@ class CourierEventHandler implements ICourierEventHandler {
   @override
   Stream<CourierEvent> courierEventStream() {
     return eventStreamController.stream;
+  }
+
+  @override
+  handleCourierEvent(CourierEvent event) {
+    eventStreamController.add(event);
   }
 
   @override

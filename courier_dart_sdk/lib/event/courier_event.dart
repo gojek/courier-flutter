@@ -811,3 +811,70 @@ class HandlerThreadNotAliveEvent implements CourierEvent {
     };
   }
 }
+
+class AuthenticatorAttemptEvent implements CourierEvent {
+  @override
+  final String name;
+
+  @override
+  final ConnectionInfo? connectionInfo;
+
+  final bool forceRefresh;
+
+  AuthenticatorAttemptEvent(
+      {required this.name, required this.forceRefresh, this.connectionInfo});
+
+  @override
+  Map<String, dynamic> getEventPropertiesMap() {
+    return {
+      ...{"forceRefresh": forceRefresh},
+      ...connectionInfo?.convertToMap() ?? {}
+    };
+  }
+}
+
+class AuthenticatorSuccessEvent implements CourierEvent {
+  @override
+  final String name;
+
+  @override
+  final ConnectionInfo? connectionInfo;
+
+  final int timeTaken;
+
+  AuthenticatorSuccessEvent(
+      {required this.name, required this.timeTaken, this.connectionInfo});
+
+  @override
+  Map<String, dynamic> getEventPropertiesMap() {
+    return {
+      ...{"timeTaken": timeTaken},
+      ...connectionInfo?.convertToMap() ?? {}
+    };
+  }
+}
+
+class AuthenticatorErrorEvent implements CourierEvent {
+  @override
+  final String name;
+
+  @override
+  final ConnectionInfo? connectionInfo;
+
+  final int reason;
+  final int timeTaken;
+
+  AuthenticatorErrorEvent(
+      {required this.name,
+      required this.reason,
+      required this.timeTaken,
+      this.connectionInfo});
+
+  @override
+  Map<String, dynamic> getEventPropertiesMap() {
+    return {
+      ...{"timeTaken": timeTaken, "reason": reason},
+      ...connectionInfo?.convertToMap() ?? {}
+    };
+  }
+}
