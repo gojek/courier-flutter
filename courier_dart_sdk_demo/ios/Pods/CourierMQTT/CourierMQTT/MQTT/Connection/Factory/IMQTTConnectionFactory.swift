@@ -10,7 +10,11 @@ struct MQTTClientFrameworkConnectionFactory: IMQTTConnectionFactory {
     let clientFactory: IMQTTClientFrameworkFactory
 
     func makeConnection(connectionConfig: ConnectionConfig) -> IMQTTConnection {
-        MQTTClientFrameworkConnection(connectionConfig: connectionConfig, clientFactory: clientFactory)
+        MQTTClientFrameworkConnection(connectionConfig: connectionConfig,
+                                      clientFactory: clientFactory,
+                                      persistenceFactory: MQTTPersistenceFactory(
+                                        isPersistent: connectionConfig.isPersistent,
+                                        shouldInitializeCoreDataPersistenceContext: connectionConfig.shouldInitializeCoreDataPersistenceContext))
     }
 
 }

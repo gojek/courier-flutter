@@ -15,56 +15,36 @@ class MQTTCourierClient: CourierClient {
     let dispatchQueue = DispatchQueue(label: "courier.mqtt.queue", qos: .default)
     private var authFailureReconnectTimer: ReconnectTimer?
     var backgroundTaskID: UIBackgroundTaskIdentifier?
-
-    private var _onBackgroundToken = Atomic<TimeInterval?>(nil)
-    var onBackgroundToken: TimeInterval? {
-        get { _onBackgroundToken.value }
-        set { _onBackgroundToken.mutate { $0 = newValue } }
-    }
-
-    var _connectSource = Atomic<String?>(nil)
-    var connectSource: String? {
-        get { _connectSource.value }
-        set { _connectSource.mutate { $0 = newValue } }
-    }
-
-    private var _isAuthenticating = Atomic<Bool>(false)
-    private var isAuthenticating: Bool {
-        get { _isAuthenticating.value }
-        set { _isAuthenticating.mutate { $0 = newValue } }
-    }
-
-    var _isDestroyed = Atomic<Bool>(false)
-    var isDestroyed: Bool {
-        get { _isDestroyed.value }
-        set { _isDestroyed.mutate { $0 = newValue } }
-    }
+    
+    @Atomic<String?>(nil) private(set) var connectSource
+    @Atomic<Bool>(false) private(set) var isAuthenticating
+    @Atomic<ReconnectTimer?>(nil) private(set) var authenticationTimeoutTimer
+    @Atomic<Bool>(false) private(set) var isDestroyed
+    @Atomic<Date>(Date()) private(set) var authStartTimestamp
 
     var connectionState: ConnectionState {
         ConnectionState(client: client)
     }
-
+    
     var connectionStatePublisher: AnyPublisher<ConnectionState, Never> {
         PassthroughSubject(observable: connectionSubject.asObservable())
     }
-
+    
     var hasExistingSession: Bool {
         client.hasExistingSession
     }
-
-    var authenticationTimeoutTimer: ReconnectTimer?
-
+    
     convenience init(config: MQTTClientConfig) {
         self.init(
             config: config,
-            mqttClientFactory: MQTTClientFactory(isPersistenceEnabled: config.isMessagePersistenceEnabled)
+            mqttClientFactory: MQTTClientFactory()
         )
     }
 
     init(config: MQTTClientConfig,
          subscriptionStoreFactory: ISubscriptionStoreFactory = SubscriptionStoreFactory(),
          multicastEventHandlerFactory: IMulticastCourierEventHandlerFactory = MulticastCourierEventHandlerFactory(),
-         mqttClientFactory: IMQTTClientFactory = MQTTClientFactory(isPersistenceEnabled: false),
+         mqttClientFactory: IMQTTClientFactory = MQTTClientFactory(),
          authRetryPolicy: IAuthRetryPolicy = AuthRetryPolicy()) {
 
         self.config = config
@@ -85,7 +65,9 @@ class MQTTCourierClient: CourierClient {
             authFailureHandler: self,
             eventHandler: courierEventHandler,
             messagePersistenceTTLSeconds: config.messagePersistenceTTLSeconds,
-            messageCleanupInterval: config.messageCleanupInterval)
+            messageCleanupInterval: config.messageCleanupInterval,
+            isMQTTPersistentEnabled: config.isMessagePersistenceEnabled,
+            shouldInitializeCoreDataPersistenceContext: config.shouldInitializeCoreDataPersistenceContext)
 
         let reachability = try? Reachability()
         self.client = mqttClientFactory.makeClient(configuration: configuration, reachability: reachability, dispatchQueue: dispatchQueue)
@@ -109,7 +91,8 @@ class MQTTCourierClient: CourierClient {
             }
         }
         
-        courierEventHandler.onEvent(.init(connectionInfo: client.connectOptions, event: .connectionServiceAuthStart(source: connectSource)))
+        authStartTimestamp = Date()
+        courierEventHandler.onEvent(.init(connectionInfo: client.connectOptions, event: .connectionServiceAuthStart))
         isAuthenticating = true
         isDestroyed = false
 
@@ -152,10 +135,7 @@ class MQTTCourierClient: CourierClient {
     private func handleAuthenticationResult(_ result: Result<ConnectOptions, AuthError>) {
         switch result {
         case let .success(connectOptions):
-            courierEventHandler.onEvent(.init(connectionInfo: client.connectOptions, event: .connectionServiceAuthSuccess(
-                host: connectOptions.host,
-                port: Int(connectOptions.port)
-            )))
+            courierEventHandler.onEvent(.init(connectionInfo: client.connectOptions, event: .connectionServiceAuthSuccess(timeTaken: self.authStartTimestamp.timeTaken)))
        
             authRetryPolicy.resetParams()
             authFailureReconnectTimer?.resetRetryInterval()
@@ -164,7 +144,7 @@ class MQTTCourierClient: CourierClient {
 
         case let .failure(error):
             let nsError = error.asNSError()
-            courierEventHandler.onEvent(.init(connectionInfo: client.connectOptions, event: .connectionServiceAuthFailure(error: nsError)))
+            courierEventHandler.onEvent(.init(connectionInfo: client.connectOptions, event: .connectionServiceAuthFailure(timeTaken: self.authStartTimestamp.timeTaken, error: nsError)))
             let networkErrors = [NSURLErrorNetworkConnectionLost, NSURLErrorNotConnectedToInternet]
             if nsError.domain == NSURLErrorDomain, networkErrors.contains(nsError.code) {
                 courierEventHandler.onEvent(.init(connectionInfo: client.connectOptions, event: .connectionUnavailable))
@@ -187,7 +167,7 @@ class MQTTCourierClient: CourierClient {
             .filter { $0.topic == topic }
             .compactMap { [weak self] packet in
                 guard let self = self else { return nil }
-                if let message: D = self.messageAdaptersCoordinator.decodeMessage(packet.data) {
+                if let message: D = self.messageAdaptersCoordinator.decodeMessage(packet.data, topic: topic) {
                     return message
                 }
                 self.courierEventHandler.onEvent(.init(connectionInfo: self.client.connectOptions, event: .messageReceiveFailure(topic: topic, error: CourierError.decodingError.asNSError, sizeBytes: packet.data.count)))
@@ -206,9 +186,9 @@ class MQTTCourierClient: CourierClient {
             .filter { $0.topic == topic }
             .compactMap { [weak self] (packet) -> Result<D, NSError>? in
                 guard let self = self else { return nil }
-                if let model: D = self.messageAdaptersCoordinator.decodeMessage(packet.data) {
+                if let model: D = self.messageAdaptersCoordinator.decodeMessage(packet.data, topic: topic) {
                     return .success(model)
-                } else if let decodedError: E = self.messageAdaptersCoordinator.decodeMessage(packet.data) {
+                } else if let decodedError: E = self.messageAdaptersCoordinator.decodeMessage(packet.data, topic: topic) {
                     return .failure(errorDecodeHandler(decodedError) as NSError)
                 } else {
                     self.courierEventHandler.onEvent(.init(connectionInfo: self.client.connectOptions, event: .messageReceiveFailure(topic: topic, error: CourierError.decodingError.asNSError, sizeBytes: packet.data.count)))
@@ -234,7 +214,7 @@ class MQTTCourierClient: CourierClient {
         }
 
         do {
-            let data = try messageAdaptersCoordinator.encodeMessage(data)
+            let data = try messageAdaptersCoordinator.encodeMessage(data, topic: topic)
             printDebug("COURIER Publish - topic:\(topic), payload: \(String(data: data, encoding: .utf8) ?? "")")
             client.send(packet: MQTTPacket(data: data, topic: topic, qos: qos))
         } catch {
@@ -284,7 +264,7 @@ class MQTTCourierClient: CourierClient {
     func destroy() {
         isDestroyed  = true
         subscriptionStore.clearAllSubscriptions()
-        client.deleteAllPersistedMessages(clientId: client.connectOptions?.clientId ?? connectionServiceProvider.clientId)
+        client.deleteAllPersistedMessages()
         client.messageReceiverListener.clearPersistedMessages()
         disconnect()
     }

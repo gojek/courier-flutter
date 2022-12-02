@@ -3,18 +3,18 @@ import Foundation
 
 class MulticastDelegate<T> {
 
-    private let atomic = Atomic<NSHashTable<AnyObject>>(NSHashTable.weakObjects())
+    @Atomic<NSHashTable<AnyObject>>(NSHashTable.weakObjects()) private(set) var atomic
 
     private var delegates: [AnyObject] {
-        atomic.mapValue { $0.allObjects.reversed() }
+        _atomic.mapValue { $0.allObjects.reversed() }
     }
 
     func add(_ delegate: T) {
-        atomic.mutate { $0.add(delegate as AnyObject) }
+        _atomic.mutate { $0.add(delegate as AnyObject) }
     }
 
     func remove(_ delegateToRemove: T) {
-        atomic.mutate { $0.remove(delegateToRemove as AnyObject) }
+        _atomic.mutate { $0.remove(delegateToRemove as AnyObject) }
     }
 
     func invoke(_ invocation: @escaping (T) -> Void) {

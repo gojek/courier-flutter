@@ -18,15 +18,11 @@ class MQTTClientFrameworkConnection: NSObject, IMQTTConnection {
     private let connectionConfig: ConnectionConfig
     private(set) var messageReceiveListener: IMessageReceiveListener?
     
-    private var _connectOptions = Atomic<ConnectOptions?>(nil)
-    private(set) var connectOptions: ConnectOptions? {
-        get { _connectOptions.value }
-        set { _connectOptions.mutate { $0 = newValue } }
-    }
-
-    private(set) var lastPing: Date?
-    private(set) var lastPong: Date?
-
+    @Atomic<ConnectOptions?>(nil) var connectOptions
+    @Atomic<Date>(Date()) var connectionAttemptTimestamp
+    @Atomic<Date?>(nil) var lastPing
+    @Atomic<Date?>(nil) var lastPong
+    
     var isConnected: Bool { sessionManager?.state == .connected }
     var isConnecting: Bool { sessionManager?.state == .connecting }
     var isDisconnecting: Bool { sessionManager?.state == .closing }
@@ -55,11 +51,13 @@ class MQTTClientFrameworkConnection: NSObject, IMQTTConnection {
         super.init()
 
         self.sessionManager = clientFactory.makeSessionManager(
-            connectRetryTimePolicy: connectionConfig.connectRetryTimePolicy, persistenceFactory: persistenceFactory,
+            connectRetryTimePolicy: connectionConfig.connectRetryTimePolicy,
+            persistenceFactory: persistenceFactory,
             dispatchQueue: mqttDispatchQueue,
             delegate: self,
             connectTimeoutPolicy: connectionConfig.connectTimeoutPolicy,
-            idleActivityTimeoutPolicy: connectionConfig.idleActivityTimeoutPolicy
+            idleActivityTimeoutPolicy: connectionConfig.idleActivityTimeoutPolicy,
+            eventHandler: connectionConfig.eventHandler
         )
     }
 
@@ -80,7 +78,6 @@ class MQTTClientFrameworkConnection: NSObject, IMQTTConnection {
             securityPolicy?.allowInvalidCertificates = true
         }
 
-        eventHandler.onEvent(.init(connectionInfo: connectOptions, event: .connectionAttempt))
         sessionManager.connect(
             to: connectOptions.host,
             port: port,
@@ -99,6 +96,8 @@ class MQTTClientFrameworkConnection: NSObject, IMQTTConnection {
             certificates: nil,
             protocolLevel: .version311,
             userProperties: connectOptions.userProperties,
+            alpn: connectOptions.alpn,
+            connectOptions: connectOptions,
             connectHandler: nil
         )
     }
@@ -113,12 +112,8 @@ class MQTTClientFrameworkConnection: NSObject, IMQTTConnection {
         sessionManager.publish(packet: packet)
     }
 
-    func deleteAllPersistedMessages(clientId: String) {
-        let persistence = persistenceFactory.makePersistence()
-        persistence.persistent = true
-        mqttDispatchQueue.async {
-            persistence.deleteAllFlows(forClientId: clientId)
-        }
+    func deleteAllPersistedMessages() {
+        sessionManager.deleteAllPersistedMessages()
     }
 
     func subscribe(_ topics: [(topic: String, qos: QoS)]) {
@@ -127,9 +122,6 @@ class MQTTClientFrameworkConnection: NSObject, IMQTTConnection {
         }
 
         printDebug("MQTT - COURIER: Starting to request subscribe \(topics.map { "\($0.0):\($0.1)" })")
-        topics.forEach { topicQos in
-            eventHandler.onEvent(.init(connectionInfo: connectOptions, event: .subscribeAttempt(topic: topicQos.topic)))
-        }
         sessionManager.subscribe(topics)
     }
 
@@ -138,9 +130,6 @@ class MQTTClientFrameworkConnection: NSObject, IMQTTConnection {
             return
         }
         printDebug("MQTT - COURIER: Starting to request unsubscribe \(topics)")
-        topics.forEach {
-            eventHandler.onEvent(.init(connectionInfo: connectOptions, event: .unsubscribeAttempt(topic: $0)))
-        }
         sessionManager.unsubscribe(topics)
     }
 
@@ -165,16 +154,18 @@ extension MQTTClientFrameworkConnection: MQTTClientFrameworkSessionManagerDelega
 
         case .connecting:
             printDebug("MQTT - COURIER: Connecting")
+            resetParams()
+            self.connectionAttemptTimestamp = Date()
             eventHandler.onEvent(.init(connectionInfo: connectOptions , event: .connectionAttempt))
 
         case .connected:
             printDebug("MQTT - COURIER: Connected")
-            eventHandler.onEvent(.init(connectionInfo: connectOptions, event: .connectionSuccess))
+            eventHandler.onEvent(.init(connectionInfo: connectOptions, event: .connectionSuccess(timeTaken: self.connectionAttemptTimestamp.timeTaken)))
 
         case .error:
             guard let error = sessionManager.lastError as NSError? else { return }
             printDebug("MQTT - COURIER: Error \(error.localizedDescription)")
-            eventHandler.onEvent(.init(connectionInfo: connectOptions, event: .connectionFailure(error: error)))
+            eventHandler.onEvent(.init(connectionInfo: connectOptions, event: .connectionFailure(timeTaken: self.connectionAttemptTimestamp.timeTaken, error: error)))
 
             switch error.code {
             case MQTTSessionError.connackBadUsernameOrPassword.rawValue,
@@ -192,6 +183,7 @@ extension MQTTClientFrameworkConnection: MQTTClientFrameworkSessionManagerDelega
         case .closed:
             printDebug("MQTT - COURIER: Connection Closed")
             eventHandler.onEvent(.init(connectionInfo: connectOptions, event: .connectionLost(
+                timeTaken: self.connectionAttemptTimestamp.timeTaken,
                 error: sessionManager.lastError,
                 diffLastInbound: getLastInboundDiff(),
                 diffLastOutbound: getLastOutboundDiff())))
@@ -216,9 +208,9 @@ extension MQTTClientFrameworkConnection: MQTTClientFrameworkSessionManagerDelega
 
     func sessionManagerDidReceivePong(_ sessionManager: IMQTTClientFrameworkSessionManager) {
         lastPong = Date()
-        if let lastPing = self.lastPing, let lastPong = self.lastPong {
+        if let lastPing = self.lastPing {
             printDebug("MQTT - COURIER: Pong received at \(Date()), last ping: \(lastPing)")
-            eventHandler.onEvent(.init(connectionInfo: connectOptions, event: .pongReceived(timeTaken: Int(lastPong.timeIntervalSinceNow - lastPing.timeIntervalSinceNow) * 1000)))
+            eventHandler.onEvent(.init(connectionInfo: connectOptions, event: .pongReceived(timeTaken: lastPing.timeTaken)))
         }
         lastPing = nil
     }
@@ -247,31 +239,21 @@ extension MQTTClientFrameworkConnection: MQTTClientFrameworkSessionManagerDelega
     }
 
     func sessionManager(_ sessionManager: IMQTTClientFrameworkSessionManager, didSubscribeTopics topics: [String]) {
-        topics.forEach { topic in
-            printDebug("MQTT - COURIER: Subscribed to \(topic)")
-            eventHandler.onEvent(.init(connectionInfo: connectOptions, event: .subscribeSuccess(topic: topic)))
-        }
+        #if DEBUG
+        topics.forEach { printDebug("MQTT - COURIER: Subscribed to \($0)") }
+        #endif
     }
 
     func sessionManager(_ sessionManager: IMQTTClientFrameworkSessionManager, didUnsubscribeTopics topics: [String]) {
         printDebug("MQTT - COURIER: Unsubscribed from \(topics)")
-        topics.forEach {
-            eventHandler.onEvent(.init(connectionInfo: connectOptions, event: .unsubscribeSuccess(topic: $0)))
-        }
     }
 
     func sessionManager(_ sessionManager: IMQTTClientFrameworkSessionManager, didFailToSubscribeTopics topics: [String], error: Error) {
         printDebug("MQTT - COURIER: Subscribe failed topics: \(topics) \(error.localizedDescription)")
-        topics.forEach {
-            eventHandler.onEvent(.init(connectionInfo: connectOptions, event: .subscribeFailure(topic: $0, error: error)))
-        }
     }
 
     func sessionManager(_ sessionManager: IMQTTClientFrameworkSessionManager, didFailToUnsubscribeTopics topics: [String], error: Error) {
         printDebug("MQTT - COURIER: Unsubscribed failed topics: \(topics) \(error.localizedDescription)")
-        topics.forEach {
-            eventHandler.onEvent(.init(connectionInfo: connectOptions, event: .unsubscribeFailure(topic: $0, error: error)))
-        }
     }
 
     func sessionManagerDidSendConnectPacket(_ sessionManager: IMQTTClientFrameworkSessionManager) {

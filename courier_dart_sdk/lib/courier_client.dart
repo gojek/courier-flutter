@@ -109,13 +109,28 @@ class _CourierClientImpl implements CourierClient {
   }
 
   Future<void> _connectCourier() async {
+    final attemptTimestamp = DateTime.now().millisecondsSinceEpoch;
     try {
       _state = ConnectionState.connecting;
+      eventHandler.handleCourierEvent(AuthenticatorAttemptEvent(
+          name: "Courier Connect Started", forceRefresh: false));
       CourierConnectOptions _options = await _fetchConnectOptions();
+      eventHandler.handleCourierEvent(AuthenticatorSuccessEvent(
+          name: "Courier Connect Succeeded",
+          timeTaken: DateTime.now().millisecondsSinceEpoch - attemptTimestamp));
       courierConfiguration.authRetryPolicy.reset();
       _platform.invokeMethod('connect', _options.convertToMap());
       _state = ConnectionState.connected;
     } on Exception catch (error) {
+      int reason = -1;
+      if (error is DioError) {
+        reason = error.type.index;
+      }
+
+      eventHandler.handleCourierEvent(AuthenticatorErrorEvent(
+          name: "Courier Connect Failed",
+          reason: reason,
+          timeTaken: DateTime.now().millisecondsSinceEpoch - attemptTimestamp));
       final retrySeconds =
           courierConfiguration.authRetryPolicy.getRetrySeconds(error);
       if (retrySeconds != -1) {

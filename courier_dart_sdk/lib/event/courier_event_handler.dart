@@ -6,6 +6,7 @@ import 'package:courier_dart_sdk/event/courier_event.dart';
 
 abstract class ICourierEventHandler {
   Stream<CourierEvent> courierEventStream();
+  handleCourierEvent(CourierEvent event);
   handleEvent(Map<dynamic, dynamic> arguments);
 }
 
@@ -16,6 +17,11 @@ class CourierEventHandler implements ICourierEventHandler {
   @override
   Stream<CourierEvent> courierEventStream() {
     return eventStreamController.stream;
+  }
+
+  @override
+  handleCourierEvent(CourierEvent event) {
+    eventStreamController.add(event);
   }
 
   @override
@@ -43,43 +49,101 @@ class CourierEventHandler implements ICourierEventHandler {
 
     switch (eventName) {
       case "Mqtt Connect Attempt":
-        eventStreamController
-            .add(MQTTConnectAtttemptEvent(eventName, connectionInfo));
+        eventStreamController.add(MQTTConnectAtttemptEvent(
+            name: eventName,
+            isOptimalKeepAlive: eventProps['isOptimalKeepAlive'] ?? false,
+            connectionInfo: connectionInfo));
+        break;
+
+      case "Mqtt Connect Discarded":
+        eventStreamController.add(MQTTConnectDiscardedEvent(
+            name: eventName,
+            reason: eventProps['reason'] ?? -1,
+            connectionInfo: connectionInfo));
         break;
 
       case "Mqtt Connect Success":
-        eventStreamController
-            .add(MQTTConnectSuccessEvent(eventName, connectionInfo));
-        break;
-
-      case "Mqtt Disconnect":
-        eventStreamController
-            .add(MQTTDisconnectEvent(eventName, connectionInfo));
-        break;
-
-      case "Mqtt Ping Initiated":
-        eventStreamController
-            .add(MQTTPingInitiatedEvent(eventName, connectionInfo));
-        break;
-
-      case "Mqtt Ping Success":
-        eventStreamController
-            .add(MQTTPingSuccessEvent(eventName, connectionInfo));
-        break;
-
-      case "Mqtt Ping Failure":
-        eventStreamController.add(MQTTPingFailureEvent(
-            eventName, connectionInfo, eventProps['reason'] ?? -1));
+        eventStreamController.add(MQTTConnectSuccessEvent(
+            name: eventName,
+            timeTaken: eventProps['timeTaken'] ?? 0,
+            connectionInfo: connectionInfo));
         break;
 
       case "Mqtt Connect Failure":
         eventStreamController.add(MQTTConnectFailureEvent(
-            eventName, connectionInfo, eventProps['reason'] ?? -1));
+            name: eventName,
+            timeTaken: eventProps['timeTaken'] ?? 0,
+            reason: eventProps['reason'] ?? -1,
+            connectionInfo: connectionInfo));
         break;
 
       case "Mqtt Connection Lost":
         eventStreamController.add(MQTTConnectionLostEvent(
-            eventName, connectionInfo, eventProps['reason'] ?? ""));
+            name: eventName,
+            reason: eventProps['reason'] ?? -1,
+            timeTaken: eventProps['timeTaken'] ?? 0,
+            connectionInfo: connectionInfo));
+        break;
+
+      case "Socket Connect Attempt":
+        eventStreamController.add(SocketConnectAttemptEvent(
+            name: eventName,
+            timeout: eventProps['timeout'] ?? 0,
+            connectionInfo: connectionInfo));
+        break;
+
+      case "Socket Connect Success":
+        eventStreamController.add(SocketConnectSuccessEvent(
+            name: eventName,
+            timeout: eventProps['timeout'] ?? 0,
+            timeTaken: eventProps['timeTaken'] ?? 0,
+            connectionInfo: connectionInfo));
+        break;
+
+      case "Socket Connect Failure":
+        eventStreamController.add(SocketConnectFailureEvent(
+            name: eventName,
+            timeout: eventProps['timeout'] ?? 0,
+            timeTaken: eventProps['timeTaken'] ?? 0,
+            reason: eventProps['reason'] ?? 0,
+            connectionInfo: connectionInfo));
+        break;
+
+      case "SSL Socket Attempt":
+        eventStreamController.add(SSLSocketAttemptEvent(
+            name: eventName,
+            timeout: eventProps['timeout'] ?? 0,
+            connectionInfo: connectionInfo));
+        break;
+
+      case "SSL Socket Success":
+        eventStreamController.add(SSLSocketSuccessEvent(
+            name: eventName,
+            timeout: eventProps['timeout'] ?? 0,
+            timeTaken: eventProps['timeTaken'] ?? 0,
+            connectionInfo: connectionInfo));
+        break;
+
+      case "SSL Socket Failure":
+        eventStreamController.add(SSLSocketFailureEvent(
+            name: eventName,
+            timeout: eventProps['timeout'] ?? 0,
+            timeTaken: eventProps['timeTaken'] ?? 0,
+            reason: eventProps['reason'] ?? -1,
+            connectionInfo: connectionInfo));
+        break;
+
+      case "SSL Socket Handshake Success":
+        eventStreamController.add(SSLHandshakeSuccessEvent(
+            name: eventName,
+            timeout: eventProps['timeout'] ?? 0,
+            timeTaken: eventProps['timeTaken'] ?? 0,
+            connectionInfo: connectionInfo));
+        break;
+
+      case "Connect Packet Send":
+        eventStreamController
+            .add(ConnectPacketSendEvent(eventName, connectionInfo));
         break;
 
       case "Mqtt Subscribe Attempt":
@@ -89,15 +153,21 @@ class CourierEventHandler implements ICourierEventHandler {
 
       case "Mqtt Subscribe Success":
         eventStreamController.add(MQTTSubscribeSuccessEvent(
-            eventName, connectionInfo, eventProps['topic'] ?? ""));
+            name: eventName,
+            topic: eventProps['topic'] ?? "",
+            qos: eventProps['qos'] ?? 0,
+            timeTaken: eventProps['timeTaken'] ?? 0,
+            connectionInfo: connectionInfo));
         break;
 
       case "Mqtt Subscribe Failure":
         eventStreamController.add(MQTTSubscribeFailureEvent(
-            eventName,
-            connectionInfo,
-            eventProps['topic'] ?? "",
-            eventProps['reason'] ?? -1));
+            name: eventName,
+            topic: eventProps['topic'] ?? "",
+            reason: eventProps['reason'] ?? -1,
+            qos: eventProps['qos'] ?? 0,
+            timeTaken: eventProps['timeTaken'] ?? 0,
+            connectionInfo: connectionInfo));
         break;
 
       case "Mqtt Unsubscribe Attempt":
@@ -107,15 +177,19 @@ class CourierEventHandler implements ICourierEventHandler {
 
       case "Mqtt Unsubscribe Success":
         eventStreamController.add(MQTTUnsubscribeSuccessEvent(
-            eventName, connectionInfo, eventProps['topic'] ?? ""));
+            name: eventName,
+            topic: eventProps['topic'] ?? "",
+            timeTaken: eventProps['timeTaken'] ?? 0,
+            connectionInfo: connectionInfo));
         break;
 
       case "Mqtt Unsubscribe Failure":
         eventStreamController.add(MQTTUnsubscribeFailureEvent(
-            eventName,
-            connectionInfo,
-            eventProps['topic'] ?? "",
-            eventProps['reason'] ?? -1));
+            name: eventName,
+            topic: eventProps['topic'] ?? "",
+            reason: eventProps['reason'] ?? -1,
+            timeTaken: eventProps['timeTaken'] ?? 0,
+            connectionInfo: connectionInfo));
         break;
 
       case "Mqtt Message Receive":
@@ -158,6 +232,85 @@ class CourierEventHandler implements ICourierEventHandler {
             eventProps['qos'] ?? -1,
             eventProps['reason'] ?? -1,
             eventProps['sizeBytes'] ?? -1));
+        break;
+
+      case "Mqtt Ping Initiated":
+        eventStreamController
+            .add(MQTTPingInitiatedEvent(eventName, connectionInfo));
+        break;
+
+      case "Mqtt Ping Success":
+        eventStreamController.add(MQTTPingSuccessEvent(
+            name: eventName,
+            timeTaken: eventProps['timeTaken'] ?? 0,
+            connectionInfo: connectionInfo));
+        break;
+
+      case "Mqtt Ping Failure":
+        eventStreamController.add(MQTTPingFailureEvent(
+            name: eventName,
+            reason: eventProps['reason'] ?? -1,
+            timeTaken: eventProps['timeTaken'] ?? 0,
+            connectionInfo: connectionInfo));
+        break;
+
+      case "Mqtt Ping Exception":
+        eventStreamController.add(MqttPingExceptionEvent(
+            name: eventName,
+            reason: eventProps['reason'] ?? -1,
+            connectionInfo: connectionInfo));
+        break;
+
+      case "Mqtt Background Alarm Ping Limit Reached":
+        eventStreamController
+            .add(BackgroundAlarmPingLimitReached(eventName, connectionInfo));
+        break;
+
+      case "Mqtt Optimal Keep Alive Found":
+        eventStreamController.add(OptimalKeepAliveFoundEvent(
+            name: eventName,
+            timeMinutes: eventProps['timeMinutes'] ?? 0,
+            probeCount: eventProps['probeCount'] ?? 0,
+            convergenceTime: eventProps['convergenceTime'] ?? 0,
+            connectionInfo: connectionInfo));
+        break;
+
+      case "Mqtt Reconnect":
+        eventStreamController
+            .add(MQTTReconnectEvent(eventName, connectionInfo));
+        break;
+
+      case "Mqtt Disconnect":
+        eventStreamController
+            .add(MQTTDisconnectEvent(eventName, connectionInfo));
+        break;
+
+      case "Mqtt Disconnect Start":
+        eventStreamController
+            .add(MQTTDisconnectStartEvent(eventName, connectionInfo));
+        break;
+
+      case "Mqtt Disconnect Complete":
+        eventStreamController
+            .add(MQTTDisconnectStartEvent(eventName, connectionInfo));
+        break;
+
+      case "Mqtt Offline Message Discarded":
+        eventStreamController
+            .add(OfflineMessageDiscardedEvent(eventName, connectionInfo));
+        break;
+
+      case "Mqtt Inbound Inactivity":
+        eventStreamController
+            .add(InboundInactivityEvent(eventName, connectionInfo));
+        break;
+
+      case "Handler Thread Not Alive":
+        eventStreamController.add(HandlerThreadNotAliveEvent(
+            name: eventName,
+            isInterrupted: eventProps['isInterrupted'] ?? false,
+            state: eventProps['state'] ?? '',
+            connectionInfo: connectionInfo));
         break;
 
       default:

@@ -6,20 +6,13 @@ class DiskSubscriptionStore: ISubscriptionStore {
     private let pendingUnsubKey: String
     private let userDefaults: UserDefaults
 
-    private var _subscriptions: Atomic<[String: QoS]>
-    private(set) var subscriptions: [String: QoS] {
-        get { _subscriptions.value }
-        set { _subscriptions.mutate { $0 = newValue }}
-    }
-
-    private var _pendingUnsubscriptions: Atomic<[String]>
+    @Atomic<[String: QoS]>([:]) private(set) var subscriptions
+    @Atomic<[String]>([]) private(set) var _pendingUnsubscriptions
     private(set) var pendingUnsubscriptions: Set<String> {
-        get { Set(_pendingUnsubscriptions.value) }
+        get { Set(_pendingUnsubscriptions) }
         set {
-            _pendingUnsubscriptions.mutate { pending in
-                userDefaults.setValue(Array(newValue), forKey: pendingUnsubKey)
-                pending = Array(newValue)
-            }
+            userDefaults.setValue(Array(newValue), forKey: pendingUnsubKey)
+            _pendingUnsubscriptions = Array(newValue)
         }
     }
 
@@ -30,8 +23,8 @@ class DiskSubscriptionStore: ISubscriptionStore {
         self.userDefaults = userDefaults
         self.pendingUnsubKey = pendingUnsubKey
 
-        self._subscriptions = Atomic(topics)
-        self._pendingUnsubscriptions = Atomic(userDefaults.stringArray(forKey: pendingUnsubKey) ?? [])
+        self.subscriptions = topics
+        self._pendingUnsubscriptions = userDefaults.stringArray(forKey: pendingUnsubKey) ?? []
     }
 
     func subscribe(_ topics: [(topic: String, qos: QoS)]) {

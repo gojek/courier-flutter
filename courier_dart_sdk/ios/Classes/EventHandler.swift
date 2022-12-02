@@ -5,10 +5,10 @@
 //  Created by Deepanshu on 20/01/22.
 //
 
-import Foundation
-import os
 import CourierCore
 import CourierMQTT
+import Foundation
+import os
 
 final class EventHandler: ICourierEventHandler {
     
@@ -17,11 +17,7 @@ final class EventHandler: ICourierEventHandler {
     init(handler: @escaping (Dictionary<String, Any>) -> Void) {
         self.handler = handler
     }
-    
-    func reset() {
         
-    }
-    
     func onEvent(_ event: CourierEvent) {
         handleCourierEvent(event)
     }
@@ -39,58 +35,146 @@ final class EventHandler: ICourierEventHandler {
             ]
         }
         switch event.type {
-        case .connectionDisconnect:
-            os_log("Courier event: connectionDisconnect event")
-            eventMap["name"] = "Mqtt Disconnect"
+        case .connectedPacketSent:
+            os_log("Courier event: Connect Packet Send event")
+            eventMap["name"] = "Connect Packet Send"
+    
+        case let .courierDisconnect(clearState):
+            os_log("Courier event: Courier Disconnect event")
+            eventMap["name"] = "Courier Disconnect"
+            eventMap["properties"] = ["ClearState": clearState]
+
         case .connectionAttempt:
             os_log("Courier event: connectionAttempt event")
             eventMap["name"] = "Mqtt Connect Attempt"
-        case .connectionSuccess:
+        
+        case let .connectionSuccess(timeTaken):
             os_log("Courier event: connectionSuccess event")
             eventMap["name"] = "Mqtt Connect Success"
-        case .connectionFailure(let error):
+            eventMap["properties"] = ["timeTaken": timeTaken]
+        
+        case let .connectionFailure(timeTaken, error):
             os_log("Courier event: connectionFailure event")
             eventMap["name"] = "Mqtt Connect Failure"
-            eventMap["properties"] = ["reason": (error as? NSError)?.code ?? 0]
-        case .connectionLost(let error, _, _):
+            eventMap["properties"] = [
+                "reason": (error as? NSError)?.code ?? 0,
+                "timeTaken": timeTaken
+            ]
+            
+        case let .connectionLost(timeTaken, error, _, _):
             os_log("Courier event: connectionLost event")
             eventMap["name"] = "Mqtt Connection Lost"
-            eventMap["properties"] = ["reason": (error as? NSError)?.code ?? 0]
+            eventMap["properties"] = [
+                "reason": (error as? NSError)?.code ?? 0,
+                "timeTaken": timeTaken
+            ]
+            
+        case .connectionDisconnect:
+            os_log("Courier event: connectionDisconnect event")
+            eventMap["name"] = "Mqtt Disconnect"
+            
+        case .reconnect:
+            os_log("Courier event: Courier Reconnect event")
+            eventMap["name"] = "Courier Reconnect"
+            
+        case let .connectDiscarded(reason):
+            eventMap["name"] = "Mqtt Connect Discarded"
+            eventMap["properties"] = ["reason": reason]
+            
+        case let .subscribeAttempt(topics):
+            os_log("Courier event: subscribeAttempt event")
+            topics.forEach { topic in
+                var eventMap = [String: Any]()
+                eventMap["name"] = "Mqtt Subscribe Attempt"
+                eventMap["properties"] = ["topic": topic]
+                handler(eventMap)
+            }
+            return
+            
+        case let .unsubscribeAttempt(topics):
+            os_log("Courier event: unsubscribeAttempt event")
+            topics.forEach { topic in
+                var eventMap = [String: Any]()
+                eventMap["name"] = "Mqtt Unsubscribe Attempt"
+                eventMap["properties"] = ["topic": topic]
+                handler(eventMap)
+            }
+            return
+            
+        case let .subscribeSuccess(topics, timeTaken):
+            os_log("Courier event: subscribeSuccess event")
+            topics.forEach { topic in
+                var eventMap = [String: Any]()
+                eventMap["name"] = "Mqtt Subscribe Success"
+                eventMap["properties"] = [
+                    "topic": topic.topic,
+                    "qos": topic.qos.rawValue,
+                    "timeTaken": timeTaken
+                ]
+                handler(eventMap)
+            }
+            return
+            
+        case let .unsubscribeSuccess(topics, timeTaken):
+            os_log("Courier event: unsubscribeSuccess event")
+            topics.forEach { topic in
+                var eventMap = [String: Any]()
+                eventMap["name"] = "Mqtt Unsubscribe Success"
+                eventMap["properties"] = [
+                    "topic": topic,
+                    "timeTaken": timeTaken
+                ]
+                handler(eventMap)
+            }
+            return
+                        
+        case let .subscribeFailure(topics, timeTaken, error):
+            os_log("Courier event: subscribeFailure event")
+            topics.forEach { topic in
+                var eventMap = [String: Any]()
+                eventMap["name"] = "Mqtt Subscribe Failure"
+                eventMap["properties"] = [
+                    "topic": topic.topic,
+                    "qos": topic.qos.rawValue,
+                    "timeTaken": timeTaken,
+                    "reason": (error as? NSError)?.code ?? 0
+                ]
+                handler(eventMap)
+            }
+            return
+            
+        case let .unsubscribeFailure(topics, timeTaken, error):
+            os_log("Courier event: unsubscribeFailure event")
+            topics.forEach { topic in
+                var eventMap = [String: Any]()
+                eventMap["name"] = "Mqtt Unsubscribe Failure"
+                eventMap["properties"] = [
+                    "topic": topic,
+                    "timeTaken": timeTaken,
+                    "reason": (error as? NSError)?.code ?? 0
+                ]
+                handler(eventMap)
+            }
+            return
+        
         case .ping:
             os_log("Courier event: ping event")
             eventMap["name"] = "Mqtt Ping Initiated"
-        case .pongReceived:
+            
+        case let .pongReceived(timeTaken):
             os_log("Courier event: pongReceived event")
             eventMap["name"] = "Mqtt Ping Success"
-        case .pingFailure(_, let error):
+            eventMap["properties"] = ["timeTaken": timeTaken]
+            
+        case let .pingFailure(timeTaken, error):
             os_log("Courier event: pingFailure event")
             eventMap["name"] = "Mqtt Ping Failure"
-            eventMap["properties"] = ["reason": (error as? NSError)?.code ?? 0]
-        case .subscribeAttempt(let topic):
-            os_log("Courier event: subscribeAttempt event")
-            eventMap["name"] = "Mqtt Subscribe Attempt"
-            eventMap["properties"] = ["topic": topic]
-        case .subscribeSuccess(let topic):
-            os_log("Courier event: subscribeSuccess event")
-            eventMap["name"] = "Mqtt Subscribe Success"
-            eventMap["properties"] = ["topic": topic]
-        case let .subscribeFailure(topic, error):
-            os_log("Courier event: subscribeFailure event")
-            eventMap["name"] = "Mqtt Subscribe Failure"
-            eventMap["properties"] = ["topic": topic, "reason": (error as? NSError)?.code ?? 0]
-        case .unsubscribeAttempt(let topic):
-            os_log("Courier event: unsubscribeAttempt event")
-            eventMap["name"] = "Mqtt Unsubscribe Attempt"
-            eventMap["properties"] = ["topic": topic]
-        case .unsubscribeSuccess(let topic):
-            os_log("Courier event: unsubscribeSuccess event")
-            eventMap["name"] = "Mqtt Unsubscribe Success"
-            eventMap["properties"] = ["topic": topic]
-        case let .unsubscribeFailure(topic, error):
-            os_log("Courier event: unsubscribeFailure event")
-            eventMap["name"] = "Mqtt Unsubscribe Failure"
-            eventMap["properties"] = ["topic": topic, "reason": (error as? NSError)?.code ?? 0]
-        case .messageReceive(let topic, let sizeBytes):
+            eventMap["properties"] = [
+                "timeTaken": timeTaken,
+                "reason": (error as? NSError)?.code ?? 0
+            ]
+        
+        case let .messageReceive(topic, sizeBytes):
             os_log("Courier event: messageReceive event")
             eventMap["name"] = "Mqtt Message Receive"
             eventMap["properties"] = [
@@ -135,5 +219,7 @@ final class EventHandler: ICourierEventHandler {
         }
         handler(eventMap)
     }
+    
+    func reset() {}
 }
 

@@ -7,6 +7,10 @@ protocol IMQTTConfiguration {
     var idleActivityTimeoutPolicy: IdleActivityTimeoutPolicyProtocol { get }
     var authFailureHandler: IAuthFailureHandler { get }
     var eventHandler: ICourierEventHandler { get }
+    
     var messagePersistenceTTLSeconds: TimeInterval { get }
     var messageCleanupInterval: TimeInterval { get }
+    
+    var isMQTTPersistentEnabled: Bool { get }
+    var shouldInitializeCoreDataPersistenceContext: Bool { get }
 }

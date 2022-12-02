@@ -12,26 +12,26 @@ public struct CourierEvent {
 
 public enum CourierEventType {
 
-    case connectionServiceAuthStart(source: String? = nil)
-    case connectionServiceAuthSuccess(host: String, port: Int)
-    case connectionServiceAuthFailure(error: Error?)
+    case connectionServiceAuthStart
+    case connectionServiceAuthSuccess(timeTaken: Int)
+    case connectionServiceAuthFailure(timeTaken: Int, error: Error?)
     case connectedPacketSent
     case courierDisconnect(clearState: Bool)
 
     case connectionAttempt
-    case connectionSuccess
-    case connectionFailure(error: Error?)
-    case connectionLost(error: Error?, diffLastInbound: Int?, diffLastOutbound: Int?)
+    case connectionSuccess(timeTaken: Int)
+    case connectionFailure(timeTaken: Int, error: Error?)
+    case connectionLost(timeTaken: Int, error: Error?, diffLastInbound: Int?, diffLastOutbound: Int?)
     case connectionDisconnect
     case reconnect
     case connectDiscarded(reason: String)
 
-    case subscribeAttempt(topic: String)
-    case unsubscribeAttempt(topic: String)
-    case subscribeSuccess(topic: String)
-    case unsubscribeSuccess(topic: String)
-    case subscribeFailure(topic: String, error: Error?)
-    case unsubscribeFailure(topic: String, error: Error?)
+    case subscribeAttempt(topics: [String])
+    case unsubscribeAttempt(topics: [String])
+    case subscribeSuccess(topics: [(topic: String, qos: QoS)], timeTaken: Int)
+    case unsubscribeSuccess(topics: [String], timeTaken: Int)
+    case subscribeFailure(topics: [(topic: String, qos: QoS)], timeTaken: Int, error: Error?)
+    case unsubscribeFailure(topics: [String], timeTaken: Int, error: Error?)
 
     case ping(url: String)
     case pongReceived(timeTaken: Int)

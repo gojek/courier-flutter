@@ -5,10 +5,10 @@ struct MessageAdaptersCoordinator {
 
     let messageAdapters: [MessageAdapter]
 
-    func decodeMessage<D>(_ data: Data) -> D? {
+    func decodeMessage<D>(_ data: Data, topic: String) -> D? {
         for adapter in messageAdapters {
             do {
-                let decoded: D = try adapter.fromMessage(data)
+                let decoded: D = try adapter.fromMessage(data, topic: topic)
                 return decoded
             } catch {
                 printDebug(error.localizedDescription)
@@ -17,9 +17,9 @@ struct MessageAdaptersCoordinator {
         return nil
     }
 
-    func encodeMessage<E>(_ data: E) throws -> Data {
+    func encodeMessage<E>(_ data: E, topic: String) throws -> Data {
         for adapter in messageAdapters {
-            if let encoded = try? adapter.toMessage(data: data) {
+            if let encoded = try? adapter.toMessage(data: data, topic: topic) {
                 return encoded
             }
         }

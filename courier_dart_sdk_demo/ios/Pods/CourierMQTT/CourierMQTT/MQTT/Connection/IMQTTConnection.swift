@@ -12,7 +12,7 @@ protocol IMQTTConnection {
     func disconnect()
 
     func publish(packet: MQTTPacket)
-    func deleteAllPersistedMessages(clientId: String)
+    func deleteAllPersistedMessages()
 
     func subscribe(_ topics: [(topic: String, qos: QoS)])
     func unsubscribe(_ topics: [String])

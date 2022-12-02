@@ -15,8 +15,8 @@ Flutter SDK for Courier
   s.source           = { :path => '.' }
   s.source_files = 'Classes/**/*'
   s.dependency 'Flutter'
-  s.dependency 'CourierCore', '0.0.8'
-  s.dependency 'CourierMQTT', '0.0.8'
+  s.dependency 'CourierCore', '0.0.14'
+  s.dependency 'CourierMQTT', '0.0.14'
   s.platform = :ios, '11.0'
 
   # Flutter.framework does not contain a i386 slice.

@@ -5,13 +5,14 @@ final class MqttMessageReceiverListener: IMessageReceiveListener {
     private var publishSubject: PublishSubject<MQTTPacket>
     private let publishSubjectDispatchQueue: DispatchQueue
     
-    var messagePublisherDict = Atomic<[String: Int]>([:])
+    @Atomic<[String: Int]>([:]) var messagePublisherDict
+
     private let messagePersistence: IncomingMessagePersistenceProtocol
     private let messagePersistenceTTLSeconds: TimeInterval
     private let debouncer: Debouncer
     
     var publisherTopicDict: [String: Int] {
-        messagePublisherDict.value
+        messagePublisherDict
     }
     
     var IsIncomingMessagePersistenceEnabled: Bool {
@@ -33,7 +34,7 @@ final class MqttMessageReceiverListener: IMessageReceiveListener {
     
     func addPublisherDict(topic: String) {
         guard IsIncomingMessagePersistenceEnabled else { return }
-        messagePublisherDict.mutate { dict in
+        _messagePublisherDict.mutate { dict in
             dict[topic, default: 0] += 1
         }
         self.publishSubjectDispatchQueue.async { [weak self] in
@@ -43,7 +44,7 @@ final class MqttMessageReceiverListener: IMessageReceiveListener {
     
     func removePublisherDict(topic: String) {
         guard IsIncomingMessagePersistenceEnabled else { return }
-        messagePublisherDict.mutate { dict in
+        _messagePublisherDict.mutate { dict in
             let value = dict[topic, default: 0]
             if value > 0 {
                 dict[topic, default: 0] -= 1
@@ -91,7 +92,7 @@ final class MqttMessageReceiverListener: IMessageReceiveListener {
     }
     
     private func processMessages() {
-        let topics = Array<String>(self.messagePublisherDict.value.keys)
+        let topics = Array<String>(self.messagePublisherDict.keys)
         let messages = self.messagePersistence.getAllMessages(topics)
         guard messages.count > 0 else {
             printDebug("COURIER Incoming Message - No persisted incoming messages for topics: \(topics)")
@@ -100,7 +101,7 @@ final class MqttMessageReceiverListener: IMessageReceiveListener {
         
         var messageIDsToDelete = [String]()
         for message in messages {
-            if messagePublisherDict.value[message.topic, default: 0] > 0 {
+            if messagePublisherDict[message.topic, default: 0] > 0 {
                 self.publishSubject.onNext(message)
                 messageIDsToDelete.append(message.id)
                 printDebug("COURIER Incoming Message - Message published to subscribers, deleting message. id:\(message.id) topic: \(message.topic)")

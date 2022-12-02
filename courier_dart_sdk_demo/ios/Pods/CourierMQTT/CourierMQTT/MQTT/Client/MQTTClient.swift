@@ -4,11 +4,9 @@ import Reachability
 
 class MQTTClient: IMQTTClient {
     let connection: IMQTTConnection
-    private var _connectOptions = Atomic<ConnectOptions?>(nil)
-    private(set) var connectOptions: ConnectOptions? {
-        get { _connectOptions.value }
-        set { _connectOptions.mutate { $0 = newValue } }
-    }
+
+    @Atomic<ConnectOptions?>(nil) private(set) var connectOptions
+
     private(set) var isInitialized = false
     private let eventHandler: ICourierEventHandler
 
@@ -53,7 +51,9 @@ class MQTTClient: IMQTTClient {
             eventHandler: configuration.eventHandler,
             authFailureHandler: configuration.authFailureHandler,
             connectTimeoutPolicy: configuration.connectTimeoutPolicy,
-            idleActivityTimeoutPolicy: configuration.idleActivityTimeoutPolicy
+            idleActivityTimeoutPolicy: configuration.idleActivityTimeoutPolicy,
+            isPersistent: configuration.isMQTTPersistentEnabled,
+            shouldInitializeCoreDataPersistenceContext: configuration.shouldInitializeCoreDataPersistenceContext
         )
 
         connection = mqttConnectionFactory.makeConnection(connectionConfig: connectionConfig)
@@ -89,8 +89,8 @@ class MQTTClient: IMQTTClient {
         connection.publish(packet: packet)
     }
 
-    func deleteAllPersistedMessages(clientId: String) {
-        connection.deleteAllPersistedMessages(clientId: clientId)
+    func deleteAllPersistedMessages() {
+        connection.deleteAllPersistedMessages()
     }
 
     func subscribe(_ topics: [(topic: String, qos: QoS)]) {

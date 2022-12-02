@@ -1,4 +1,5 @@
 import Foundation
+import CourierCore
 import MQTTClientGJ
 
 protocol IMQTTClientFrameworkFactory {
@@ -8,27 +9,26 @@ protocol IMQTTClientFrameworkFactory {
         dispatchQueue: DispatchQueue,
         delegate: MQTTClientFrameworkSessionManagerDelegate,
         connectTimeoutPolicy: IConnectTimeoutPolicy,
-        idleActivityTimeoutPolicy: IdleActivityTimeoutPolicyProtocol
+        idleActivityTimeoutPolicy: IdleActivityTimeoutPolicyProtocol,
+        eventHandler: ICourierEventHandler
     ) -> IMQTTClientFrameworkSessionManager
 }
 
 struct MQTTClientFrameworkFactory: IMQTTClientFrameworkFactory {
 
-    let isPersistenceEnabled: Bool
-
     func makeSessionManager(connectRetryTimePolicy: IConnectRetryTimePolicy, persistenceFactory: IMQTTPersistenceFactory, dispatchQueue: DispatchQueue, delegate: MQTTClientFrameworkSessionManagerDelegate, connectTimeoutPolicy: IConnectTimeoutPolicy,
-                            idleActivityTimeoutPolicy: IdleActivityTimeoutPolicyProtocol) -> IMQTTClientFrameworkSessionManager {
+                            idleActivityTimeoutPolicy: IdleActivityTimeoutPolicyProtocol, eventHandler: ICourierEventHandler) -> IMQTTClientFrameworkSessionManager {
         guard !MQTTClientcourier.isEmpty else { fatalError("Please use the MQTTClientGJ from courier podspecs") }
 
         let sessionManager = MQTTClientFrameworkSessionManager(
-            persistence: isPersistenceEnabled,
             retryInterval: TimeInterval(connectRetryTimePolicy.autoReconnectInterval),
             maxRetryInterval: TimeInterval(connectRetryTimePolicy.maxAutoReconnectInterval),
             streamSSLLevel: kCFStreamSocketSecurityLevelNegotiatedSSL as String,
             queue: dispatchQueue,
             mqttPersistenceFactory: persistenceFactory,
             connectTimeoutPolicy: connectTimeoutPolicy,
-            idleActivityTimeoutPolicy: idleActivityTimeoutPolicy
+            idleActivityTimeoutPolicy: idleActivityTimeoutPolicy,
+            eventHandler: eventHandler
         )
         sessionManager.delegate = delegate
 
