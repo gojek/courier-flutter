@@ -24,16 +24,6 @@ final class EventHandler: ICourierEventHandler {
     
     private func handleCourierEvent(_ event: CourierEvent) {
         var eventMap = Dictionary<String, Any>()
-        if let connectionInfo =
-            event.connectionInfo {
-            eventMap["connectionInfo"] = [
-                "host": connectionInfo.host,
-                "port": Int(connectionInfo.port),
-                "keepAlive": Int(connectionInfo.keepAlive),
-                "clientId": connectionInfo.clientId,
-                "username": connectionInfo.username
-            ]
-        }
         switch event.type {
         case .connectedPacketSent:
             os_log("Courier event: Connect Packet Send event")
@@ -87,7 +77,7 @@ final class EventHandler: ICourierEventHandler {
                 var eventMap = [String: Any]()
                 eventMap["name"] = "Mqtt Subscribe Attempt"
                 eventMap["properties"] = ["topic": topic]
-                handler(eventMap)
+                injectConnectionInfoAndSendEvent(eventMap: eventMap, event: event)
             }
             return
             
@@ -97,7 +87,7 @@ final class EventHandler: ICourierEventHandler {
                 var eventMap = [String: Any]()
                 eventMap["name"] = "Mqtt Unsubscribe Attempt"
                 eventMap["properties"] = ["topic": topic]
-                handler(eventMap)
+                injectConnectionInfoAndSendEvent(eventMap: eventMap, event: event)
             }
             return
             
@@ -111,7 +101,7 @@ final class EventHandler: ICourierEventHandler {
                     "qos": topic.qos.rawValue,
                     "timeTaken": timeTaken
                 ]
-                handler(eventMap)
+                injectConnectionInfoAndSendEvent(eventMap: eventMap, event: event)
             }
             return
             
@@ -124,7 +114,7 @@ final class EventHandler: ICourierEventHandler {
                     "topic": topic,
                     "timeTaken": timeTaken
                 ]
-                handler(eventMap)
+                injectConnectionInfoAndSendEvent(eventMap: eventMap, event: event)
             }
             return
                         
@@ -139,7 +129,7 @@ final class EventHandler: ICourierEventHandler {
                     "timeTaken": timeTaken,
                     "reason": (error as? NSError)?.code ?? 0
                 ]
-                handler(eventMap)
+                injectConnectionInfoAndSendEvent(eventMap: eventMap, event: event)
             }
             return
             
@@ -153,7 +143,7 @@ final class EventHandler: ICourierEventHandler {
                     "timeTaken": timeTaken,
                     "reason": (error as? NSError)?.code ?? 0
                 ]
-                handler(eventMap)
+                injectConnectionInfoAndSendEvent(eventMap: eventMap, event: event)
             }
             return
         
@@ -217,7 +207,26 @@ final class EventHandler: ICourierEventHandler {
         default:
             os_log("Courier event: Unhandled event")
         }
-        handler(eventMap)
+        injectConnectionInfoAndSendEvent(eventMap: eventMap, event: event)
+    }
+    
+    private func injectConnectionInfoAndSendEvent(eventMap: [String: Any], event: CourierEvent) {
+        if var props = eventMap["properties"] as? [String: Any],
+           let connectionInfo =
+            event.connectionInfo {
+            props["connectionInfo"] = [
+                "host": connectionInfo.host,
+                "port": Int(connectionInfo.port),
+                "keepAlive": Int(connectionInfo.keepAlive),
+                "clientId": connectionInfo.clientId,
+                "username": connectionInfo.username
+            ]
+            var eventMap = eventMap
+            eventMap["properties"] = props
+            handler(eventMap)
+        } else {
+            handler(eventMap)
+        }
     }
     
     func reset() {}
