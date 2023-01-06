@@ -49,7 +49,7 @@ packages:
       path: "../courier_dart_sdk"
       relative: true
     source: path
-    version: "0.0.3"
+    version: "0.0.4"
   cupertino_icons:
     dependency: "direct main"
     description:

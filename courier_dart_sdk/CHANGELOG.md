@@ -1,3 +1,6 @@
+## 0.0.5
+* Add try catch when logging handle message using UTF-8 decode 
+
 ## 0.0.4
 * Adds more events and props to the Courier Events for each Android and iOS SDK
 * Bump Courier iOS dependency to 0.0.14
