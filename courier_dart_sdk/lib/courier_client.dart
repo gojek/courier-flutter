@@ -216,7 +216,12 @@ class _CourierClientImpl implements CourierClient {
     Uint8List bytes = (arguments)["message"] as Uint8List;
     String topic = (arguments)["topic"] as String;
 
-    log('Message receive: ${utf8.decode(bytes)} on topic: $topic');
+    try {
+      log('Message receive: ${utf8.decode(bytes)} on topic: $topic');
+    } on Exception catch (e) {
+      log('Message receive: failed to decode using utf 8');
+    }
+
     messageStreamController
         .add(CourierMessage(bytes: bytes, topic: topic, qos: QoS.zero));
   }
