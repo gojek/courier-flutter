@@ -1,27 +1,37 @@
 PODS:
   - courier_dart_sdk (0.0.1):
-    - CourierCore (= 0.0.14)
-    - CourierMQTT (= 0.0.14)
+    - CourierCore (= 0.0.17)
+    - CourierMQTT (= 0.0.17)
+    - CourierMQTTChuck (= 0.0.17)
     - Flutter
-  - CourierCore (0.0.14)
-  - CourierMQTT (0.0.14):
-    - CourierCore (= 0.0.14)
-    - MQTTClientGJ (= 0.0.14)
+  - CourierCore (0.0.17)
+  - CourierMQTT (0.0.17):
+    - CourierCore (= 0.0.17)
+    - MQTTClientGJ (= 0.0.17)
     - ReachabilitySwift (= 5.0.0)
+  - CourierMQTTChuck (0.0.17):
+    - CourierCore (= 0.0.17)
+    - CourierMQTT (= 0.0.17)
+    - MQTTClientGJ (= 0.0.17)
   - Flutter (1.0.0)
-  - MQTTClientGJ (0.0.14)
+  - MQTTClientGJ (0.0.17)
+  - permission_handler_apple (9.0.4):
+    - Flutter
   - ReachabilitySwift (5.0.0)
 
 DEPENDENCIES:
   - courier_dart_sdk (from `.symlinks/plugins/courier_dart_sdk/ios`)
-  - CourierCore (= 0.0.14)
-  - CourierMQTT (= 0.0.14)
+  - CourierCore (= 0.0.17)
+  - CourierMQTT (= 0.0.17)
+  - CourierMQTTChuck (= 0.0.17)
   - Flutter (from `Flutter`)
+  - permission_handler_apple (from `.symlinks/plugins/permission_handler_apple/ios`)
 
 SPEC REPOS:
   trunk:
     - CourierCore
     - CourierMQTT
+    - CourierMQTTChuck
     - MQTTClientGJ
     - ReachabilitySwift
 
@@ -30,15 +40,19 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/courier_dart_sdk/ios"
   Flutter:
     :path: Flutter
+  permission_handler_apple:
+    :path: ".symlinks/plugins/permission_handler_apple/ios"
 
 SPEC CHECKSUMS:
-  courier_dart_sdk: 9c564159c38a58550f99e4bbe19aa852b8502150
-  CourierCore: 033d0794b0cf51b2159ff99e9e332ccfc60ab13d
-  CourierMQTT: 5dfc46980b7e893174433f0c67253e92fc8dd512
+  courier_dart_sdk: d6a793b0a344d201c9c0067cfdd266eab3015d60
+  CourierCore: 5561c7ff8fdd9b722bedf06a290be2f7e9242f80
+  CourierMQTT: 40ca2bde67a0a5c9c222c3e972861b34611907b8
+  CourierMQTTChuck: 970cd9893626cea84b0ebbd2db55533d356c7258
   Flutter: f04841e97a9d0b0a8025694d0796dd46242b2854
-  MQTTClientGJ: c41561120a031c5f9695412ee18f0082e8868a7f
+  MQTTClientGJ: 2da01c1669f12cab46e2ddb0eb26e8b4cf54fe9c
+  permission_handler_apple: 44366e37eaf29454a1e7b1b7d736c2cceaeb17ce
   ReachabilitySwift: 985039c6f7b23a1da463388634119492ff86c825
 
-PODFILE CHECKSUM: 94531fba28bdd69fc3bdaad505665de7131764ac
+PODFILE CHECKSUM: 7823e7dbc8d68e98861310540a3c95fc601af27e
 
-COCOAPODS: 1.11.3
+COCOAPODS: 1.12.0

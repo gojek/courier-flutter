@@ -114,12 +114,6 @@ class MQTTClientFrameworkSessionManager: NSObject, IMQTTClientFrameworkSessionMa
         self.eventHandler = eventHandler
         
         super.init()
-        if let coreDataPersistence = persistence as? MQTTCoreDataPersistence,
-           let persistenceFactory = mqttPersistenceFactory as? MQTTPersistenceFactory,
-           persistenceFactory.shouldInitializeCoreDataPersistenceContext {
-            queue.async { coreDataPersistence.initializeManagedObjectContext() }
-        }
-
         self.updateState(to: .starting)
         self.reconnectTimer = ReconnectTimer(retryInterval: retryInterval, maxRetryInterval: maxRetryInterval, queue: queue, reconnect: { [weak self] in
             self?.reconnect()
@@ -299,27 +293,24 @@ class MQTTClientFrameworkSessionManager: NSObject, IMQTTClientFrameworkSessionMa
     }
 
     func subscribe(_ topics: [(topic: String, qos: QoS)]) {
-        var topicsDict = [String: NSNumber]()
-        var eventTopics: [String] = []
-        topics.forEach { topicQoS in
-            eventTopics.append(topicQoS.topic)
-            topicsDict[topicQoS.topic] = NSNumber(value: topicQoS.qos.rawValue)
-        }
-
         let connectOptions = self.connectOptions
-        let attemptTimestamp = Date()
-        eventHandler.onEvent(.init(connectionInfo: connectOptions, event: .subscribeAttempt(topics: eventTopics)))
-        session?.subscribe(toTopics: topicsDict, subscribeHandler: { [weak self] (error, _) in
-            guard let self = self else { return }
-            let topicsArray = topics.map { $0.topic }
-            if let error = error {
-                self.eventHandler.onEvent(.init(connectionInfo: connectOptions, event: .subscribeFailure(topics: topics, timeTaken: attemptTimestamp.timeTaken, error: error)))
-                self.delegate?.sessionManager(self, didFailToSubscribeTopics: topicsArray, error: error)
-            } else {
-                self.eventHandler.onEvent(.init(connectionInfo: connectOptions, event: .subscribeSuccess(topics: topics, timeTaken: attemptTimestamp.timeTaken)))
-                self.delegate?.sessionManager(self, didSubscribeTopics: topicsArray)
-            }
-        })
+        topics.forEach { topic, qos in
+            let attemptTimestamp = Date()
+            self.eventHandler.onEvent(.init(connectionInfo: connectOptions, event: .subscribeAttempt(topics: [topic])))
+            session?.subscribe(toTopics: [topic: NSNumber(value: qos.rawValue)], subscribeHandler: { [weak self] (error, responseCodes) in
+                guard let self = self else { return }
+                if let error = error {
+                    self.eventHandler.onEvent(.init(connectionInfo: connectOptions, event: .subscribeFailure(topics: [(topic, qos)], timeTaken: attemptTimestamp.timeTaken, error: error)))
+                    self.delegate?.sessionManager(self, didFailToSubscribeTopics: [topic], error: error)
+                } else if let responseCode = responseCodes?.first, responseCode == 128 {
+                    self.eventHandler.onEvent(.init(connectionInfo: connectOptions, event: .subscribeFailure(topics: [(topic, qos)], timeTaken: attemptTimestamp.timeTaken, error: CourierError.subackFail128)))
+                    self.delegate?.sessionManager(self, didFailToSubscribeTopics: [topic], error: CourierError.subackFail128)
+                } else {
+                    self.eventHandler.onEvent(.init(connectionInfo: connectOptions, event: .subscribeSuccess(topics: [(topic, qos)], timeTaken: attemptTimestamp.timeTaken)))
+                    self.delegate?.sessionManager(self, didSubscribeTopics: [topic])
+                }
+            })
+        }
     }
 
     func unsubscribe(_ topics: [String]) {
@@ -401,6 +392,23 @@ extension MQTTClientFrameworkSessionManager: MQTTSessionDelegate {
 
     func sending(_ session: MQTTSession!, type: MQTTCommandType, qos: MQTTQosLevel, retained: Bool, duped: Bool, mid: UInt16, data: Data!) {
         printDebug("MQTT - COURIER: Sending MQTT Command \(type.debugDescription)")
+        if CourierMQTTChuck.isEnabled {
+            var userInfo: [String: Any] = [
+                "type": type.rawValue,
+                "qos": qos.rawValue,
+                "retained": retained,
+                "duped": duped,
+                "mid": mid,
+                "sending": true,
+                "received": false,
+            ]
+            
+            if let data = data {
+                userInfo["data"] = data
+            }
+            NotificationCenter.default.post(name: mqttChuckNotification, object: nil, userInfo: userInfo)
+        }
+                
         switch type {
         case .connect:
             delegate?.sessionManagerDidSendConnectPacket(self)
@@ -413,6 +421,23 @@ extension MQTTClientFrameworkSessionManager: MQTTSessionDelegate {
 
     func received(_ session: MQTTSession!, type: MQTTCommandType, qos: MQTTQosLevel, retained: Bool, duped: Bool, mid: UInt16, data: Data!) {
         printDebug("MQTT - COURIER: Received MQTT Command \(type.debugDescription)")
+        if CourierMQTTChuck.isEnabled {
+            var userInfo: [String: Any] = [
+                "type": type.rawValue,
+                "qos": qos.rawValue,
+                "retained": retained,
+                "duped": duped,
+                "mid": mid,
+                "sending": false,
+                "received": true,
+            ]
+            
+            if let data = data {
+                userInfo["data"] = data
+            }
+            NotificationCenter.default.post(name: mqttChuckNotification, object: nil, userInfo: userInfo)
+        }
+        
         switch type {
         case .pingresp:
             delegate?.sessionManagerDidReceivePong(self)

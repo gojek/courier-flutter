@@ -14,19 +14,20 @@ class CourierConfiguration {
   final ConnectRetryPolicyConfig connectRetryPolicyConfig;
   final ConnectTimeoutConfig connectTimeoutConfig;
   final AuthRetryPolicy authRetryPolicy;
+  final bool enableMQTTChuck;
 
-  CourierConfiguration({
-    required this.tokenApi,
-    required this.authResponseMapper,
-    required this.authRetryPolicy,
-    this.timerPingSenderEnabled = true,
-    this.activityCheckIntervalSeconds = 12,
-    this.inactivityTimeoutSeconds = 10,
-    this.readTimeoutSeconds = 40,
-    this.disconnectDelaySeconds = 0,
-    this.connectRetryPolicyConfig = const ConnectRetryPolicyConfig(),
-    this.connectTimeoutConfig = const ConnectTimeoutConfig(),
-  });
+  CourierConfiguration(
+      {required this.tokenApi,
+      required this.authResponseMapper,
+      required this.authRetryPolicy,
+      this.timerPingSenderEnabled = true,
+      this.activityCheckIntervalSeconds = 12,
+      this.inactivityTimeoutSeconds = 10,
+      this.readTimeoutSeconds = 40,
+      this.disconnectDelaySeconds = 0,
+      this.connectRetryPolicyConfig = const ConnectRetryPolicyConfig(),
+      this.connectTimeoutConfig = const ConnectTimeoutConfig(),
+      this.enableMQTTChuck = false});
 
   Map<String, dynamic> convertToMap() {
     return {
@@ -37,6 +38,7 @@ class CourierConfiguration {
       "disconnectDelaySeconds": disconnectDelaySeconds,
       "connectRetryPolicyConfig": connectRetryPolicyConfig.convertToMap(),
       "connectTimeoutConfig": connectTimeoutConfig.convertToMap(),
+      "enableMQTTChuck": enableMQTTChuck
     };
   }
 }

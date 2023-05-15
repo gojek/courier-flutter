@@ -13,8 +13,7 @@ struct MQTTClientFrameworkConnectionFactory: IMQTTConnectionFactory {
         MQTTClientFrameworkConnection(connectionConfig: connectionConfig,
                                       clientFactory: clientFactory,
                                       persistenceFactory: MQTTPersistenceFactory(
-                                        isPersistent: connectionConfig.isPersistent,
-                                        shouldInitializeCoreDataPersistenceContext: connectionConfig.shouldInitializeCoreDataPersistenceContext))
+                                        isPersistent: connectionConfig.isPersistent))
     }
 
 }

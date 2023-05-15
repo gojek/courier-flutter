@@ -9,7 +9,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:4.1.0'
+        classpath 'com.android.tools.build:gradle:7.2.0'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
@@ -54,4 +54,5 @@ dependencies {
     implementation "com.gojek.courier:mqtt-client:$courier_version"
     implementation "com.gojek.courier:timer-pingsender:$courier_version"
     implementation "com.gojek.courier:alarm-pingsender:$courier_version"
+    implementation "com.gojek.courier:chuck-mqtt:$courier_version"
 }

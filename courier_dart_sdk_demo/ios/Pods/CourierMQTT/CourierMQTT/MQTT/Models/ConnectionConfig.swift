@@ -9,5 +9,4 @@ struct ConnectionConfig {
     var idleActivityTimeoutPolicy: IdleActivityTimeoutPolicyProtocol
     
     var isPersistent: Bool
-    var shouldInitializeCoreDataPersistenceContext: Bool
 }

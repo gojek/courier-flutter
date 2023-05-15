@@ -17,6 +17,9 @@ public class SwiftCourierDartSdkPlugin: NSObject, FlutterPlugin {
 
         let instance = SwiftCourierDartSdkPlugin(channel: channel)
         registrar.addMethodCallDelegate(instance, channel: channel)
+
+        let factory = MQTTChuckViewFactory(messenger: registrar.messenger())
+        registrar.register(factory, withId: "mqtt-chuck-view")
     }
 
     public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {

@@ -10,7 +10,6 @@ struct MQTTConfiguration: IMQTTConfiguration {
     var messagePersistenceTTLSeconds: TimeInterval
     var messageCleanupInterval: TimeInterval
     var isMQTTPersistentEnabled: Bool
-    var shouldInitializeCoreDataPersistenceContext: Bool
 
     init(connectRetryTimePolicy: IConnectRetryTimePolicy = ConnectRetryTimePolicy(),
          connectTimeoutPolicy: IConnectTimeoutPolicy = ConnectTimeoutPolicy(),
@@ -19,8 +18,7 @@ struct MQTTConfiguration: IMQTTConfiguration {
          eventHandler: ICourierEventHandler,
          messagePersistenceTTLSeconds: TimeInterval = 0,
          messageCleanupInterval: TimeInterval = 10,
-         isMQTTPersistentEnabled: Bool,
-         shouldInitializeCoreDataPersistenceContext: Bool) {
+         isMQTTPersistentEnabled: Bool) {
         self.connectRetryTimePolicy = connectRetryTimePolicy
         self.connectTimeoutPolicy = connectTimeoutPolicy
         self.idleActivityTimeoutPolicy = idleActivityTimeoutPolicy
@@ -29,6 +27,5 @@ struct MQTTConfiguration: IMQTTConfiguration {
         self.messagePersistenceTTLSeconds = messagePersistenceTTLSeconds
         self.messageCleanupInterval = messageCleanupInterval
         self.isMQTTPersistentEnabled = isMQTTPersistentEnabled
-        self.shouldInitializeCoreDataPersistenceContext = shouldInitializeCoreDataPersistenceContext
     }
 }

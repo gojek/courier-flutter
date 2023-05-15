@@ -66,8 +66,7 @@ class MQTTCourierClient: CourierClient {
             eventHandler: courierEventHandler,
             messagePersistenceTTLSeconds: config.messagePersistenceTTLSeconds,
             messageCleanupInterval: config.messageCleanupInterval,
-            isMQTTPersistentEnabled: config.isMessagePersistenceEnabled,
-            shouldInitializeCoreDataPersistenceContext: config.shouldInitializeCoreDataPersistenceContext)
+            isMQTTPersistentEnabled: config.isMessagePersistenceEnabled)
 
         let reachability = try? Reachability()
         self.client = mqttClientFactory.makeClient(configuration: configuration, reachability: reachability, dispatchQueue: dispatchQueue)
@@ -108,21 +107,25 @@ class MQTTCourierClient: CourierClient {
             authenticationTimeoutTimer?.schedule()
 
             self.connectionServiceProvider.getConnectOptions { [weak self] result in
-                guard let self = self else { return }
-                isGettingConnectOptionsCompleted = true
-                self.authenticationTimeoutTimer?.stop()
-                self.authenticationTimeoutTimer = nil
-                self.isAuthenticating = false
-                if self.isDestroyed {
-                    self.courierEventHandler.onEvent(.init(connectionInfo: self.client.connectOptions, event: .connectDiscarded(reason: "Courier client is destroyed")))
-                    return
+                self?.dispatchQueue.async {
+                    guard let self = self else { return }
+                    isGettingConnectOptionsCompleted = true
+                    self.authenticationTimeoutTimer?.stop()
+                    self.authenticationTimeoutTimer = nil
+                    self.isAuthenticating = false
+                    if self.isDestroyed {
+                        self.courierEventHandler.onEvent(.init(connectionInfo: self.client.connectOptions, event: .connectDiscarded(reason: "Courier client is destroyed")))
+                        return
+                    }
+                    self.handleAuthenticationResult(result)
                 }
-                self.handleAuthenticationResult(result)
             }
         } else {
             connectionServiceProvider.getConnectOptions { [weak self] result in
-                self?.isAuthenticating = false
-                self?.handleAuthenticationResult(result)
+                self?.dispatchQueue.async {
+                    self?.isAuthenticating = false
+                    self?.handleAuthenticationResult(result)
+                }
             }
         }
     }

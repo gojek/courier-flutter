@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 
+import 'package:courier_dart_sdk/chuck/mqtt_chuck_view.dart';
 import 'package:courier_dart_sdk/courier_client.dart';
 import 'package:courier_dart_sdk/config/courier_configuration.dart';
 import 'package:courier_dart_sdk/default_auth_retry_policy.dart';
@@ -8,6 +9,8 @@ import 'package:courier_dart_sdk_demo/courier_response_mapper.dart';
 import 'package:courier_dart_sdk_demo/test_data_type.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 void main() {
   runApp(MyApp());
@@ -50,7 +53,8 @@ class MyHomePage extends StatelessWidget {
 
   final String title;
 
-  static const apiUrl = "https://run.mocky.io/v3/93166bd2-3cbe-46a2-9a0f-0a3dce1ad304";
+  static const apiUrl =
+      "https://run.mocky.io/v3/93166bd2-3cbe-46a2-9a0f-0a3dce1ad304";
 
   final CourierClient courierClient = CourierClient.create(
       dio: Dio(),
@@ -60,8 +64,7 @@ class MyHomePage extends StatelessWidget {
           authRetryPolicy: DefaultAuthRetryPolicy(),
           readTimeoutSeconds: 60,
           disconnectDelaySeconds: 10,
-      )
-  );
+          enableMQTTChuck: true));
 
   String textMessage = "";
 
@@ -76,27 +79,31 @@ class MyHomePage extends StatelessWidget {
   TestData testDataDecoder(Uint8List bytes) => TestData.fromBytes(bytes);
 
   void _onSubscribe() {
-    courierClient.subscribe("orders/6b57d4e5-0fce-4917-b343-c8a1c77405e5/update", QoS.one);
-    courierClient.subscribe("orders/6b57d4e5-0fce-4917-b343-c8a1c77405e5/update/foreground", QoS.one);
-    courierClient.courierMessageStream("orders/6b57d4e5-0fce-4917-b343-c8a1c77405e5/update").listen((event) {
+    courierClient.subscribe(
+        "orders/6b57d4e5-0fce-4917-b343-c8a1c77405e5/update", QoS.one);
+    courierClient.subscribe(
+        "orders/6b57d4e5-0fce-4917-b343-c8a1c77405e5/update/foreground",
+        QoS.one);
+    courierClient
+        .courierMessageStream(
+            "orders/6b57d4e5-0fce-4917-b343-c8a1c77405e5/update")
+        .listen((event) {
       print("Message received: ${testDataDecoder(event)}");
     });
   }
 
   void _onUnsubscribe() {
-    courierClient.unsubscribe("orders/6b57d4e5-0fce-4917-b343-c8a1c77405e5/update");
+    courierClient
+        .unsubscribe("orders/6b57d4e5-0fce-4917-b343-c8a1c77405e5/update");
   }
 
   Uint8List testDataEncoder(TestData testData) => testData.toBytes();
 
   void _onSend() {
-    courierClient.publishCourierMessage(
-        CourierMessage(
-            bytes: testDataEncoder(TestData(textMessage)),
-            topic: "orders/6b57d4e5-0fce-4917-b343-c8a1c77405e5/update",
-            qos: QoS.one
-        )
-    );
+    courierClient.publishCourierMessage(CourierMessage(
+        bytes: testDataEncoder(TestData(textMessage)),
+        topic: "orders/6b57d4e5-0fce-4917-b343-c8a1c77405e5/update",
+        qos: QoS.one));
   }
 
   @override
@@ -166,7 +173,31 @@ class MyHomePage extends StatelessWidget {
                   child: Text('Unsubscribe'),
                 ),
               ],
-            )
+            ),
+            const SizedBox(
+              height: 64,
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const MQTTChuckView()),
+                );
+              },
+              child: const Text('MQTT Chuck'),
+            ),
+            if (defaultTargetPlatform == TargetPlatform.android)
+              ElevatedButton(
+                onPressed: () async {
+                  Map<Permission, PermissionStatus> statuses = await [
+                    Permission.notification,
+                  ].request();
+
+                  print(statuses);
+                },
+                child: const Text('Request Notification Permission'),
+              )
           ],
         ),
       ),

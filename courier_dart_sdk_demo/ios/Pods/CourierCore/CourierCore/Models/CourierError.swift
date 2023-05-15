@@ -10,6 +10,7 @@ public enum CourierError: Int, Error, LocalizedError {
     case encodingError
     case connectOptionsNilError
     case messageSaveError
+    case subackFail128
     case otherError
 
     public var errorDescription: String? {
@@ -26,6 +27,8 @@ public enum CourierError: Int, Error, LocalizedError {
             return "Connect options nil error"
         case .messageSaveError:
             return "Failed to save incoming message"
+        case .subackFail128:
+            return "Suback Failed with 128 response code"
         case .otherError:
             return "An error occured"
         }
