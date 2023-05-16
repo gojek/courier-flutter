@@ -155,7 +155,7 @@ class CourierDartSdkPlugin: FlutterPlugin, MethodCallHandler {
         clientId = arguments["clientId"]!! as String,
         username = arguments["username"]!! as String,
         password = arguments["password"]!! as String,
-        serverUris = listOf(ServerUri(arguments["host"]!! as String, arguments["port"] as Int, "tcp")),
+        serverUris = listOf(ServerUri(arguments["host"]!! as String, arguments["port"] as Int, arguments["scheme"]!! as String)),
         keepAlive = KeepAlive(arguments["keepAliveSeconds"] as Int),
         isCleanSession = arguments["cleanSession"]!! as Boolean,
         readTimeoutSecs = readTimeoutSeconds
