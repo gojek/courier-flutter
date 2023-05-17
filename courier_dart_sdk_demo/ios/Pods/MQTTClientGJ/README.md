@@ -40,21 +40,32 @@ You can run the sample App to connect to any broker that you can configure. Sele
 
 ### Installation
 
-Courier uses Cocoapods for adding it as a dependency to a project in a `Podfile`. It is separated into 5 modules:
+Courier supports both Cocoapods and SPM for dependency manager. It is separated into 5 modules:
 - `CourierCore`: Contains public APIs such as protocols and data types for Courier. Other modules have basic dependency on this module. You can use this module if you want to implement the interface in your project without adding Courier implementation in your project.
 - `CourierMQTT`: Contains implementation of `CourierClient` and `CourierSession` using `MQTT`. This module has dependency to `MQTTClientGJ`.
 - `MQTTClientGJ`: A forked version of open source library [MQTT-Client-Framework](https://github.com/novastone-media/MQTT-Client-Framework). It add several features such as connect and inactivity timeout. It also fixes race condition crashes in `MQTTSocketEncoder` and `Connack` status 5 not completing the decode before `MQTTTransportDidClose` got invoked bugs.
 - `CourierProtobuf`: Contains implementation of `ProtobufMessageAdapter` using `Protofobuf`. It has dependency to `SwiftProtobuf` library, this is `optional` and can be used if you are using protobuf for data serialization.
+- `CourierMQTTChuck`: Can be ussed to inspects all the outgoing or incoming packets for an underlying MQTT connection. It intercepts all the packets, persisting them and providing a UI for accessing all the MQTT packets sent or received. It also provides multiple other features like search, share, and clear data. Uses `SwiftUI` under the hood.
 
-
+### Cocoapods
 ```ruby
 // Podfile
 target 'Example-App' do
   use_frameworks!
   pod 'CourierCore'
   pod 'CourierMQTT'
-  pod 'CourierProtobuf'
+  pod 'CourierProtobuf' #optional
+  pod 'CourierMQTTChuck' #optional
 end
+```
+
+### Swift Package Manager (SPM)
+Simply add the package dependency to your Package.swift and depend on `CourierCore` and `CourierMQTT` in the necessary targets:
+
+```swift
+dependencies: [
+    .package(url: "https://github.com/gojek/courier-iOS", branch: "main")
+]
 ```
 
 ### Implement IConnectionServiceProvider to provide ConnectOptions for Authentication
@@ -254,6 +265,38 @@ Finally, make sure to have strong reference to the instance, and invoke `Courier
 
 ```swift
 courierClient.addEventHandler(analytics)
+```
+
+## Monitoring Courier MQTT Packets Log
+
+`CourierMQTTChuck` is used to inspects all the outgoing or incoming packets for an underlying MQTT connection.
+
+It intercepts all the packets, persisting them and providing a UI for accessing all the MQTT packets sent or received. It also provides multiple other features like search, share, and clear data.
+
+It uses SwiftUI under the hood with minimum iOS deployment version of 15, you can still build this on iOS 11 to access the logger without the view.
+
+![Simulator Screen Shot - iPhone 14 Pro - 2023-04-10 at 17 26 54](https://user-images.githubusercontent.com/6789991/230884730-6734de28-ead7-44a4-a467-9c008de22392.png)
+
+![Simulator Screen Shot - iPhone 14 Pro - 2023-04-10 at 17 27 31](https://user-images.githubusercontent.com/6789991/230884765-7e822e54-1c2e-44aa-9169-6572c5c612c6.png)
+
+### Usage
+
+Add Dependency to `CourierMQTTChuck` and simply declare the logger like so:
+
+```swift
+import CourierMQTTChuck
+
+let logger = MQTTChuckLogger()
+```
+
+Then Declare the `MQTTChuckView` passing the `logger` in SwiftUI View.
+
+```swift
+.sheet(isPresented: $showChuckView, content: {
+            NavigationView {
+                MQTTChuckView(logger: logger)
+            }
+        })
 ```
 
 ## Contribution Guidelines

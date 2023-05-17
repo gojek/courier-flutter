@@ -8,15 +8,13 @@ protocol IMQTTPersistenceFactory {
 struct MQTTPersistenceFactory: IMQTTPersistenceFactory {
 
     let isPersistent: Bool
-    let shouldInitializeCoreDataPersistenceContext: Bool
 
     private let maxWindowSize: Int = 16
     private let maxMessages: Int = 5000
     private let maxSize: Int = 128 * 1024 * 1024
     
-    init(isPersistent: Bool = false, shouldInitializeCoreDataPersistenceContext: Bool = true) {
+    init(isPersistent: Bool = false) {
         self.isPersistent = isPersistent
-        self.shouldInitializeCoreDataPersistenceContext = shouldInitializeCoreDataPersistenceContext
     }
     
     func makePersistence() -> MQTTPersistence {

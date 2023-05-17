@@ -178,6 +178,7 @@ code_sign_if_enabled() {
 if [[ "$CONFIGURATION" == "Debug" ]]; then
   install_framework "${BUILT_PRODUCTS_DIR}/CourierCore/CourierCore.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/CourierMQTT/CourierMQTT.framework"
+  install_framework "${BUILT_PRODUCTS_DIR}/CourierMQTTChuck/CourierMQTTChuck.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/MQTTClientGJ/MQTTClientGJ.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/ReachabilitySwift/Reachability.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/courier_dart_sdk/courier_dart_sdk.framework"
@@ -185,6 +186,7 @@ fi
 if [[ "$CONFIGURATION" == "Profile" ]]; then
   install_framework "${BUILT_PRODUCTS_DIR}/CourierCore/CourierCore.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/CourierMQTT/CourierMQTT.framework"
+  install_framework "${BUILT_PRODUCTS_DIR}/CourierMQTTChuck/CourierMQTTChuck.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/MQTTClientGJ/MQTTClientGJ.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/ReachabilitySwift/Reachability.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/courier_dart_sdk/courier_dart_sdk.framework"
@@ -192,6 +194,7 @@ fi
 if [[ "$CONFIGURATION" == "Release" ]]; then
   install_framework "${BUILT_PRODUCTS_DIR}/CourierCore/CourierCore.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/CourierMQTT/CourierMQTT.framework"
+  install_framework "${BUILT_PRODUCTS_DIR}/CourierMQTTChuck/CourierMQTTChuck.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/MQTTClientGJ/MQTTClientGJ.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/ReachabilitySwift/Reachability.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/courier_dart_sdk/courier_dart_sdk.framework"

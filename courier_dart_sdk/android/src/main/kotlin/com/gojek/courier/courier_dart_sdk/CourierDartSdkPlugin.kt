@@ -7,6 +7,8 @@ import android.util.Log
 import androidx.annotation.NonNull
 import com.gojek.alarm.pingsender.AlarmPingSenderConfig
 import com.gojek.alarm.pingsender.AlarmPingSenderFactory
+import com.gojek.chuckmqtt.external.MqttChuckConfig
+import com.gojek.chuckmqtt.external.MqttChuckInterceptor
 import com.gojek.courier.Message
 import com.gojek.courier.courier_dart_sdk.internal.MqttClientDelegate
 import com.gojek.courier.courier_dart_sdk.internal.event.MqttEventHandler
@@ -100,6 +102,12 @@ class CourierDartSdkPlugin: FlutterPlugin, MethodCallHandler {
     val connectRetryPolicyConfig = arguments["connectRetryPolicyConfig"]!! as Map<String, Any>
     val connectTimeoutPolicyConfig = arguments["connectTimeoutConfig"]!! as Map<String, Any>
 
+    val enableMqttChuck = if (arguments["enableMQTTChuck"] is Boolean) {
+        arguments["enableMQTTChuck"]!! as Boolean
+    } else {
+        false
+    }
+
     readTimeoutSeconds = arguments["readTimeoutSeconds"]!! as Int
     disconnectDelaySeconds = arguments["disconnectDelaySeconds"]!! as Int
 
@@ -122,7 +130,7 @@ class CourierDartSdkPlugin: FlutterPlugin, MethodCallHandler {
             inactivityTimeoutSeconds = inactivityTimeoutSeconds,
         ),
         pingSender = pingSender,
-        mqttInterceptorList = emptyList(),
+        mqttInterceptorList = if (enableMqttChuck) listOf(MqttChuckInterceptor(context, MqttChuckConfig())) else emptyList(),
         eventHandler = MqttEventHandler(::handleEvent),
         authFailureHandler = object : AuthFailureHandler {
           override fun handleAuthFailure() {
@@ -147,7 +155,7 @@ class CourierDartSdkPlugin: FlutterPlugin, MethodCallHandler {
         clientId = arguments["clientId"]!! as String,
         username = arguments["username"]!! as String,
         password = arguments["password"]!! as String,
-        serverUris = listOf(ServerUri(arguments["host"]!! as String, arguments["port"] as Int)),
+        serverUris = listOf(ServerUri(arguments["host"]!! as String, arguments["port"] as Int, arguments["scheme"]!! as String)),
         keepAlive = KeepAlive(arguments["keepAliveSeconds"] as Int),
         isCleanSession = arguments["cleanSession"]!! as Boolean,
         readTimeoutSecs = readTimeoutSeconds
