@@ -36,7 +36,8 @@
         "Message QoS",
         "Subscribe & Receive Message",
         "Publish Message",
-        "Event Handling"
+        "Event Handling",
+        "MQTT Chuck"
         ],
     },
     {

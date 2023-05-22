@@ -1,3 +1,6 @@
+## 0.0.6
+* Add MQTT Chuck Logs for mqtt packets.
+
 ## 0.0.5
 * Add try catch when logging handle message using UTF-8 decode 
 
