@@ -54,5 +54,17 @@ dependencies {
     implementation "com.gojek.courier:mqtt-client:$courier_version"
     implementation "com.gojek.courier:timer-pingsender:$courier_version"
     implementation "com.gojek.courier:alarm-pingsender:$courier_version"
-    implementation "com.gojek.courier:chuck-mqtt:$courier_version"
+    
+    def is_production_flavor = false
+    gradle.startParameter.getTaskNames().each { task -> 
+        if (task.toLowerCase().contains("production")) {
+            is_production_flavor = true 
+        } 
+    }
+
+    if (is_production_flavor) {
+        implementation "com.gojek.courier:chuck-mqtt-no-ops:$courier_version"
+    } else {
+        implementation "com.gojek.courier:chuck-mqtt:$courier_version"
+    }
 }
