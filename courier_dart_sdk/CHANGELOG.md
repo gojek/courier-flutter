@@ -1,4 +1,4 @@
-## 0.0.6
+## 0.0.7
 * Add no-op mqttchuck to android gradle build for production build task.
 
 ## 0.0.6
