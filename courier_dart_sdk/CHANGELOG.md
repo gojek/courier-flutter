@@ -1,4 +1,7 @@
 ## 0.0.6
+* Add no-op mqttchuck to android gradle build for production build task.
+
+## 0.0.6
 * Add MQTT Chuck Logs for mqtt packets.
 
 ## 0.0.5
