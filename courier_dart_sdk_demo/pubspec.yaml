@@ -32,6 +32,7 @@ dependencies:
 
   dio: ^4.0.1
   permission_handler: ^10.2.0
+  uuid: ^3.0.7
 
   courier_dart_sdk:
     path: ../courier_dart_sdk

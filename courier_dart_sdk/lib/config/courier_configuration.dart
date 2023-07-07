@@ -1,11 +1,8 @@
-import 'package:courier_dart_sdk/auth_response_mapper.dart';
-import 'package:courier_dart_sdk/auth_retry_policy.dart';
+import 'package:courier_dart_sdk/auth/auth_retry_policy.dart';
 import 'package:courier_dart_sdk/config/connect_retry_policy_config.dart';
 import 'package:courier_dart_sdk/config/connect_timeout_config.dart';
 
 class CourierConfiguration {
-  final String tokenApi;
-  final AuthResponseMapper authResponseMapper;
   final bool timerPingSenderEnabled;
   final int activityCheckIntervalSeconds;
   final int inactivityTimeoutSeconds;
@@ -17,9 +14,7 @@ class CourierConfiguration {
   final bool enableMQTTChuck;
 
   CourierConfiguration(
-      {required this.tokenApi,
-      required this.authResponseMapper,
-      required this.authRetryPolicy,
+      {required this.authRetryPolicy,
       this.timerPingSenderEnabled = true,
       this.activityCheckIntervalSeconds = 12,
       this.inactivityTimeoutSeconds = 10,
