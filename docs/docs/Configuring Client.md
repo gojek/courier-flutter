@@ -84,6 +84,22 @@ class LocalAuthProvider implements AuthProvider {
     return Future<CourierConnectOptions>.value(connectOptions);
   }
 }
+
+final CourierClient courierClient = CourierClient.create(
+    authProvider: LocalAuthProvider(
+          connectOptions: CourierConnectOptions(
+              clientId: const Uuid().v4(),
+              username: "randomcourier1234567",
+              host: "broker.mqttdashboard.com",
+              port: 1883,
+              cleanSession: true,
+              keepAliveSeconds: 45,
+              password: "1234")),
+      config: CourierConfiguration(
+          authRetryPolicy: DefaultAuthRetryPolicy(),
+          readTimeoutSeconds: 60,
+      )
+  );
 ```
 
 ## Optional Configs
