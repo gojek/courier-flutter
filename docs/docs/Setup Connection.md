@@ -1,4 +1,16 @@
-## Providing Token API URL with JSON Credential Response
+## AuthProvider
+This is an interface containing method to fetchConnectOptions used by the Client to connect to broker
+
+## Setup CourierClient with DioAuthProvider
+To fetch ConnectionCredential (host, port, etc) from HTTP endpoint, you can use `DioAuthProvider` passing these params.
+
+- **Dio** : We use [dio](https://pub.dev/packages/dio) package for making HTTP request. This will provide you flexibility to use your own Dio instance in case you have various custom headers need to be sent to the server (e.g Authentication, etc). 
+
+- **tokenApi**: An endpoint URL that returns JSON containing credential for mapping to `CourierConnectOptions`.
+
+- **authResponseMapper**: Instance of `AuthResponseMapper` for mapping JSON returned by `tokenAPI` URL to `CourierConnectOptions`.
+
+### Providing Token API URL with JSON Credential Response
 
 To connect to MQTT broker you need to provide an endpoint URL that returns JSON containing these payload. 
 
@@ -14,7 +26,7 @@ To connect to MQTT broker you need to provide an endpoint URL that returns JSON 
 }
 ```
 
-## Map JSON to CourierConnectOptions
+### Map JSON to CourierConnectOptions
 
 You need to create and implement `AuthResponseMapper` to map the JSON to the `CourierConnectOptions` instance.
 
@@ -33,22 +45,22 @@ class CourierResponseMapper implements AuthResponseMapper {
 }
 ```
 
-## Setup CourierClient with Token API and Auth Mapper
-
-You need to pass the `tokenAPI` URL and `authResponseMapper` when initializing the   `CourierClient` like so.
+## Setup CourierClient with your own AuthProvider
+In case you want to fetch the connect options using your own implementation, you can implement AuthProvider interface like so.
 
 ```dart
-final CourierClient courierClient = CourierClient.create(
-    dio: Dio(),
-    config: CourierConfiguration(
-        tokenApi: "https://example.com/courier-credentials/",
-        authResponseMapper: CourierResponseMapper(),
-        //...
-    )
-);
-```
+// Example of fetching connectOptions locally without making remote HTTP API Call.
+class LocalAuthProvider implements AuthProvider {
+  final CourierConnectOptions connectOptions;
 
-We use [dio](https://pub.dev/packages/dio) package for making HTTP request. This will provide you flexibility to use your own Dio instance in case you have various custom headers need to be sent to the server (e.g Authentication, etc). 
+  LocalAuthProvider({required this.connectOptions});
+
+  @override
+  Future<CourierConnectOptions> fetchConnectOptions() {
+    return Future<CourierConnectOptions>.value(connectOptions);
+  }
+}
+```
 
 ## Connect Options properties
 
