@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:developer';
 import 'dart:typed_data';
 
+import 'package:courier_dart_sdk/auth/auth_provider.dart';
 import 'package:courier_dart_sdk/config/courier_configuration.dart';
 import 'package:courier_dart_sdk/connection_state.dart';
 import 'package:courier_dart_sdk/courier_connect_options.dart';
@@ -23,13 +24,14 @@ abstract class CourierClient {
   Stream<CourierEvent> courierEventStream();
 
   static CourierClient create(
-      {required Dio dio, required CourierConfiguration config}) {
-    return _CourierClientImpl(dio, config);
+      {required AuthProvider authProvider,
+      required CourierConfiguration config}) {
+    return _CourierClientImpl(authProvider, config);
   }
 }
 
 class _CourierClientImpl implements CourierClient {
-  final Dio dio;
+  final AuthProvider authProvider;
   final CourierConfiguration courierConfiguration;
 
   static const _platform = MethodChannel('courier');
@@ -41,7 +43,7 @@ class _CourierClientImpl implements CourierClient {
   // This state is used only for avoiding multiple api calls due to multiple connect invocations
   ConnectionState _state = ConnectionState.disconnected;
 
-  _CourierClientImpl(this.dio, this.courierConfiguration) {
+  _CourierClientImpl(this.authProvider, this.courierConfiguration) {
     _initialiseCourier();
   }
 
@@ -141,19 +143,7 @@ class _CourierClientImpl implements CourierClient {
   }
 
   Future<CourierConnectOptions> _fetchConnectOptions() async {
-    final response = await dio.get(courierConfiguration.tokenApi);
-    if (response.statusCode == 200) {
-      return courierConfiguration.authResponseMapper.map(response.data);
-    } else {
-      log('${response.statusCode} : ${response.data.toString()}');
-      final requestOptions =
-          RequestOptions(path: courierConfiguration.tokenApi);
-      throw DioError(
-          requestOptions: requestOptions,
-          response: Response(
-              requestOptions: requestOptions, statusCode: response.statusCode),
-          type: DioErrorType.response);
-    }
+    return await authProvider.fetchConnectOptions();
   }
 
   Future<void> _disconnectCourier(bool clearState) async {

@@ -1,4 +1,4 @@
-import 'package:courier_dart_sdk/auth_response_mapper.dart';
+import 'package:courier_dart_sdk/auth/auth_response_mapper.dart';
 import 'package:courier_dart_sdk/courier_connect_options.dart';
 
 class CourierResponseMapper implements AuthResponseMapper {
