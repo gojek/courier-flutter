@@ -2,9 +2,11 @@ import 'dart:typed_data';
 
 import 'package:courier_dart_sdk/auth/default_auth_retry_policy.dart';
 import 'package:courier_dart_sdk/auth/dio_auth_provider.dart';
+import 'package:courier_dart_sdk/auth/local_auth_provider.dart';
 import 'package:courier_dart_sdk/chuck/mqtt_chuck_view.dart';
 import 'package:courier_dart_sdk/courier_client.dart';
 import 'package:courier_dart_sdk/config/courier_configuration.dart';
+import 'package:courier_dart_sdk/courier_connect_options.dart';
 import 'package:courier_dart_sdk/courier_message.dart';
 import 'package:courier_dart_sdk_demo/courier_response_mapper.dart';
 import 'package:courier_dart_sdk_demo/test_data_type.dart';
@@ -12,6 +14,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:uuid/uuid.dart';
 
 void main() {
   runApp(MyApp());
@@ -58,10 +61,19 @@ class MyHomePage extends StatelessWidget {
       "https://run.mocky.io/v3/93166bd2-3cbe-46a2-9a0f-0a3dce1ad304";
 
   final CourierClient courierClient = CourierClient.create(
-      authProvider: DioAuthProvider(
-          dio: Dio(),
-          tokenApi: apiUrl,
-          authResponseMapper: CourierResponseMapper()),
+      authProvider: LocalAuthProvider(
+          connectOptions: CourierConnectOptions(
+              clientId: const Uuid().v4(),
+              username: "randomcourier1234567",
+              host: "broker.mqttdashboard.com",
+              port: 1883,
+              cleanSession: true,
+              keepAliveSeconds: 45,
+              password: "1234")),
+      // authProvider: DioAuthProvider(
+      //     dio: Dio(),
+      //     tokenApi: apiUrl,
+      //     authResponseMapper: CourierResponseMapper()),
       config: CourierConfiguration(
           authRetryPolicy: DefaultAuthRetryPolicy(),
           readTimeoutSeconds: 60,
