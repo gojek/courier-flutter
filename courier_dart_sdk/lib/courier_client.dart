@@ -116,7 +116,7 @@ class _CourierClientImpl implements CourierClient {
       _state = ConnectionState.connecting;
       eventHandler.handleCourierEvent(AuthenticatorAttemptEvent(
           name: "Courier Connect Started", forceRefresh: false));
-      CourierConnectOptions _options = await _fetchConnectOptions();
+      CourierConnectOptions _options = await authProvider.fetchConnectOptions();
       eventHandler.handleCourierEvent(AuthenticatorSuccessEvent(
           name: "Courier Connect Succeeded",
           timeTaken: DateTime.now().millisecondsSinceEpoch - attemptTimestamp));
@@ -140,10 +140,6 @@ class _CourierClientImpl implements CourierClient {
         Timer(Duration(seconds: retrySeconds), connect);
       }
     }
-  }
-
-  Future<CourierConnectOptions> _fetchConnectOptions() async {
-    return await authProvider.fetchConnectOptions();
   }
 
   Future<void> _disconnectCourier(bool clearState) async {
