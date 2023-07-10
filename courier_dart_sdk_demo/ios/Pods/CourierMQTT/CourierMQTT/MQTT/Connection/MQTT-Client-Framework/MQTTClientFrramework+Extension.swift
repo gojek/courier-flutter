@@ -41,6 +41,6 @@ extension MQTTCommandType {
 
 extension MQTTQosLevel {
     init(qos: QoS) {
-        self = MQTTQosLevel(rawValue: UInt8(qos.rawValue)) ?? .atMostOnce
+        self = MQTTQosLevel(rawValue: UInt8(qos.type)) ?? .atMostOnce
     }
 }

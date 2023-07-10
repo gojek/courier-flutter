@@ -19,13 +19,13 @@
 
     ],
     "CourierCore": [
-      "0.0.17"
+      "0.0.19"
     ],
     "CourierMQTT": [
-      "0.0.17"
+      "0.0.19"
     ],
     "CourierMQTTChuck": [
-      "0.0.17"
+      "0.0.19"
     ]
   },
   "platforms": {

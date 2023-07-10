@@ -90,7 +90,8 @@ public class SwiftCourierDartSdkPlugin: NSObject, FlutterPlugin {
             clientId: arguments["clientId"] as! String,
             username: arguments["username"] as! String,
             password: arguments["password"] as! String,
-            isCleanSession: arguments["cleanSession"] as! Bool
+            isCleanSession: arguments["cleanSession"] as! Bool,
+            scheme: arguments["scheme"] as? String
         )
         self.courierClientDelegate.connect(connectOptions)
     }

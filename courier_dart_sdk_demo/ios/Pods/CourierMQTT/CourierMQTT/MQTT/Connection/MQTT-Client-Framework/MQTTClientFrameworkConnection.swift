@@ -73,7 +73,8 @@ class MQTTClientFrameworkConnection: NSObject, IMQTTConnection {
 
         let port = Int(connectOptions.port)
         var securityPolicy: MQTTSSLSecurityPolicy?
-        if port == 443 {
+        
+        if connectOptions.shouldUseSecureTransportLayer {
             securityPolicy = MQTTSSLSecurityPolicy()
             securityPolicy?.allowInvalidCertificates = true
         }
