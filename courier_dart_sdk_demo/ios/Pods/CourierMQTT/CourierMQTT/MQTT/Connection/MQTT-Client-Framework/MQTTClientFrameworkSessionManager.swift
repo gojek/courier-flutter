@@ -144,7 +144,7 @@ class MQTTClientFrameworkSessionManager: NSObject, IMQTTClientFrameworkSessionMa
         printDebug("MQTT - COURIER: Client Session Manager connect to: \(host)")
         self.connectOptions = connectOptions
         let shouldReconnect = self.session != nil
-        let isTls = port == 443
+        let isTls = connectOptions.shouldUseSecureTransportLayer
 
         if (self.session == nil || host != self.host) ||
             port != self.port ?? 0 ||
@@ -297,7 +297,7 @@ class MQTTClientFrameworkSessionManager: NSObject, IMQTTClientFrameworkSessionMa
         topics.forEach { topic, qos in
             let attemptTimestamp = Date()
             self.eventHandler.onEvent(.init(connectionInfo: connectOptions, event: .subscribeAttempt(topics: [topic])))
-            session?.subscribe(toTopics: [topic: NSNumber(value: qos.rawValue)], subscribeHandler: { [weak self] (error, responseCodes) in
+            session?.subscribe(toTopics: [topic: NSNumber(value: qos.type)], subscribeHandler: { [weak self] (error, responseCodes) in
                 guard let self = self else { return }
                 if let error = error {
                     self.eventHandler.onEvent(.init(connectionInfo: connectOptions, event: .subscribeFailure(topics: [(topic, qos)], timeTaken: attemptTimestamp.timeTaken, error: error)))

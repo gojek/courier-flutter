@@ -19,6 +19,8 @@ public struct ConnectOptions: Equatable {
     public let userProperties: [String: String]?
     
     public let alpn: [String]?
+    
+    public let scheme: String?
 
     public init(
         host: String,
@@ -29,7 +31,8 @@ public struct ConnectOptions: Equatable {
         password: String,
         isCleanSession: Bool = false,
         userProperties: [String: String]? = nil,
-        alpn: [String]? = nil
+        alpn: [String]? = nil,
+        scheme: String? = nil
     ) {
         self.host = host
         self.port = port
@@ -40,5 +43,10 @@ public struct ConnectOptions: Equatable {
         self.isCleanSession = isCleanSession
         self.userProperties = userProperties
         self.alpn = alpn
+        self.scheme = scheme
+    }
+    
+    public var shouldUseSecureTransportLayer: Bool {
+        scheme == "ssl" || scheme == "tls" || port == 443
     }
 }
