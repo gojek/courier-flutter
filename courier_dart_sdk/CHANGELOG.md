@@ -1,3 +1,7 @@
+## 0.0.8
+* Add AuthProviderInterface for fetching CourierConnectOptions.
+* Pass scheme from arguments method channel to iOS connectOptions to connect with SSL/TLS.
+
 ## 0.0.7
 * Add no-op mqttchuck to android gradle build for production build task.
 
