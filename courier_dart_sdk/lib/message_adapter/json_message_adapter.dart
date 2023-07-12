@@ -24,3 +24,8 @@ class JSONMessageAdapter extends MessageAdapter {
     return byteArray;
   }
 }
+
+void x(int x, dynamic y) {}
+void main() {
+  x(5);
+}

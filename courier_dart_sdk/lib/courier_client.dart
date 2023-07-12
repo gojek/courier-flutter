@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
-import 'dart:typed_data';
 
 import 'package:courier_dart_sdk/auth/auth_provider.dart';
 import 'package:courier_dart_sdk/config/courier_configuration.dart';
@@ -10,6 +9,7 @@ import 'package:courier_dart_sdk/courier_connect_options.dart';
 import 'package:courier_dart_sdk/courier_message.dart';
 import 'package:courier_dart_sdk/event/courier_event.dart';
 import 'package:courier_dart_sdk/event/courier_event_handler.dart';
+import 'package:courier_dart_sdk/message_adapter/message_adapter.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/services.dart';
 
@@ -19,20 +19,22 @@ abstract class CourierClient {
   void destroy();
   void subscribe(String topic, QoS qos);
   void unsubscribe(String topic);
-  Stream<Uint8List> courierMessageStream(String topic);
+  Stream<T> courierMessageStream<T>(String topic, {dynamic decoder});
   void publishCourierMessage(CourierMessage message);
   Stream<CourierEvent> courierEventStream();
 
   static CourierClient create(
       {required AuthProvider authProvider,
-      required CourierConfiguration config}) {
-    return _CourierClientImpl(authProvider, config);
+      required CourierConfiguration config,
+      required List<MessageAdapter> messageAdapters}) {
+    return _CourierClientImpl(authProvider, config, messageAdapters);
   }
 }
 
 class _CourierClientImpl implements CourierClient {
   final AuthProvider authProvider;
   final CourierConfiguration courierConfiguration;
+  final List<MessageAdapter> messageAdapters;
 
   static const _platform = MethodChannel('courier');
 
@@ -43,7 +45,8 @@ class _CourierClientImpl implements CourierClient {
   // This state is used only for avoiding multiple api calls due to multiple connect invocations
   ConnectionState _state = ConnectionState.disconnected;
 
-  _CourierClientImpl(this.authProvider, this.courierConfiguration) {
+  _CourierClientImpl(
+      this.authProvider, this.courierConfiguration, this.messageAdapters) {
     _initialiseCourier();
   }
 
@@ -88,11 +91,25 @@ class _CourierClientImpl implements CourierClient {
   }
 
   @override
-  Stream<Uint8List> courierMessageStream(String topic) {
+  Stream<T> courierMessageStream<T>(String topic, {dynamic decoder}) {
     log('courier message stream, topic: $topic');
     return messageStreamController.stream
         .where((event) => event.topic == topic)
-        .map((event) => event.bytes);
+        .map((event) {
+      if (T is Uint8List) {
+        return event.bytes as T;
+      } else if (decoder != null) {
+        for (final adapter in messageAdapters) {
+          try {
+            T item = adapter.decode(event.bytes, decoder);
+            return item;
+          } on Exception catch (error) {
+            log(error.toString());
+          }
+        }
+      }
+      throw "Date Type Not Supported";
+    });
   }
 
   @override
