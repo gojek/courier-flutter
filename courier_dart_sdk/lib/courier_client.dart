@@ -110,6 +110,7 @@ class _CourierClientImpl implements CourierClient {
             log(error.toString());
           }
         }
+        return decoder(event.bytes);
       }
       throw "Data Type Not Supported";
     });

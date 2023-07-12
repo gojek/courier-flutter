@@ -98,10 +98,19 @@ class MyHomePage extends StatelessWidget {
         "orders/6b57d4e5-0fce-4917-b343-c8a1c77405e5/update/foreground",
         QoS.one);
     courierClient
-        .courierMessageStream(
-            "orders/6b57d4e5-0fce-4917-b343-c8a1c77405e5/update")
+        .courierMessageStream<TestData>(
+            "orders/6b57d4e5-0fce-4917-b343-c8a1c77405e5/update",
+            decoder: TestData.fromBytes)
         .listen((event) {
-      print("Message received: ${testDataDecoder(event)}");
+      print("Message received: ${event}");
+    });
+
+    courierClient
+        .courierMessageStream<Person>(
+            "orders/6b57d4e5-0fce-4917-b343-c8a1c77405e5/update",
+            decoder: Person.fromJson)
+        .listen((person) {
+      print("Message received: ${person.name}");
     });
   }
 
@@ -216,4 +225,12 @@ class MyHomePage extends StatelessWidget {
       ),
     );
   }
+}
+
+class Person {
+  String name;
+  Person({required this.name});
+
+  Person.fromJson(Map<String, dynamic> json) : name = json['name'];
+  Map<String, dynamic> toJson() => {'name': name};
 }
