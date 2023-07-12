@@ -22,7 +22,7 @@ class JSONMessageAdapter extends MessageAdapter {
   Uint8List encode(Object object, String topic) {
     final json = jsonEncode(object);
     final List<int> codeUnits = json.codeUnits;
-    final Uint8List byteArray = Uint8List.fromList(codeUnits);
-    return byteArray;
+    final Uint8List bytes = Uint8List.fromList(codeUnits);
+    return bytes;
   }
 }

@@ -111,7 +111,7 @@ class _CourierClientImpl implements CourierClient {
           }
         }
       }
-      throw "Date Type Not Supported";
+      throw "Data Type Not Supported";
     });
   }
 
