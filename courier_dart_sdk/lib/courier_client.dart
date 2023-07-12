@@ -9,6 +9,7 @@ import 'package:courier_dart_sdk/courier_connect_options.dart';
 import 'package:courier_dart_sdk/courier_message.dart';
 import 'package:courier_dart_sdk/event/courier_event.dart';
 import 'package:courier_dart_sdk/event/courier_event_handler.dart';
+import 'package:courier_dart_sdk/message_adapter/json_message_adapter.dart';
 import 'package:courier_dart_sdk/message_adapter/message_adapter.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/services.dart';
@@ -26,7 +27,9 @@ abstract class CourierClient {
   static CourierClient create(
       {required AuthProvider authProvider,
       required CourierConfiguration config,
-      required List<MessageAdapter> messageAdapters}) {
+      List<MessageAdapter> messageAdapters = const <MessageAdapter>[
+        JSONMessageAdapter()
+      ]}) {
     return _CourierClientImpl(authProvider, config, messageAdapters);
   }
 }

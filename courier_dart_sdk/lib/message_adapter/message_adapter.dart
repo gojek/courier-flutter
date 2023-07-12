@@ -2,6 +2,8 @@ import 'dart:typed_data';
 
 /// This class decode bytes to object and encode object to bytes
 abstract class MessageAdapter {
+  const MessageAdapter();
+
   /// Content Type (e.g application/json, etc)
   String contentType();
 

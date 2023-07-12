@@ -4,6 +4,8 @@ import 'dart:typed_data';
 import 'package:courier_dart_sdk/message_adapter/message_adapter.dart';
 
 class JSONMessageAdapter extends MessageAdapter {
+  const JSONMessageAdapter();
+
   @override
   String contentType() {
     return "application/json";
@@ -23,9 +25,4 @@ class JSONMessageAdapter extends MessageAdapter {
     final Uint8List byteArray = Uint8List.fromList(codeUnits);
     return byteArray;
   }
-}
-
-void x(int x, dynamic y) {}
-void main() {
-  x(5);
 }
