@@ -10,8 +10,9 @@ void main() {
     String topic = "test-topic";
     QoS qos = QoS.zero;
 
-    CourierMessage courierMessage = CourierMessage(bytes: bytes, topic: topic, qos: qos);
-    expect(courierMessage.convertToMap()["topic"], "test-topic");
-    expect(courierMessage.convertToMap()["qos"], 0);
+    CourierMessage courierMessage =
+        CourierMessage(payload: bytes, topic: topic, qos: qos);
+    expect(courierMessage.topic, "test-topic");
+    expect(courierMessage.qos, 0);
   });
 }
