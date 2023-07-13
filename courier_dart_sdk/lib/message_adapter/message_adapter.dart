@@ -25,5 +25,5 @@ abstract class MessageAdapter {
   /// final person = Person(name: "john");
   /// final bytes = messageAdapter.encode(person);
   /// ```
-  Uint8List encode(Object object, String topic);
+  Uint8List encode(Object object, String topic, dynamic encoder);
 }

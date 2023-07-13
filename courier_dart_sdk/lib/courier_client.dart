@@ -10,6 +10,7 @@ import 'package:courier_dart_sdk/courier_connect_options.dart';
 import 'package:courier_dart_sdk/courier_message.dart';
 import 'package:courier_dart_sdk/event/courier_event.dart';
 import 'package:courier_dart_sdk/event/courier_event_handler.dart';
+import 'package:courier_dart_sdk/message_adapter/bytes_message_adapter.dart';
 import 'package:courier_dart_sdk/message_adapter/json_message_adapter.dart';
 import 'package:courier_dart_sdk/message_adapter/message_adapter.dart';
 import 'package:dio/dio.dart';
@@ -22,13 +23,16 @@ abstract class CourierClient {
   void subscribe(String topic, QoS qos);
   void unsubscribe(String topic);
   Stream<T> courierMessageStream<T>(String topic, {dynamic decoder});
-  void publishCourierMessage(CourierMessage message);
+  Stream<Uint8List> courierBytesStream<T>(String topic);
+
+  void publishCourierMessage(CourierMessage message, {dynamic encoder});
   Stream<CourierEvent> courierEventStream();
 
   static CourierClient create(
       {required AuthProvider authProvider,
       required CourierConfiguration config,
       List<MessageAdapter> messageAdapters = const <MessageAdapter>[
+        BytesMessageAdapter(),
         JSONMessageAdapter()
       ]}) {
     return _CourierClientImpl(authProvider, config, messageAdapters);
@@ -43,7 +47,7 @@ class _CourierClientImpl implements CourierClient {
   static const _platform = MethodChannel('courier');
 
   final StreamController<CourierMessage> messageStreamController =
-      StreamController();
+      StreamController.broadcast();
   final ICourierEventHandler eventHandler = CourierEventHandler();
 
   // This state is used only for avoiding multiple api calls due to multiple connect invocations
@@ -89,9 +93,9 @@ class _CourierClientImpl implements CourierClient {
   }
 
   @override
-  void publishCourierMessage(CourierMessage message) {
+  void publishCourierMessage(CourierMessage message, {dynamic encoder}) {
     log('Send method invoked');
-    _sendMessage(message);
+    _sendMessage(message, encoder);
   }
 
   @override
@@ -100,22 +104,25 @@ class _CourierClientImpl implements CourierClient {
     return messageStreamController.stream
         .where((event) => event.topic == topic)
         .map((event) {
-      if (T is Uint8List) {
-        return event.bytes as T;
-      } else if (decoder != null) {
+      if (event.payload is Uint8List) {
+        final bytes = event.payload as Uint8List;
         for (final adapter in messageAdapters) {
           try {
-            T item = adapter.decode(event.bytes, decoder);
+            T item = adapter.decode(bytes, decoder);
             return item;
-          } on Exception catch (error) {
+          } catch (error) {
             log(error.toString());
           }
         }
-        return decoder(event.bytes);
+        return decoder(bytes);
       }
-      throw "Data Type Not Supported";
+      throw Exception("Data Type Not Supported");
     });
   }
+
+  @override
+  Stream<Uint8List> courierBytesStream<T>(String topic) =>
+      courierMessageStream<Uint8List>(topic);
 
   @override
   Stream<CourierEvent> courierEventStream() {
@@ -192,12 +199,29 @@ class _CourierClientImpl implements CourierClient {
     }
   }
 
-  Future<void> _sendMessage(CourierMessage message) async {
+  Future<void> _sendMessage(CourierMessage message, dynamic encoder) async {
     try {
-      _platform.invokeMethod('send', message.convertToMap());
+      for (final adapter in messageAdapters) {
+        try {
+          final map = _convertToMap(message, adapter, encoder);
+          _platform.invokeMethod('send', map);
+        } catch (error) {
+          log(error.toString());
+        }
+      }
+      throw Exception("Not supported");
     } on PlatformException catch (e) {
       log('Send error: ${e.message}');
+    } catch (e) {
+      log('Send failed: ${e.toString()}');
     }
+  }
+
+  Map<String, Object> _convertToMap(
+      CourierMessage message, MessageAdapter messageAdapter, dynamic encoder) {
+    final bytes =
+        messageAdapter.encode(message.payload, message.topic, encoder);
+    return {"message": bytes, "topic": message.topic, "qos": message.qos.value};
   }
 
   Future<dynamic> _callbackHandler(MethodCall methodCall) async {
@@ -231,6 +255,6 @@ class _CourierClientImpl implements CourierClient {
     }
 
     messageStreamController
-        .add(CourierMessage(bytes: bytes, topic: topic, qos: QoS.zero));
+        .add(CourierMessage(payload: bytes, topic: topic, qos: QoS.zero));
   }
 }
