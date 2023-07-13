@@ -13,6 +13,6 @@ void main() {
     CourierMessage courierMessage =
         CourierMessage(payload: bytes, topic: topic, qos: qos);
     expect(courierMessage.topic, "test-topic");
-    expect(courierMessage.qos, 0);
+    expect(courierMessage.qos.value, 0);
   });
 }
