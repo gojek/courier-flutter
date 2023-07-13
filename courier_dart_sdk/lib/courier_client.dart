@@ -23,7 +23,7 @@ abstract class CourierClient {
   void subscribe(String topic, QoS qos);
   void unsubscribe(String topic);
   Stream<T> courierMessageStream<T>(String topic, {dynamic decoder});
-  Stream<Uint8List> courierBytesStream<T>(String topic);
+  Stream<Uint8List> courierBytesStream(String topic);
 
   void publishCourierMessage(CourierMessage message, {dynamic encoder});
   Stream<CourierEvent> courierEventStream();
@@ -121,7 +121,7 @@ class _CourierClientImpl implements CourierClient {
   }
 
   @override
-  Stream<Uint8List> courierBytesStream<T>(String topic) =>
+  Stream<Uint8List> courierBytesStream(String topic) =>
       courierMessageStream<Uint8List>(topic);
 
   @override
