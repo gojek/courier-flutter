@@ -15,8 +15,13 @@ final CourierClient courierClient = CourierClient.create(
       config: CourierConfiguration(
           authRetryPolicy: DefaultAuthRetryPolicy(),
           readTimeoutSeconds: 60,
-      )
-  );
+      ),
+      messageAdapters: const <MessageAdapter>[
+          JSONMessageAdapter(),
+          BytesMessageAdapter(),
+          StringMessageAdapter()
+      ])
+  ;
 ```
 
 ## AuthProvider
@@ -24,6 +29,7 @@ This is an interface containing method to fetchConnectOptions used by the Client
 
 ## Required Configs
 - **authRetryPolicy**: Retry policy used to handle retry when tokenAPI URL fails
+- **messageAdapters**: List MessageAdapter used to encode model to bytes and decode bytes to object. Prioritization will be based on the order of the adapter in the list.
 
 ## Setup CourierClient with DioAuthProvider
 To fetch ConnectionCredential (host, port, etc) from HTTP endpoint, you can use `DioAuthProvider` passing these params.
@@ -98,7 +104,8 @@ final CourierClient courierClient = CourierClient.create(
       config: CourierConfiguration(
           authRetryPolicy: DefaultAuthRetryPolicy(),
           readTimeoutSeconds: 60,
-      )
+      ),
+      //...
   );
 ```
 

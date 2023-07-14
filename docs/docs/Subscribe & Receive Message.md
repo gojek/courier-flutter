@@ -9,10 +9,33 @@ courierClient.subscribe("chat/user1", QoS.one);
 
 ### Receive Message from Subscribed Topic
 
-After you have subscribed to the topic, you need to listen to a message stream passing the associated topic. The type of the parameter in the listen callback is byte array `UInt8List`.
+After you have subscribed to the topic, you need to listen to a message stream passing the associated topic. `courierMessageStream` will loop message adapters trying to decode the data into specified type, the first one that is able to decode, will be used. You will need pass a decoder parameter to return instance of your object given 1 dynamic parameter depending on the adapter (JSONMessageAdapter pass you `Map<String, dynamic>`, BytesMessageAdapter pass you `Uint8List`)
 
 ```dart
-courierClient.courierMessageStream("chat/user1").listen((message) {
+/// This uses BytesMessageAdapter and used constructor tear-offs TestData.fromBytes
+courierClient
+    .courierMessageStream<TestData>(
+        "orders/6b57d4e5-0fce-4917-b343-c8a1c77405e5/update",
+        decoder: TestData.fromBytes)
+    .listen((event) {
+  print("Message received testData: ${event.textMessage}");
+});
+
+/// This uses JSONMessageAdapter and used constructor tear-offs Person.fromJson
+courierClient
+    .courierMessageStream<Person>(
+        "person/6b57d4e5-0fce-4917-b343-c8a1c77405e5/update",
+        decoder: Person.fromJson)
+    .listen((person) {
+  print("Message received person: ${person.name}");
+```
+
+### Receive Bytes(Uint8List) from Subscribed Topic
+
+After you have subscribed to the topic, you need to listen to a message stream passing the associated topic. The type of the parameter in the `courierBytesStream` listen callback is byte array `UInt8List`.
+
+```dart
+courierClient.courierBytesStream("chat/user1").listen((message) {
     print("Message received: ${event}");
 });
 ```

@@ -57,7 +57,7 @@ This will add a line like this to your package's pubspec.yaml (and run an implic
 
 ```yaml
 dependencies:
-  courier_flutter: ^0.0.8
+  courier_flutter: 0.0.9
 ```
 
 Alternatively, your editor might support flutter pub get. Check the docs for your editor to learn more.
@@ -91,7 +91,11 @@ final CourierClient courierClient = CourierClient.create(
       config: CourierConfiguration(
           authRetryPolicy: DefaultAuthRetryPolicy(),
           readTimeoutSeconds: 60,
-      )
+      messageAdapters: const <MessageAdapter>[
+          JSONMessageAdapter(),
+          BytesMessageAdapter(),
+          StringMessageAdapter()
+      ])
   );
 ```
 
@@ -100,6 +104,7 @@ This is an interface containing method to fetchConnectOptions used by the Client
 
 ## Required Configs
 - **authRetryPolicy**: Retry policy used to handle retry when tokenAPI URL fails
+- **messageAdapters**: List MessageAdapter used to encode model to bytes and decode bytes to object. Prioritization will be based on the order of the adapter in the list.
 
 ## Setup CourierClient with DioAuthProvider
 To fetch ConnectionCredential (host, port, etc) from HTTP endpoint, you can use `DioAuthProvider` passing these params.
@@ -174,7 +179,8 @@ final CourierClient courierClient = CourierClient.create(
       config: CourierConfiguration(
           authRetryPolicy: DefaultAuthRetryPolicy(),
           readTimeoutSeconds: 60,
-      )
+      ),
+      //...
   );
 ```
 
@@ -219,12 +225,34 @@ To subscribe to a topic from the broker, invoke `susbscribe` method on CourierCl
 courierClient.subscribe("chat/user1", QoS.one);
 ```
 
-### Receive Message from Subscribed Topic
-
-After you have subscribed to the topic, you need to listen to a message stream passing the associated topic. The type of the parameter in the listen callback is byte array `UInt8List`.
+### Received Message from Subscribed Topic
+After you have subscribed to the topic, you need to listen to a message stream passing the associated topic. `courierMessageStream` will loop message adapters trying to decode the data into specified type, the first one that is able to decode, will be used. You will need pass a decoder parameter to return instance of your object given 1 dynamic parameter depending on the adapter (JSONMessageAdapter pass you `Map<String, dynamic>`, BytesMessageAdapter pass you `Uint8List`)
 
 ```dart
-courierClient.courierMessageStream("chat/user1").listen((message) {
+/// This uses BytesMessageAdapter and used constructor tear-offs TestData.fromBytes
+courierClient
+    .courierMessageStream<TestData>(
+        "orders/6b57d4e5-0fce-4917-b343-c8a1c77405e5/update",
+        decoder: TestData.fromBytes)
+    .listen((event) {
+  print("Message received testData: ${event.textMessage}");
+});
+
+/// This uses JSONMessageAdapter and used constructor tear-offs Person.fromJson
+courierClient
+    .courierMessageStream<Person>(
+        "person/6b57d4e5-0fce-4917-b343-c8a1c77405e5/update",
+        decoder: Person.fromJson)
+    .listen((person) {
+  print("Message received person: ${person.name}");
+```
+
+### Receive Bytes(Uint8List) from Subscribed Topic
+
+After you have subscribed to the topic, you need to listen to a message stream passing the associated topic. The type of the parameter in the `courierBytesStream` listen callback is byte array `UInt8List`.
+
+```dart
+courierClient.courierBytesStream("chat/user1").listen((message) {
     print("Message received: ${event}");
 });
 ```
@@ -239,27 +267,24 @@ courierClient.unsubscribe("chat/user/1");
 
 ### Send Message to Broker
 
-To publish message to the broker, you need to serialize your data to byte array `UInt8List`
+To publish message to the broker, you need can pass your object instance, it will try to loop all message adapters to encode the instance into Uint8List, the first one that is able to encode, will be used. You can also pass an optional, encoder function that will pass your instance as `dynamic` which you can use to call your own method to encode to `Uint8List`
+
+You need to initalize `CourierMessage` instance passing the `payload`, `topic` string, and `qos` like so. Finally, you need to invoke `publishCourierMessage` on `CourierClient` passing the message.
 
 ```dart
-// Example of Custom TestData class
-Uint8List testDataEncoder(TestData testData) => testData.toBytes();
-```
+/// This used JSONMessageAdapter which use dart jsonEncode to invoke toJson on object implicitly
+courierClient.publishCourierMessage(CourierMessage(
+    payload: Person(name: textMessage),
+    topic: "person/6b57d4e5-0fce-4917-b343-c8a1c77405e5/update",
+    qos: QoS.one));
 
-Next, you need to initalize `CourierMessage` instance passing the `bytes`, `topic` string, and `qos` like so.
-
-```dart
-final message = CourierMessage(
-    bytes: testDataEncoder(TestData("Hello World")),
-    topic: "/chat/user1",
-    qos: QoS.one
-)
-```
-
-Finally, you need to invoke `publishCourierMessage` on `CourierClient` passing the message.
-
-```dart
-courierClient.publishCourierMessage(mesage);
+/// For this TestData without toJson method, you can provide your own encode to convert to Uint8List/bytes
+courierClient.publishCourierMessage(
+    CourierMessage(
+        payload: testData,
+        topic: "orders/6b57d4e5-0fce-4917-b343-c8a1c77405e5/update",
+        qos: QoS.one),
+    encoder: (testData) => testData.toBytes());
 ```
 
 ### Listening to Courier System Events

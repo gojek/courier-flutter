@@ -1,3 +1,6 @@
+## 0.0.9
+* Add message adapter interface support for decode bytes to instance and encode instance to bytes
+
 ## 0.0.8
 * Add AuthProviderInterface for fetching CourierConnectOptions.
 * Pass scheme from arguments method channel to iOS connectOptions to connect with SSL/TLS.
