@@ -29,7 +29,7 @@ This is an interface containing method to fetchConnectOptions used by the Client
 
 ## Required Configs
 - **authRetryPolicy**: Retry policy used to handle retry when tokenAPI URL fails
-- **messageAdapters**: List MessageAdapter used to encode model to bytes and decode bytes to object. Prioritization will be based on the order of the adapter in the list.
+- **messageAdapters**: List of MessageAdapters used to encode model to bytes and decode bytes to object. Prioritization will be based on the order of the adapter in the list. We provide built-in adapters such as: `JSONMessageAdapter`,`BytesMessageAdapter`, & `StringMessageAdapter`. Optionally, you can also depends on `courier_protobuf` lib to use `ProtobufMessageAdapter`.
 
 ## Setup CourierClient with DioAuthProvider
 To fetch ConnectionCredential (host, port, etc) from HTTP endpoint, you can use `DioAuthProvider` passing these params.
