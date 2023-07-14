@@ -10,7 +10,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  courier_dart_sdk: 0.0.9
+  courier_dart_sdk:
+    path: ../courier_dart_sdk
   protobuf: ^2.0.1
 
 dev_dependencies:
