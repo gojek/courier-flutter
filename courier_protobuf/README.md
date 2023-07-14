@@ -1,39 +1,56 @@
-<!--
-This README describes the package. If you publish this package to pub.dev,
-this README's contents appear on the landing page for your package.
+# courier_protobuf
 
-For information about how to write a good package README, see the guide for
-[writing package pages](https://dart.dev/guides/libraries/writing-package-pages).
+Courier Protobuf MessageAdater for Courier Dart SDK
 
-For general information about developing packages, see the Dart guide for
-[creating packages](https://dart.dev/guides/libraries/create-library-packages)
-and the Flutter guide for
-[developing packages and plugins](https://flutter.dev/developing-packages).
--->
+## Getting Started
 
-TODO: Put a short description of the package here that helps potential users
-know whether this package might be useful for them.
+Run this command:
 
-## Features
+With Flutter:
 
-TODO: List what your package can do. Maybe include images, gifs, or videos.
-
-## Getting started
-
-TODO: List prerequisites and provide or point to information on how to
-start using the package.
-
-## Usage
-
-TODO: Include short and useful examples for package users. Add longer examples
-to `/example` folder.
-
-```dart
-const like = 'sample';
+```shell
+$ flutter pub add courier_protobuf
 ```
 
-## Additional information
+This will add a line like this to your package's pubspec.yaml (and run an implicit flutter pub get):
 
-TODO: Tell users more about the package: where to find more information, how to
-contribute to the package, how to file issues, what response they can expect
-from the package authors, and more.
+```yaml
+dependencies:
+  courier_protobuf: 0.0.1
+```
+
+You can use this package along with courier_dart_sdk if you want to use Protobuf as MesageAdapter for your CourierClient. 
+
+```dart
+final CourierClient courierClient = CourierClient.create(
+    ...
+      messageAdapters: const <MessageAdapter>[
+          ProtobufMessageAdapter(),
+          ...
+      ])
+  );
+```
+
+Decode bytes to Pet.pb GeneratedMessage:
+
+```dart
+courierClient
+        .courierMessageStream<Pet>(
+            "pet/6b57d4e5-0fce-4917-b343-c8a1c77405e5/update",
+            decoder: Pet.fromBuffer)
+        .listen((pet) {
+      print("Message received Pet: ${pet.name}");
+    });
+```
+
+Encode Pet GeneratedMessage pb to bytes:
+
+```dart
+
+final pet = Pet();
+    pet.name = "Hello Pet";
+    courierClient.publishCourierMessage(CourierMessage(
+        payload: pet,
+        topic: "pet/6b57d4e5-0fce-4917-b343-c8a1c77405e5/update",
+        qos: QoS.one));
+```
