@@ -1,0 +1,7 @@
+syntax = "proto3";
+
+package com.pet;
+
+message Pet {
+    string name = 1;
+}

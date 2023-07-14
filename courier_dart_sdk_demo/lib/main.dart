@@ -15,6 +15,8 @@ import 'package:courier_dart_sdk_demo/courier_response_mapper.dart';
 import 'package:courier_dart_sdk_demo/local_auth_provider.dart';
 import 'package:courier_dart_sdk_demo/test_data_type.dart';
 import 'package:courier_dart_sdk_demo/test_person_data.dart';
+import 'package:courier_dart_sdk_demo/test_pet.pb.dart';
+import 'package:courier_protobuf/protobuf_message_adapter.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
@@ -85,6 +87,7 @@ class MyHomePage extends StatelessWidget {
           disconnectDelaySeconds: 10,
           enableMQTTChuck: true),
       messageAdapters: const <MessageAdapter>[
+        ProtobufMessageAdapter(),
         JSONMessageAdapter(),
         BytesMessageAdapter(),
         StringMessageAdapter()
@@ -125,6 +128,17 @@ class MyHomePage extends StatelessWidget {
         .listen((person) {
       print("Message received person: ${person.name}");
     });
+
+    courierClient.subscribe(
+        "pet/6b57d4e5-0fce-4917-b343-c8a1c77405e5/update", QoS.one);
+
+    courierClient
+        .courierMessageStream<Pet>(
+            "pet/6b57d4e5-0fce-4917-b343-c8a1c77405e5/update",
+            decoder: Pet.fromBuffer)
+        .listen((pet) {
+      print("Message received Pet: ${pet.name}");
+    });
   }
 
   void _onUnsubscribe() {
@@ -133,6 +147,9 @@ class MyHomePage extends StatelessWidget {
 
     courierClient
         .unsubscribe("person/6b57d4e5-0fce-4917-b343-c8a1c77405e5/update");
+
+    courierClient
+        .unsubscribe("pet/6b57d4e5-0fce-4917-b343-c8a1c77405e5/update");
   }
 
   void _onSend() {
@@ -148,6 +165,13 @@ class MyHomePage extends StatelessWidget {
     courierClient.publishCourierMessage(CourierMessage(
         payload: Person(name: textMessage),
         topic: "person/6b57d4e5-0fce-4917-b343-c8a1c77405e5/update",
+        qos: QoS.one));
+
+    final pet = Pet();
+    pet.name = "Hello Pet";
+    courierClient.publishCourierMessage(CourierMessage(
+        payload: pet,
+        topic: "pet/6b57d4e5-0fce-4917-b343-c8a1c77405e5/update",
         qos: QoS.one));
   }
 
