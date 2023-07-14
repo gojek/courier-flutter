@@ -1,28 +1,17 @@
-import 'dart:typed_data';
-
 class CourierMessage {
-  final Uint8List bytes;
+  final Object payload;
   final String topic;
   final QoS qos;
 
-  CourierMessage({required this.bytes, required this.topic, required this.qos});
-
-  Map<String, Object> convertToMap() {
-    return {
-      "message": bytes,
-      "topic": topic,
-      "qos": qos.value
-    };
-  }
+  CourierMessage(
+      {required this.payload, required this.topic, required this.qos});
 }
 
-enum QoS {
-  zero, one, two
-}
+enum QoS { zero, one, two }
 
 extension QoSExtension on QoS {
   int get value {
-    switch(this) {
+    switch (this) {
       case QoS.zero:
         return 0;
       case QoS.one:

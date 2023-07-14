@@ -6,9 +6,15 @@ import 'package:courier_dart_sdk/courier_client.dart';
 import 'package:courier_dart_sdk/config/courier_configuration.dart';
 import 'package:courier_dart_sdk/courier_connect_options.dart';
 import 'package:courier_dart_sdk/courier_message.dart';
+import 'package:courier_dart_sdk/message_adapter/bytes_message_adapter.dart';
+import 'package:courier_dart_sdk/message_adapter/json_message_adapter.dart';
+import 'package:courier_dart_sdk/message_adapter/string_message_adapter.dart';
+
+import 'package:courier_dart_sdk/message_adapter/message_adapter.dart';
 import 'package:courier_dart_sdk_demo/courier_response_mapper.dart';
 import 'package:courier_dart_sdk_demo/local_auth_provider.dart';
 import 'package:courier_dart_sdk_demo/test_data_type.dart';
+import 'package:courier_dart_sdk_demo/test_person_data.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
@@ -77,7 +83,12 @@ class MyHomePage extends StatelessWidget {
           authRetryPolicy: DefaultAuthRetryPolicy(),
           readTimeoutSeconds: 60,
           disconnectDelaySeconds: 10,
-          enableMQTTChuck: true));
+          enableMQTTChuck: true),
+      messageAdapters: const <MessageAdapter>[
+        JSONMessageAdapter(),
+        BytesMessageAdapter(),
+        StringMessageAdapter()
+      ]);
 
   String textMessage = "";
 
@@ -89,33 +100,54 @@ class MyHomePage extends StatelessWidget {
     courierClient.disconnect();
   }
 
-  TestData testDataDecoder(Uint8List bytes) => TestData.fromBytes(bytes);
-
   void _onSubscribe() {
     courierClient.subscribe(
         "orders/6b57d4e5-0fce-4917-b343-c8a1c77405e5/update", QoS.one);
     courierClient.subscribe(
         "orders/6b57d4e5-0fce-4917-b343-c8a1c77405e5/update/foreground",
         QoS.one);
+
     courierClient
-        .courierMessageStream(
-            "orders/6b57d4e5-0fce-4917-b343-c8a1c77405e5/update")
+        .courierMessageStream<TestData>(
+            "orders/6b57d4e5-0fce-4917-b343-c8a1c77405e5/update",
+            decoder: TestData.fromBytes)
         .listen((event) {
-      print("Message received: ${testDataDecoder(event)}");
+      print("Message received testData: ${event.textMessage}");
+    });
+
+    courierClient.subscribe(
+        "person/6b57d4e5-0fce-4917-b343-c8a1c77405e5/update", QoS.one);
+
+    courierClient
+        .courierMessageStream<Person>(
+            "person/6b57d4e5-0fce-4917-b343-c8a1c77405e5/update",
+            decoder: Person.fromJson)
+        .listen((person) {
+      print("Message received person: ${person.name}");
     });
   }
 
   void _onUnsubscribe() {
     courierClient
         .unsubscribe("orders/6b57d4e5-0fce-4917-b343-c8a1c77405e5/update");
+
+    courierClient
+        .unsubscribe("person/6b57d4e5-0fce-4917-b343-c8a1c77405e5/update");
   }
 
-  Uint8List testDataEncoder(TestData testData) => testData.toBytes();
-
   void _onSend() {
+    final testData = TestData(textMessage);
+
+    courierClient.publishCourierMessage(
+        CourierMessage(
+            payload: testData,
+            topic: "orders/6b57d4e5-0fce-4917-b343-c8a1c77405e5/update",
+            qos: QoS.one),
+        encoder: (testData) => testData.toBytes());
+
     courierClient.publishCourierMessage(CourierMessage(
-        bytes: testDataEncoder(TestData(textMessage)),
-        topic: "orders/6b57d4e5-0fce-4917-b343-c8a1c77405e5/update",
+        payload: Person(name: textMessage),
+        topic: "person/6b57d4e5-0fce-4917-b343-c8a1c77405e5/update",
         qos: QoS.one));
   }
 
