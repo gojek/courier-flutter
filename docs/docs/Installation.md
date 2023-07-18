@@ -14,7 +14,7 @@ This will add a line like this to your package's pubspec.yaml (and run an implic
 
 ```yaml
 dependencies:
-  courier_flutter: 0.0.9
+  courier_flutter: 0.0.10
 ```
 
 Alternatively, your editor might support flutter pub get. Check the docs for your editor to learn more.

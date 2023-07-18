@@ -16,7 +16,7 @@ This will add a line like this to your package's pubspec.yaml (and run an implic
 
 ```yaml
 dependencies:
-  courier_protobuf: 0.0.1
+  courier_protobuf: 0.0.2
 ```
 
 You can use this package along with courier_dart_sdk if you want to use Protobuf as MesageAdapter for your CourierClient. 

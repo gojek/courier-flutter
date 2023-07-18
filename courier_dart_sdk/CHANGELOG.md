@@ -1,3 +1,8 @@
+## 0.0.10
+* Handle Stream onError for CourierMessageStream internally
+* Fix BytesMessageAdapter encode & decode
+* Granular debug log for encode and decode
+
 ## 0.0.9
 * Add message adapter interface support for decode bytes to instance and encode instance to bytes
 
