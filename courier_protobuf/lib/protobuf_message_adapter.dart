@@ -10,14 +10,18 @@ class ProtobufMessageAdapter extends MessageAdapter {
   String contentType() => "application/x-protobuf";
 
   @override
-  T decode<T>(Uint8List bytes, dynamic decoder) => decoder(bytes);
+  T decode<T>(Uint8List bytes, dynamic decoder) {
+    if (T is GeneratedMessage) {
+      return decoder(bytes);
+    }
+    throw Exception('$T is not of type protobuf generated message');
+  }
 
   @override
   Uint8List encode(Object object, String topic, dynamic encoder) {
     if (object is GeneratedMessage) {
       return object.writeToBuffer();
     }
-    throw Exception(
-        '${object.runtimeType} is not of type protobuf generated message');
+    return encoder(object);
   }
 }

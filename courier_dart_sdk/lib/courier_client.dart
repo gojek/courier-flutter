@@ -100,24 +100,27 @@ class _CourierClientImpl implements CourierClient {
 
   @override
   Stream<T> courierMessageStream<T>(String topic, {dynamic decoder}) {
-    log('courier message stream, topic: $topic');
+    log('courier message stream, topic: $topic $T');
     return messageStreamController.stream
         .where((event) => event.topic == topic)
         .map((event) {
-      if (event.payload is Uint8List) {
-        final bytes = event.payload as Uint8List;
-        for (final adapter in messageAdapters) {
-          try {
-            T item = adapter.decode(bytes, decoder);
-            return item;
-          } catch (error) {
-            log(error.toString());
-          }
+      log('Decoding topic: $topic $T');
+      final bytes = event.payload as Uint8List;
+      for (final adapter in messageAdapters) {
+        try {
+          T item = adapter.decode(bytes, decoder);
+          log('Decoding success with $adapter');
+          return item;
+        } catch (error) {
+          log('Decoding Adapter $adapter not compatible ${error.toString()}');
         }
-        return decoder(bytes);
       }
-      throw Exception("Data Type Not Supported");
-    });
+      T item = decoder(bytes);
+      log('Decoding success for $T using decoder closure');
+      return item;
+    }).handleError((e) {
+      log('Error Decode $T for $topic' + e.toString());
+    }).map((v) => v as T);
   }
 
   @override
@@ -201,19 +204,20 @@ class _CourierClientImpl implements CourierClient {
 
   Future<void> _sendMessage(CourierMessage message, dynamic encoder) async {
     try {
+      log('Send/Encoding: topic ${message.topic} ${message.payload.toString()}');
       for (final adapter in messageAdapters) {
         try {
           final map = _convertToMap(message, adapter, encoder);
           _platform.invokeMethod('send', map);
+          log('Send/Encoding success with adapter $adapter topic ${message.topic} ${message.payload.toString()}');
         } catch (error) {
+          log('Encoding Adapter $adapter not compatible ${error.toString()}');
           log(error.toString());
         }
       }
       throw Exception("Not supported");
-    } on PlatformException catch (e) {
-      log('Send error: ${e.message}');
     } catch (e) {
-      log('Send failed: ${e.toString()}');
+      log('Send/Encoding failed: topic ${message.topic} } ${e.toString()}');
     }
   }
 

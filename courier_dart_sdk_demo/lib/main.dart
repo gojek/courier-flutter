@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:typed_data';
 import 'package:courier_dart_sdk/auth/default_auth_retry_policy.dart';
 import 'package:courier_dart_sdk/auth/dio_auth_provider.dart';
@@ -115,7 +116,7 @@ class MyHomePage extends StatelessWidget {
             "orders/6b57d4e5-0fce-4917-b343-c8a1c77405e5/update",
             decoder: TestData.fromBytes)
         .listen((event) {
-      print("Message received testData: ${event.textMessage}");
+      log("Message received testData: ${event.textMessage}");
     });
 
     courierClient.subscribe(
@@ -126,7 +127,7 @@ class MyHomePage extends StatelessWidget {
             "person/6b57d4e5-0fce-4917-b343-c8a1c77405e5/update",
             decoder: Person.fromJson)
         .listen((person) {
-      print("Message received person: ${person.name}");
+      log("Message received person: ${person.name}");
     });
 
     courierClient.subscribe(
@@ -137,7 +138,15 @@ class MyHomePage extends StatelessWidget {
             "pet/6b57d4e5-0fce-4917-b343-c8a1c77405e5/update",
             decoder: Pet.fromBuffer)
         .listen((pet) {
-      print("Message received Pet: ${pet.name}");
+      log("Message received Pet: ${pet.name}");
+    });
+
+    courierClient
+        .courierBytesStream(
+      "pet/6b57d4e5-0fce-4917-b343-c8a1c77405e5/update",
+    )
+        .listen((petBytes) {
+      log("Message received PetBytes: ${petBytes.toString()}");
     });
   }
 
