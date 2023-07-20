@@ -1,3 +1,6 @@
+## 0.0.11
+* Add optional `MessageAdapter` param for messageStream and publish If this is passed, it will use it to decode/encode the data, otherwise it will use the messageAdapters passed when initializing `CourierClient``
+
 ## 0.0.10
 * Handle Stream onError for CourierMessageStream internally
 * Fix BytesMessageAdapter encode & decode

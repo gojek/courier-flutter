@@ -2,6 +2,8 @@ To publish message to the broker, you need can pass your object instance, it wil
 
 You need to initalize `CourierMessage` instance passing the `payload`, `topic` string, and `qos` like so. Finally, you need to invoke `publishCourierMessage` on `CourierClient` passing the message.
 
+Optionally you can pass `MessageAdapter` If this is passed, it will use it encode the data to Uint8List, otherwise it will use the messageAdapters list passed when initializing CourierClient.
+
 ```dart
 /// This used JSONMessageAdapter which use dart jsonEncode to invoke toJson on object implicitly
 courierClient.publishCourierMessage(CourierMessage(
