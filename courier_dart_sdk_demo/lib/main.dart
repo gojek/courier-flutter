@@ -130,6 +130,15 @@ class MyHomePage extends StatelessWidget {
       log("Message received person: ${person.name}");
     });
 
+    courierClient
+        .courierMessageStream<Person>(
+            "person/6b57d4e5-0fce-4917-b343-c8a1c77405e5/update",
+            adapter: const JSONMessageAdapter(),
+            decoder: Person.fromJson)
+        .listen((person) {
+      log("Message received person using explicit JSON Adapter: ${person.name}");
+    });
+
     courierClient.subscribe(
         "pet/6b57d4e5-0fce-4917-b343-c8a1c77405e5/update", QoS.one);
 
@@ -139,6 +148,14 @@ class MyHomePage extends StatelessWidget {
             decoder: Pet.fromBuffer)
         .listen((pet) {
       log("Message received Pet: ${pet.name}");
+    });
+
+    courierClient
+        .courierMessageStream<Uint8List>(
+            "pet/6b57d4e5-0fce-4917-b343-c8a1c77405e5/update",
+            adapter: const BytesMessageAdapter())
+        .listen((petBytes) {
+      log("Message received PetBytes using explicit bytes message adapter: ${petBytes.toString()}");
     });
 
     courierClient
@@ -175,6 +192,15 @@ class MyHomePage extends StatelessWidget {
         payload: Person(name: textMessage),
         topic: "person/6b57d4e5-0fce-4917-b343-c8a1c77405e5/update",
         qos: QoS.one));
+
+    courierClient.publishCourierMessage(
+        CourierMessage(
+            payload: Person(
+                name:
+                    textMessage + "explicit encoding with JSONMessageAdapter"),
+            topic: "person/6b57d4e5-0fce-4917-b343-c8a1c77405e5/update",
+            qos: QoS.one),
+        adapter: const JSONMessageAdapter());
 
     final pet = Pet();
     pet.name = "Hello Pet";

@@ -22,10 +22,13 @@ abstract class CourierClient {
   void destroy();
   void subscribe(String topic, QoS qos);
   void unsubscribe(String topic);
-  Stream<T> courierMessageStream<T>(String topic, {dynamic decoder});
+  Stream<T> courierMessageStream<T>(String topic,
+      {MessageAdapter adapter, dynamic decoder});
   Stream<Uint8List> courierBytesStream(String topic);
 
-  void publishCourierMessage(CourierMessage message, {dynamic encoder});
+  void publishCourierMessage(CourierMessage message,
+      {MessageAdapter adapter, dynamic encoder});
+  void publishCourierBytes(Uint8List bytes, String topic, QoS qos);
   Stream<CourierEvent> courierEventStream();
 
   static CourierClient create(
@@ -93,26 +96,41 @@ class _CourierClientImpl implements CourierClient {
   }
 
   @override
-  void publishCourierMessage(CourierMessage message, {dynamic encoder}) {
+  void publishCourierMessage(CourierMessage message,
+      {MessageAdapter? adapter, dynamic encoder}) {
     log('Send method invoked');
-    _sendMessage(message, encoder);
+    _sendMessage(message, adapter, encoder);
   }
 
   @override
-  Stream<T> courierMessageStream<T>(String topic, {dynamic decoder}) {
+  void publishCourierBytes(Uint8List bytes, String topic, QoS qos) {
+    publishCourierMessage(
+        CourierMessage(payload: bytes, topic: topic, qos: qos),
+        adapter: const BytesMessageAdapter());
+  }
+
+  @override
+  Stream<T> courierMessageStream<T>(String topic,
+      {MessageAdapter? adapter, dynamic decoder}) {
     log('courier message stream, topic: $topic $T');
     return messageStreamController.stream
         .where((event) => event.topic == topic)
         .map((event) {
       log('Decoding topic: $topic $T');
       final bytes = event.payload as Uint8List;
-      for (final adapter in messageAdapters) {
-        try {
-          T item = adapter.decode(bytes, decoder);
-          log('Decoding success with $adapter');
-          return item;
-        } catch (error) {
-          log('Decoding Adapter $adapter not compatible ${error.toString()}');
+      if (adapter != null) {
+        T item = adapter.decode(bytes, decoder);
+        log('Decoding success with provided $adapter');
+        return item;
+      } else {
+        for (final adapter in messageAdapters) {
+          try {
+            T item = adapter.decode(bytes, decoder);
+            log('Decoding success with $adapter');
+            return item;
+          } catch (error) {
+            log('Decoding Adapter $adapter not compatible ${error.toString()}');
+          }
         }
       }
       T item = decoder(bytes);
@@ -120,12 +138,13 @@ class _CourierClientImpl implements CourierClient {
       return item;
     }).handleError((e) {
       log('Error Decode $T for $topic' + e.toString());
-    }).map((v) => v as T);
+    });
   }
 
   @override
   Stream<Uint8List> courierBytesStream(String topic) =>
-      courierMessageStream<Uint8List>(topic);
+      courierMessageStream<Uint8List>(topic,
+          adapter: const BytesMessageAdapter());
 
   @override
   Stream<CourierEvent> courierEventStream() {
@@ -202,20 +221,35 @@ class _CourierClientImpl implements CourierClient {
     }
   }
 
-  Future<void> _sendMessage(CourierMessage message, dynamic encoder) async {
+  Future<void> _sendMessage(
+      CourierMessage message, MessageAdapter? adapter, dynamic encoder) async {
     try {
       log('Send/Encoding: topic ${message.topic} ${message.payload.toString()}');
-      for (final adapter in messageAdapters) {
-        try {
-          final map = _convertToMap(message, adapter, encoder);
-          _platform.invokeMethod('send', map);
-          log('Send/Encoding success with adapter $adapter topic ${message.topic} ${message.payload.toString()}');
-        } catch (error) {
-          log('Encoding Adapter $adapter not compatible ${error.toString()}');
-          log(error.toString());
+      if (adapter != null) {
+        final map = _convertToMap(message, adapter, encoder);
+        _platform.invokeMethod('send', map);
+        log('Send/Encoding success with provided adapter $adapter topic ${message.topic} ${message.payload.toString()}');
+        return;
+      } else {
+        for (final adapter in messageAdapters) {
+          try {
+            final map = _convertToMap(message, adapter, encoder);
+            _platform.invokeMethod('send', map);
+            log('Send/Encoding success with adapter $adapter topic ${message.topic} ${message.payload.toString()}');
+            return;
+          } catch (error) {
+            log('Encoding Adapter $adapter not compatible ${error.toString()}');
+            log(error.toString());
+          }
         }
       }
-      throw Exception("Not supported");
+      final map = {
+        "message": encoder(message.payload),
+        "topic": message.topic,
+        "qos": message.qos.value
+      };
+      _platform.invokeMethod('send', map);
+      log('Send/Encoding success with encoder. topic ${message.topic} ${message.payload.toString()}');
     } catch (e) {
       log('Send/Encoding failed: topic ${message.topic} } ${e.toString()}');
     }
