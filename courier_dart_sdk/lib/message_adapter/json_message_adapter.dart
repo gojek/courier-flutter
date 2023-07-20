@@ -18,9 +18,6 @@ class JSONMessageAdapter extends MessageAdapter {
 
   @override
   Uint8List encode(Object object, String topic, dynamic encoder) {
-    if (encoder != null) {
-      return encoder(object);
-    }
     final json = jsonEncode(object);
     final List<int> codeUnits = json.codeUnits;
     final Uint8List bytes = Uint8List.fromList(codeUnits);

@@ -17,10 +17,7 @@ class StringMessageAdapter extends MessageAdapter {
 
   @override
   Uint8List encode(Object object, String topic, dynamic encoder) {
-    if (object is String) {
-      List<int> bytes = utf8.encode(object);
-      return Uint8List.fromList(bytes);
-    }
-    return encoder(object);
+    List<int> bytes = utf8.encode(object as String);
+    return Uint8List.fromList(bytes);
   }
 }
