@@ -57,7 +57,7 @@ This will add a line like this to your package's pubspec.yaml (and run an implic
 
 ```yaml
 dependencies:
-  courier_flutter: 0.0.10
+  courier_flutter: 0.0.11
 ```
 
 Alternatively, your editor might support flutter pub get. Check the docs for your editor to learn more.
@@ -229,8 +229,10 @@ courierClient.subscribe("chat/user1", QoS.one);
 ### Received Message from Subscribed Topic
 After you have subscribed to the topic, you need to listen to a message stream passing the associated topic. `courierMessageStream` will loop message adapters trying to decode the data into specified type, the first one that is able to decode, will be used. You will need pass a decoder parameter to return instance of your object given 1 dynamic parameter depending on the adapter (JSONMessageAdapter pass you `Map<String, dynamic>`, BytesMessageAdapter pass you `Uint8List`)
 
+Optionally you can pass `MessageAdapter` If this is passed, it will use it decode the data to `T`` type, otherwise it will use the messageAdapters list passed when initializing CourierClient.
+
 ```dart
-/// This uses BytesMessageAdapter and used constructor tear-offs TestData.fromBytes
+/// This uses BytesMessageAdapter passed when initializing CourierClient and constructor tear-offs TestData.fromBytes
 courierClient
     .courierMessageStream<TestData>(
         "orders/6b57d4e5-0fce-4917-b343-c8a1c77405e5/update",
@@ -239,11 +241,12 @@ courierClient
   print("Message received testData: ${event.textMessage}");
 });
 
-/// This uses JSONMessageAdapter and used constructor tear-offs Person.fromJson
+/// This uses passed JSONMessageAdapter and constructor tear-offs Person.fromJson
 courierClient
     .courierMessageStream<Person>(
         "person/6b57d4e5-0fce-4917-b343-c8a1c77405e5/update",
-        decoder: Person.fromJson)
+        decoder: Person.fromJson,
+        adapter: const JSONMessageAdapter())
     .listen((person) {
   print("Message received person: ${person.name}");
 ```
@@ -271,6 +274,9 @@ courierClient.unsubscribe("chat/user/1");
 To publish message to the broker, you need can pass your object instance, it will try to loop all message adapters to encode the instance into Uint8List, the first one that is able to encode, will be used. You can also pass an optional, encoder function that will pass your instance as `dynamic` which you can use to call your own method to encode to `Uint8List`
 
 You need to initalize `CourierMessage` instance passing the `payload`, `topic` string, and `qos` like so. Finally, you need to invoke `publishCourierMessage` on `CourierClient` passing the message.
+
+Optionally you can pass `MessageAdapter` If this is passed, it will use it encode the data to Uint8List, otherwise it will use the messageAdapters list passed when initializing CourierClient.
+
 
 ```dart
 /// This used JSONMessageAdapter which use dart jsonEncode to invoke toJson on object implicitly
