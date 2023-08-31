@@ -12,7 +12,7 @@ abstract class ICourierEventHandler {
 
 class CourierEventHandler implements ICourierEventHandler {
   final StreamController<CourierEvent> eventStreamController =
-      StreamController();
+      StreamController.broadcast();
 
   @override
   Stream<CourierEvent> courierEventStream() {
