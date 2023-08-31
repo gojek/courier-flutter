@@ -1,3 +1,6 @@
+## 0.0.12
+* Update StreamController in EventHandler to use Broadcast to avoid Fatal Exception ` Bad state: Stream has already been listened to`
+
 ## 0.0.11
 * Add optional `MessageAdapter` param for messageStream and publish If this is passed, it will use it to decode/encode the data, otherwise it will use the messageAdapters passed when initializing `CourierClient``
 
