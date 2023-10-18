@@ -1,3 +1,6 @@
+## 0.0.13
+* Bump dio to ^5.33.0
+
 ## 0.0.12
 * Update StreamController in EventHandler to use Broadcast to avoid Fatal Exception ` Bad state: Stream has already been listened to`
 
