@@ -176,7 +176,7 @@ class _CourierClientImpl implements CourierClient {
       _state = ConnectionState.connected;
     } on Exception catch (error) {
       int reason = -1;
-      if (error is DioError) {
+      if (error is DioException) {
         reason = error.type.index;
       }
 
