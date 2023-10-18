@@ -55,14 +55,14 @@ packages:
       path: "../courier_dart_sdk"
       relative: true
     source: path
-    version: "0.0.9"
+    version: "0.0.12"
   courier_protobuf:
     dependency: "direct main"
     description:
       path: "../courier_protobuf"
       relative: true
     source: path
-    version: "0.0.1"
+    version: "0.0.2"
   crypto:
     dependency: transitive
     description:
@@ -83,10 +83,10 @@ packages:
     dependency: "direct main"
     description:
       name: dio
-      sha256: "5fd6e152bdbc876bc6e81910e16a2bd36e0c68e23d87316e8da67a1ec8fd7b1c"
+      sha256: "417e2a6f9d83ab396ec38ff4ea5da6c254da71e4db765ad737a42af6930140b7"
       url: "https://pub.dev"
     source: hosted
-    version: "4.0.4"
+    version: "5.3.3"
   fake_async:
     dependency: transitive
     description:
