@@ -279,6 +279,7 @@ class _CourierClientImpl implements CourierClient {
   }
 
   void _handleAuthFailure() {
+    authProvider.onAuthFailure();
     connect();
   }
 
