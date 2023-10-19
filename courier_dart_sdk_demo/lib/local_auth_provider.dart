@@ -12,5 +12,5 @@ class LocalAuthProvider implements AuthProvider {
   }
 
   @override
-  void onAuthFailure() {}
+  Future<void> onAuthFailure() async {}
 }
