@@ -1,3 +1,6 @@
+## 0.0.14
+* provide onAuthFailure method in AuthProvider interface
+
 ## 0.0.13
 * Bump dio to ^5.33.0
 
