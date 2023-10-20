@@ -10,4 +10,7 @@ class LocalAuthProvider implements AuthProvider {
   Future<CourierConnectOptions> fetchConnectOptions() {
     return Future<CourierConnectOptions>.value(connectOptions);
   }
+
+  @override
+  Future<void> onAuthFailure() async {}
 }
