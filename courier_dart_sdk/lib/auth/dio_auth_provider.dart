@@ -29,4 +29,7 @@ class DioAuthProvider implements AuthProvider {
           type: DioExceptionType.connectionError);
     }
   }
+
+  @override
+  Future<void> onAuthFailure() async {}
 }

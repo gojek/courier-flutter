@@ -265,7 +265,7 @@ class _CourierClientImpl implements CourierClient {
   Future<dynamic> _callbackHandler(MethodCall methodCall) async {
     switch (methodCall.method) {
       case 'onAuthFailure':
-        _handleAuthFailure();
+        await _handleAuthFailure();
         return;
       case 'onMessageReceive':
         _handleMessage(methodCall.arguments);
@@ -278,7 +278,8 @@ class _CourierClientImpl implements CourierClient {
     }
   }
 
-  void _handleAuthFailure() {
+  Future<void> _handleAuthFailure() async {
+    await authProvider.onAuthFailure();
     connect();
   }
 
