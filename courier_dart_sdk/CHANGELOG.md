@@ -1,3 +1,6 @@
+## 0.0.15
+* A special version that uses Dio 4.0.1 with onAuthFailure method in AuthProvider interface
+
 ## 0.0.14
 * provide onAuthFailure method in AuthProvider interface
 

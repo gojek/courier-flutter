@@ -1,6 +1,6 @@
 name: courier_dart_sdk
 description: Flutter SDK for Courier
-version: 0.0.14
+version: 0.0.15
 homepage: https://github.com/gojek/courier-flutter
 
 environment:
@@ -10,7 +10,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  dio: ^5.3.3
+  dio: ^4.0.1
 
 dev_dependencies:
   flutter_test:

@@ -22,11 +22,11 @@ class DioAuthProvider implements AuthProvider {
     } else {
       log('${response.statusCode} : ${response.data.toString()}');
       final requestOptions = RequestOptions(path: tokenApi);
-      throw DioException(
+      throw DioError(
           requestOptions: requestOptions,
           response: Response(
               requestOptions: requestOptions, statusCode: response.statusCode),
-          type: DioExceptionType.connectionError);
+          type: DioErrorType.response);
     }
   }
 
