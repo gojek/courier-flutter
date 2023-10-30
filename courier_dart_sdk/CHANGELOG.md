@@ -1,3 +1,6 @@
+## 0.0.16
+* Bump Dio dependency back to ^5.3.3
+
 ## 0.0.15
 * A special version that uses Dio 4.0.1 with onAuthFailure method in AuthProvider interface
 
