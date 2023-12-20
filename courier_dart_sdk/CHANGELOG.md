@@ -1,3 +1,6 @@
+## 0.0.17
+* Fix invalid mapping for connection info in CourierEvent
+
 ## 0.0.16
 * Bump Dio dependency back to ^5.3.3
 
