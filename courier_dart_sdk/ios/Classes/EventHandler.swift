@@ -211,19 +211,17 @@ final class EventHandler: ICourierEventHandler {
     }
     
     private func injectConnectionInfoAndSendEvent(eventMap: [String: Any], event: CourierEvent) {
-        if var props = eventMap["properties"] as? [String: Any],
-           let connectionInfo =
+        if let connectionInfo =
             event.connectionInfo {
-            props["connectionInfo"] = [
+            var _eventMap = eventMap
+            _eventMap["connectionInfo"] = [
                 "host": connectionInfo.host,
                 "port": Int(connectionInfo.port),
                 "keepAlive": Int(connectionInfo.keepAlive),
                 "clientId": connectionInfo.clientId,
                 "username": connectionInfo.username
             ]
-            var eventMap = eventMap
-            eventMap["properties"] = props
-            handler(eventMap)
+            handler(_eventMap)
         } else {
             handler(eventMap)
         }

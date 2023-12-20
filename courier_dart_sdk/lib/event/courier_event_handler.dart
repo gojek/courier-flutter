@@ -33,7 +33,7 @@ class CourierEventHandler implements ICourierEventHandler {
     }
     log('Event received: $eventName with properties: $eventProps');
 
-    final connectionInfoMap = eventProps["connectionInfo"];
+    final connectionInfoMap = arguments["connectionInfo"];
     ConnectionInfo? connectionInfo;
     if (connectionInfoMap != null) {
       connectionInfo = ConnectionInfo(
