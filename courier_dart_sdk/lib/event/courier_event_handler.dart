@@ -42,7 +42,7 @@ class CourierEventHandler implements ICourierEventHandler {
         keepAliveSeconds: connectionInfoMap['keepAlive'] ?? -1,
         connectTimeout: connectionInfoMap['connectTimeout'] ?? -1,
         host: connectionInfoMap['host'] ?? "",
-        port: connectionInfoMap['port'] ?? "",
+        port: connectionInfoMap['port'] ?? -1,
         scheme: connectionInfoMap['scheme'] ?? "",
       );
     }
@@ -58,7 +58,7 @@ class CourierEventHandler implements ICourierEventHandler {
       case "Mqtt Connect Discarded":
         eventStreamController.add(MQTTConnectDiscardedEvent(
             name: eventName,
-            reason: eventProps['reason'] ?? -1,
+            reason: eventProps['reasonMessage'] ?? "",
             connectionInfo: connectionInfo));
         break;
 

@@ -69,7 +69,7 @@ final class EventHandler: ICourierEventHandler {
             
         case let .connectDiscarded(reason):
             eventMap["name"] = "Mqtt Connect Discarded"
-            eventMap["properties"] = ["reason": reason]
+            eventMap["properties"] = ["reasonMessage": reason]
             
         case let .subscribeAttempt(topics):
             os_log("Courier event: subscribeAttempt event")

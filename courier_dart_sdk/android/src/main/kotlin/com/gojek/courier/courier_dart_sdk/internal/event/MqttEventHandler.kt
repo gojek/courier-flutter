@@ -13,7 +13,7 @@ class MqttEventHandler(val eventConsumer: (Map<String, Any>) -> Unit) : EventHan
                 handleEvent("Mqtt Connect Attempt", mapOf("optimalKeepAlive" to mqttEvent.isOptimalKeepAlive), connectionInfo)
             }
             is MqttEvent.MqttConnectDiscardedEvent -> {
-                handleEvent("Mqtt Connect Discarded", mapOf("reason" to mqttEvent.reason), connectionInfo)
+                handleEvent("Mqtt Connect Discarded", mapOf("reasonMessage" to mqttEvent.reason), connectionInfo)
             }
             is MqttEvent.MqttConnectSuccessEvent -> {
                 handleEvent("Mqtt Connect Success", mapOf("timeTaken" to mqttEvent.timeTakenMillis), connectionInfo)
