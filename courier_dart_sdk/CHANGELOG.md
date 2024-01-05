@@ -1,3 +1,6 @@
+## 0.0.18
+* Fix Invalid reasonType in MQTT Connect Discarded Courier Event
+
 ## 0.0.17
 * Fix invalid mapping for connection info in CourierEvent
 
