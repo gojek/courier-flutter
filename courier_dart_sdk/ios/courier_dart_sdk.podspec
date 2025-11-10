@@ -4,7 +4,7 @@
 #
 Pod::Spec.new do |s|
   s.name             = 'courier_dart_sdk'
-  s.version          = '0.0.1'
+  s.version          = '0.1.0'
   s.summary          = 'Flutter SDK for Courier'
   s.description      = <<-DESC
 Flutter SDK for Courier
