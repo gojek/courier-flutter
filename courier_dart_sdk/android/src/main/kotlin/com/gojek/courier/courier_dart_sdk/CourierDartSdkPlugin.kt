@@ -102,7 +102,7 @@ class CourierDartSdkPlugin : FlutterPlugin, MethodCallHandler {
         executor.execute {
             try {
                 Log.d(
-                    "Courier#varis",
+                    TAG,
                     "Executing async block on thread: ${Thread.currentThread().name}"
                 )
                 val response = block()
@@ -121,7 +121,7 @@ class CourierDartSdkPlugin : FlutterPlugin, MethodCallHandler {
     }
 
     private fun initialise(arguments: Map<String, Any>?) {
-        Log.d("Courier#varis", "Initialising Courier Dart SDK")
+        Log.d(TAG, "Initialising Courier Dart SDK")
         if (arguments.isNullOrEmpty()) {
             throw IllegalArgumentException("Arguments must be present while initialising the sdk")
         }
@@ -190,7 +190,7 @@ class CourierDartSdkPlugin : FlutterPlugin, MethodCallHandler {
     }
 
     private fun connect(arguments: Map<String, Any>?) {
-        Log.d("Courier#varis", "Connecting Courier Dart SDK")
+        Log.d(TAG, "Connecting Courier Dart SDK")
         if (arguments.isNullOrEmpty()) {
             throw IllegalArgumentException("Arguments must be present while connecting")
         }
@@ -214,7 +214,7 @@ class CourierDartSdkPlugin : FlutterPlugin, MethodCallHandler {
     }
 
     private fun disconnect(arguments: Map<String, Any>?) {
-        Log.d("Courier#varis", "Disconnecting Courier Dart SDK")
+        Log.d(TAG, "Disconnecting Courier Dart SDK")
         if (arguments.isNullOrEmpty()) {
             throw IllegalArgumentException("Arguments must be present while disconnecting")
         }
@@ -236,7 +236,7 @@ class CourierDartSdkPlugin : FlutterPlugin, MethodCallHandler {
         }
         val qos = arguments["qos"]!! as Int
         val topic = arguments["topic"]!! as String
-        Log.d("Courier#varis", "Subscribing Courier Dart SDK to topic: $topic with QoS: $qos")
+        Log.d(TAG, "Subscribing Courier Dart SDK to topic: $topic with QoS: $qos")
         mqttClientDelegate.subscribe(topic, qos.toQoS())
     }
 
@@ -245,7 +245,7 @@ class CourierDartSdkPlugin : FlutterPlugin, MethodCallHandler {
             throw IllegalArgumentException("Arguments must be present while unsubscribing")
         }
         val topic = arguments["topic"]!! as String
-        Log.d("Courier#varis", "Unsubscribing Courier Dart SDK from topic: $topic")
+        Log.d(TAG, "Unsubscribing Courier Dart SDK from topic: $topic")
         mqttClientDelegate.unsubscribe(topic)
     }
 
@@ -256,7 +256,7 @@ class CourierDartSdkPlugin : FlutterPlugin, MethodCallHandler {
         val message = arguments["message"]!! as ByteArray
         val qos = arguments["qos"]!! as Int
         val topic = arguments["topic"]!! as String
-        Log.d("Courier#varis", "Sending message to topic: $topic with QoS: $qos")
+        Log.d(TAG, "Sending message to topic: $topic with QoS: $qos")
         mqttClientDelegate.send(message, qos.toQoS(), topic)
     }
 
@@ -330,5 +330,9 @@ class CourierDartSdkPlugin : FlutterPlugin, MethodCallHandler {
                 })
             }
         }
+    }
+
+    companion object {
+        const val TAG = "CourierDartSdkPlugin"
     }
 }
