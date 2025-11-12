@@ -34,6 +34,9 @@ jobs:
     runs-on: macos-latest
     steps:
     - uses: actions/checkout@v3
+    - uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: '3.0'
     - uses: subosito/flutter-action@v2
       with:
         flutter-version: '3.0.3'
