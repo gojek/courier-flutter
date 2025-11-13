@@ -37,6 +37,8 @@ jobs:
     - uses: ruby/setup-ruby@v1
       with:
         ruby-version: '3.1.7'
+    - name: Install CocoaPods
+      run: gem install cocoapods
     - uses: subosito/flutter-action@v2
       with:
         flutter-version: '3.0.3'
