@@ -1,3 +1,6 @@
+## 0.1.0
+* Refactor CourierDartSdkPlugin to improve method handling and add async execution for method calls. 
+
 ## 0.0.18
 * Fix Invalid reasonType in MQTT Connect Discarded Courier Event
 

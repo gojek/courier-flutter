@@ -10,19 +10,26 @@ jobs:
   deploy:
     name: Publish GH Pages
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - uses: actions/setup-node@v3
         with:
-          node-version: '16.x'
+          node-version: '20.x'
 
       - name: Build website
         run: |
           cd docs
           yarn install --frozen-lockfile
           yarn build
+      - name: Setup git config
+        run: |
+          git remote set-url origin https://github.com/gojek/courier-flutter.git
       - name: Release to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
+        uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./docs/build
