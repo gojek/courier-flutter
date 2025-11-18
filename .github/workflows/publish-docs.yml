@@ -25,6 +25,9 @@ jobs:
           cd docs
           yarn install --frozen-lockfile
           yarn build
+      - name: Setup git config
+        run: |
+          git remote set-url origin https://github.com/gojek/courier-flutter.git
       - name: Release to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
