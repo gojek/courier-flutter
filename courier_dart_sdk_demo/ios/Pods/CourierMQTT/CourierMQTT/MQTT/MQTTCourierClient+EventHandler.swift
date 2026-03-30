@@ -3,7 +3,7 @@ import UIKit
 
 extension MQTTCourierClient: ICourierEventHandler {
 
-    func onEvent(_ event: CourierEvent) {
+     func onEvent(_ event: CourierEvent) {
         switch event.type {
         case .connectionAttempt:
             onMQTTConnectAttempt()
@@ -61,8 +61,10 @@ extension MQTTCourierClient: ICourierEventHandler {
     }
 
     private func onAppBackground() {
-        self.backgroundTaskID = UIApplication.shared.beginBackgroundTask(withName: "Cleanup pending unsub") { [weak self] in
-            self?.invalidateBackgroundTask()
+        Task { @MainActor in
+            self.backgroundTaskID = UIApplication.shared.beginBackgroundTask(withName: "Cleanup pending unsub") { [weak self] in
+                self?.invalidateBackgroundTask()
+            }
         }
 
         #if DEBUG || INTEGRATION
@@ -82,9 +84,11 @@ extension MQTTCourierClient: ICourierEventHandler {
     }
     
     private func invalidateBackgroundTask() {
-        if let backgroundTaskID = self.backgroundTaskID {
-            UIApplication.shared.endBackgroundTask(backgroundTaskID)
-            self.backgroundTaskID = UIBackgroundTaskIdentifier.invalid
+        Task { @MainActor in
+            if let backgroundTaskID = self.backgroundTaskID {
+                UIApplication.shared.endBackgroundTask(backgroundTaskID)
+                self.backgroundTaskID = UIBackgroundTaskIdentifier.invalid
+            }
         }
     }
 }

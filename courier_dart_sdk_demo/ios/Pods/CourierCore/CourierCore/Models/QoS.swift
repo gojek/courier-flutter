@@ -1,6 +1,6 @@
 import Foundation
 
-public enum QoS: Int {
+public enum QoS: Int, Sendable {
     
     // http://docs.oasis-open.org/mqtt/mqtt/v3.1.1/os/mqtt-v3.1.1-os.html#_Toc398718100
     case zero = 0

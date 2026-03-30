@@ -12,4 +12,5 @@ protocol IMQTTConfiguration {
     var messageCleanupInterval: TimeInterval { get }
     
     var isMQTTPersistentEnabled: Bool { get }
+    var isMQTTMemoryPersistentEnabled: Bool { get }
 }

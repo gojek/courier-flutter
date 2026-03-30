@@ -1,4 +1,4 @@
-framework module CourierMQTT {
+module CourierMQTT {
   umbrella header "CourierMQTT-umbrella.h"
 
   export *

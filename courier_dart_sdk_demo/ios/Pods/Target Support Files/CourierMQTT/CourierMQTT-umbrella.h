@@ -10,7 +10,6 @@
 #endif
 #endif
 
-#import "CourierMQTT-Bridging-Header.h"
 
 FOUNDATION_EXPORT double CourierMQTTVersionNumber;
 FOUNDATION_EXPORT const unsigned char CourierMQTTVersionString[];

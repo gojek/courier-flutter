@@ -1,7 +1,12 @@
 import CourierCore
 import Foundation
 
-final class MqttMessageReceiverListener: IMessageReceiveListener {
+/// Marked this class as `@unchecked Sendable` because it holds non-Sendable properties like `DispatchQueue`,
+/// `Debouncer`, and `IncomingMessagePersistenceProtocol`. However, all shared mutable state is managed safely
+/// using `@Atomic`, and interactions with shared resources (e.g. message persistence and dispatching) are confined to
+/// controlled dispatch queues. Given this controlled access pattern, it's safe to treat this type as Sendable in our use case.
+
+final class MqttMessageReceiverListener: IMessageReceiveListener, @unchecked Sendable {
     private var publishSubject: PublishSubject<MQTTPacket>
     private let publishSubjectDispatchQueue: DispatchQueue
     
@@ -53,21 +58,21 @@ final class MqttMessageReceiverListener: IMessageReceiveListener {
     }
 
     func messageArrived(data: Data, topic: String, qos: QoS) {
-        let message = MQTTPacket(data: data, topic: topic, qos: qos)
-        
         if IsIncomingMessagePersistenceEnabled, qos != .zero {
             publishSubjectDispatchQueue.async { [weak self] in
                 guard let self = self else { return }
+                let safeMessage = MQTTPacket(data: data, topic: topic, qos: qos)
                 do {
-                    try self.messagePersistence.saveMessage(message)
+                    try self.messagePersistence.saveMessage(safeMessage)
                 } catch {
-                    self.publishSubject.onNext(message)
+                    self.publishSubject.onNext(safeMessage)
                 }
                 self.handlePersistedMessages()
             }
         } else {
             publishSubjectDispatchQueue.async { [weak self] in
-                self?.publishSubject.onNext(message)
+                let safeMessage = MQTTPacket(data: data, topic: topic, qos: qos)
+                self?.publishSubject.onNext(safeMessage)
             }
         }
     }
@@ -83,9 +88,10 @@ final class MqttMessageReceiverListener: IMessageReceiveListener {
     func scheduleCleanupExpiredMessages() {
         DispatchQueue.main.async { [weak self] in
             self?.debouncer.renewInterval()
-            self?.debouncer.handler = {
-                self?.publishSubjectDispatchQueue.async {
-                    self?.cleanupExpiredMessages()
+            self?.debouncer.handler = { [weak self] in
+                guard let self = self else { return }
+                self.publishSubjectDispatchQueue.async {
+                    self.cleanupExpiredMessages()
                 }
             }
         }
@@ -94,7 +100,7 @@ final class MqttMessageReceiverListener: IMessageReceiveListener {
     private func processMessages() {
         let topics = Array<String>(self.messagePublisherDict.keys)
         let messages = self.messagePersistence.getAllMessages(topics)
-        guard messages.count > 0 else {
+        guard !messages.isEmpty else {
             printDebug("COURIER Incoming Message - No persisted incoming messages for topics: \(topics)")
             return
         }
@@ -109,7 +115,7 @@ final class MqttMessageReceiverListener: IMessageReceiveListener {
             printDebug("COURIER Incoming Message - Successfully processed message id:\(message.id) topic:\(message.topic)")
         }
         
-        if messageIDsToDelete.count > 0 {
+        if !messageIDsToDelete.isEmpty {
             self.messagePersistence.deleteMessages(messageIDsToDelete)
         }
         scheduleCleanupExpiredMessages()
