@@ -1,5 +1,5 @@
 # Uncomment this line to define a global platform for your project
-platform :ios, '12.0'
+platform :ios, '15.0'
 source 'https://cdn.cocoapods.org/'
 
 # CocoaPods analytics sends network stats synchronously affecting flutter build latency.
@@ -27,19 +27,30 @@ end
 require File.expand_path(File.join('packages', 'flutter_tools', 'bin', 'podhelper'), flutter_root)
 
 target 'Runner' do
-  use_frameworks!
+  use_frameworks! :linkage => :static
   use_modular_headers!
-  pod 'CourierCore', '0.0.19', :modular_headers => true
-  pod 'CourierMQTT', '0.0.19', :modular_headers => true
-  pod 'CourierMQTTChuck', '0.0.19', :modular_headers => true
+  pod 'CourierCore', '1.0.10', :modular_headers => true
+  pod 'CourierMQTT', '1.0.10', :modular_headers => true
+  pod 'CourierMQTTChuck', :modular_headers => true, tag: '1.0.10',
+    :git => 'git@github.com:gojek/courier-iOS.git'
   flutter_install_all_ios_pods File.dirname(File.realpath(__FILE__))
+end
+
+pre_install do |installer|
+  installer.pod_targets.each do |pod|
+    if pod.name.eql?('CourierMQTT') || pod.name.eql?('CourierMQTTChuck')
+      def pod.build_type
+        Pod::BuildType.static_library
+      end
+    end
+  end
 end
 
 post_install do |installer|
   installer.pods_project.targets.each do |target|
     flutter_additional_ios_build_settings(target)
     target.build_configurations.each do |config|
-      config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '12.0'
+      config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '15.0'
 
         if target.name == "CourierCore" || target.name == "CourierMQTT"
             if config.name == 'Debug'

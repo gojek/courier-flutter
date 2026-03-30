@@ -26,6 +26,8 @@ public struct MQTTClientConfig {
 
     public let isMessagePersistenceEnabled: Bool
 
+    public let isMessageInMemoryPersistenceEnabled: Bool
+
     public let autoReconnectInterval: UInt16
 
     public let maxAutoReconnectInterval: UInt16
@@ -53,6 +55,7 @@ public struct MQTTClientConfig {
         authService: IConnectionServiceProvider,
         messageAdapters: [MessageAdapter] = [JSONMessageAdapter()],
         isMessagePersistenceEnabled: Bool = false,
+        isMessageInMemoryPersistenceEnabled: Bool = false,
         autoReconnectInterval: UInt16 = 5,
         maxAutoReconnectInterval: UInt16 = 10,
         enableAuthenticationTimeout: Bool = false,
@@ -67,6 +70,7 @@ public struct MQTTClientConfig {
         self.authService = authService
         self.messageAdapters = messageAdapters
         self.isMessagePersistenceEnabled = isMessagePersistenceEnabled
+        self.isMessageInMemoryPersistenceEnabled = isMessageInMemoryPersistenceEnabled
         self.autoReconnectInterval = autoReconnectInterval
         self.maxAutoReconnectInterval = maxAutoReconnectInterval
         self.enableAuthenticationTimeout = enableAuthenticationTimeout

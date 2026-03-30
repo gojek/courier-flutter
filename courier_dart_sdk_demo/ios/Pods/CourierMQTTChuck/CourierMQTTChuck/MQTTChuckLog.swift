@@ -23,4 +23,15 @@ public struct MQTTChuckLog: Identifiable {
     public let dataString: String?
     
     public let timestamp = Date()
+    
+    public var isConnectOptionsAvailable: Bool { host != nil && !host!.isEmpty}
+    
+    public var host: String?
+    public var port: Int?
+    public var keepAlive: Int?
+    public var clientId: String?
+    public var isCleanSession: Bool?
+    public var userProperties: [String: String]?
+    public var alpn: [String]?
+    public var scheme: String?
 }

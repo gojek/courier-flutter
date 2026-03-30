@@ -1,6 +1,9 @@
 import Foundation
 
-final class Debouncer {
+/// Marked `Debouncer` as `@unchecked Sendable` because it uses `Timer`, which is not `Sendable`,
+/// and it maintains mutable state (`handler`, `timer`) that is assumed to be accessed from the main thread only.
+/// Concurrency safety is ensured by restricting use to a single-threaded (typically main-thread) context.
+final class Debouncer: @unchecked Sendable {
     
     private let timeInterval: TimeInterval
     private var timer: Timer?

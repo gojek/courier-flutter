@@ -1,4 +1,4 @@
-framework module CourierMQTTChuck {
+module CourierMQTTChuck {
   umbrella header "CourierMQTTChuck-umbrella.h"
 
   export *

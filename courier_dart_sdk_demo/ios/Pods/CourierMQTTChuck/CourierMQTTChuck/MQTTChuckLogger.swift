@@ -7,14 +7,16 @@
 
 import Foundation
 import CourierCore
-import CourierMQTT
 import MQTTClientGJ
+import CourierMQTT
 
 public protocol MQTTChuckLoggerDelegate {
     func mqttChuckLoggerDidUpdateLogs(_ logs: [MQTTChuckLog])
 }
 
-public class MQTTChuckLogger {
+// Marked as @unchecked Sendable because access to mutable state (`logs` and `delegate`)
+// is always synchronized by dispatching updates to the main queue, ensuring thread safety.
+public class MQTTChuckLogger: @unchecked Sendable {
     
     public private(set) var logs = [MQTTChuckLog]()
     public var delegate: MQTTChuckLoggerDelegate?
@@ -23,7 +25,9 @@ public class MQTTChuckLogger {
     
     public init() {
         NotificationCenter.default.addObserver(self, selector: #selector(didReceiveMQTTChuckNotification), name: mqttChuckNotification, object: nil)
-        CourierMQTTChuck.isEnabled = true
+        Task {
+            await CourierMQTTChuck.shared.setEnabled(true)
+        }
     }
         
     @objc func didReceiveMQTTChuckNotification(_ notification: Notification) {
@@ -55,7 +59,7 @@ public class MQTTChuckLogger {
             }
         }
         
-        let log = MQTTChuckLog(
+        var log = MQTTChuckLog(
             commandType: type.debugDescription,
             qos: "\(qos)",
             messageId: Int(mid),
@@ -64,20 +68,38 @@ public class MQTTChuckLogger {
             dataLength: data?.count,
             dataString: dataString)
         
-        logs.append(log)
-        if logs.count >= logsMaxSize {
-            logs.removeFirst(10)
+        if let connectOptions = userInfo["connectOptions"] as? [String: Any] {
+            log.host = connectOptions["host"] as? String
+            log.port = connectOptions["port"] as? Int
+            log.keepAlive = connectOptions["keepAlive"] as? Int
+            log.clientId = connectOptions["clientId"] as? String
+            log.isCleanSession = connectOptions["isCleanSession"] as? Bool
+            log.userProperties = connectOptions["userProperties"] as? [String: String]
+            log.alpn = connectOptions["alpn"] as? [String]
+            log.scheme = connectOptions["scheme"] as? String
         }
-        delegate?.mqttChuckLoggerDidUpdateLogs(logs)
+        
+        Task { @MainActor in
+            self.logs.append(log)
+            if self.logs.count >= self.logsMaxSize {
+                self.logs.removeFirst(10)
+            }
+
+            self.delegate?.mqttChuckLoggerDidUpdateLogs(logs)
+        }
     }
     
     public func clearLogs() {
-        self.logs = []
-        delegate?.mqttChuckLoggerDidUpdateLogs(logs)
+        Task { @MainActor in
+            self.logs = []
+            self.delegate?.mqttChuckLoggerDidUpdateLogs([])
+        }
     }
     
     deinit {
-        CourierMQTTChuck.isEnabled = false
+        Task {
+            await CourierMQTTChuck.shared.setEnabled(false)
+        }
     }
     
 }

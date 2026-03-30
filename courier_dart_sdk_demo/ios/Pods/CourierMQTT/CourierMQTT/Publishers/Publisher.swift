@@ -1,6 +1,7 @@
 import CourierCore
 import Foundation
 
+
 public final class PassthroughSubject<Output, Failure: Error>: AnyPublisher<Output, Failure> {
     
     private var observable: Observable<Output>

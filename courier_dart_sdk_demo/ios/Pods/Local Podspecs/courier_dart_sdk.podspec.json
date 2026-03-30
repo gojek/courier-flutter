@@ -1,6 +1,6 @@
 {
   "name": "courier_dart_sdk",
-  "version": "0.0.1",
+  "version": "0.2.0",
   "summary": "Flutter SDK for Courier",
   "description": "Flutter SDK for Courier",
   "homepage": "http://example.com",
@@ -15,26 +15,24 @@
   },
   "source_files": "Classes/**/*",
   "dependencies": {
-    "Flutter": [
-
-    ],
+    "Flutter": [],
     "CourierCore": [
-      "0.0.19"
+      "1.0.10"
     ],
     "CourierMQTT": [
-      "0.0.19"
+      "1.0.10"
     ],
     "CourierMQTTChuck": [
-      "0.0.19"
+      "1.0.10"
     ]
   },
   "platforms": {
-    "ios": "11.0"
+    "ios": "15.0"
   },
   "pod_target_xcconfig": {
     "DEFINES_MODULE": "YES",
     "EXCLUDED_ARCHS[sdk=iphonesimulator*]": "i386"
   },
-  "swift_versions": "5.0",
-  "swift_version": "5.0"
+  "swift_versions": "6.0",
+  "swift_version": "6.0"
 }

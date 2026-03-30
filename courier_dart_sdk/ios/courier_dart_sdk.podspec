@@ -4,7 +4,7 @@
 #
 Pod::Spec.new do |s|
   s.name             = 'courier_dart_sdk'
-  s.version          = '0.1.0'
+  s.version          = '0.2.0'
   s.summary          = 'Flutter SDK for Courier'
   s.description      = <<-DESC
 Flutter SDK for Courier
@@ -15,12 +15,12 @@ Flutter SDK for Courier
   s.source           = { :path => '.' }
   s.source_files = 'Classes/**/*'
   s.dependency 'Flutter'
-  s.dependency 'CourierCore', '0.0.19'
-  s.dependency 'CourierMQTT', '0.0.19'
-  s.dependency 'CourierMQTTChuck', '0.0.19'
-  s.platform = :ios, '11.0'
+  s.dependency 'CourierCore', '1.0.10'
+  s.dependency 'CourierMQTT', '1.0.10'
+  s.dependency 'CourierMQTTChuck', '1.0.10'
+  s.platform = :ios, '15.0'
 
   # Flutter.framework does not contain a i386 slice.
   s.pod_target_xcconfig = { 'DEFINES_MODULE' => 'YES', 'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'i386' }
-  s.swift_version = '5.0'
+  s.swift_version = '6.0'
 end

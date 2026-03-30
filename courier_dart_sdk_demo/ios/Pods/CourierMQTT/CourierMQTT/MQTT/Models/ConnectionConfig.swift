@@ -8,5 +8,6 @@ struct ConnectionConfig {
     var connectTimeoutPolicy: IConnectTimeoutPolicy
     var idleActivityTimeoutPolicy: IdleActivityTimeoutPolicyProtocol
     
-    var isPersistent: Bool
+    var isDatabasePersistent: Bool
+    var inMemoryPersistent: Bool
 }

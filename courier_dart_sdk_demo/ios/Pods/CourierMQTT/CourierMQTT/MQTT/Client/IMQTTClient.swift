@@ -12,7 +12,7 @@ protocol IMQTTClient {
 
     func connect(connectOptions: ConnectOptions)
     func reconnect()
-    func disconnect()
+    func disconnect(isInternal: Bool)
 
     func subscribe(_ topics: [(topic: String, qos: QoS)])
     func unsubscribe(_ topics: [String])
