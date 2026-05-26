@@ -1,3 +1,6 @@
+## 0.1.1
+* Update iOS podspec to remove version pins on CourierCore, CourierMQTT, CourierMQTTChuck and bump minimum iOS platform to 15.0
+
 ## 0.1.0
 * Refactor CourierDartSdkPlugin to improve method handling and add async execution for method calls. 
 

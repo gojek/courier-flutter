@@ -15,12 +15,18 @@ Flutter SDK for Courier
   s.source           = { :path => '.' }
   s.source_files = 'Classes/**/*'
   s.dependency 'Flutter'
-  s.dependency 'CourierCore', '0.0.19'
-  s.dependency 'CourierMQTT', '0.0.19'
-  s.dependency 'CourierMQTTChuck', '0.0.19'
-  s.platform = :ios, '11.0'
+  s.dependency 'CourierCore'
+  s.dependency 'CourierMQTT'
+  s.dependency 'CourierMQTTChuck'
+  s.platform = :ios, '15.0'
 
   # Flutter.framework does not contain a i386 slice.
   s.pod_target_xcconfig = { 'DEFINES_MODULE' => 'YES', 'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'i386' }
   s.swift_version = '5.0'
+
+  # Note: CourierCore, CourierMQTT, and CourierMQTTChuck are not published to CocoaPods trunk.
+  # Consuming apps must add these to their Podfile:
+  #   pod 'CourierCore', :git => 'GitHub - gojek/courier-iOS: Courier iOS', :tag => '1.0.17', :modular_headers => true
+  #   pod 'CourierMQTT', :git => 'GitHub - gojek/courier-iOS: Courier iOS', :tag => '1.0.17', :modular_headers => true
+  #   pod 'CourierMQTTChuck', :git => 'GitHub - gojek/courier-iOS: Courier iOS', :tag => '1.0.17', :modular_headers => true
 end
