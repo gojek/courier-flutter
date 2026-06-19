@@ -1,7 +1,7 @@
 name: courier_dart_sdk
 description: Flutter SDK for Courier
-version: 0.1.1
-homepage: GitHub - gojek/courier-flutter: Dart port of our popular courier library
+version: 0.1.2
+homepage: https://github.com/gojek/courier-flutter
 
 environment:
   sdk: ">=2.12.0 <3.0.0"

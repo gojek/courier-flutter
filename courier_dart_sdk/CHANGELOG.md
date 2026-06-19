@@ -1,3 +1,6 @@
+## 0.1.2
+* Revert the CourierDartSdkPlugin changes on by v0.1.0 changes due to issues multiple registrations
+
 ## 0.1.1
 * Update iOS podspec to remove version pins on CourierCore, CourierMQTT, CourierMQTTChuck and bump minimum iOS platform to 15.0
 

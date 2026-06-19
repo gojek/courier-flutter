@@ -49,7 +49,7 @@ packages:
       path: "../courier_dart_sdk"
       relative: true
     source: path
-    version: "0.0.18"
+    version: "0.1.2"
   courier_protobuf:
     dependency: "direct main"
     description:
