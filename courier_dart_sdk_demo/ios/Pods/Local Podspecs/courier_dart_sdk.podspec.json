@@ -1,6 +1,6 @@
 {
   "name": "courier_dart_sdk",
-  "version": "0.1.0",
+  "version": "0.1.2",
   "summary": "Flutter SDK for Courier",
   "description": "Flutter SDK for Courier",
   "homepage": "http://example.com",
@@ -17,13 +17,13 @@
   "dependencies": {
     "Flutter": [],
     "CourierCore": [
-      "1.0.17"
+      "1.0.19"
     ],
     "CourierMQTT": [
-      "1.0.17"
+      "1.0.19"
     ],
     "CourierMQTTChuck": [
-      "1.0.17"
+      "1.0.19"
     ]
   },
   "platforms": {
