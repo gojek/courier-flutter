@@ -1,3 +1,6 @@
+## 0.1.3
+* Release version 0.1.3
+
 ## 0.1.2
 * Revert the CourierDartSdkPlugin changes on by v0.1.0 changes due to issues multiple registrations
 
