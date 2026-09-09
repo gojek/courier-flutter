@@ -1,3 +1,7 @@
+## 0.1.4
+* Distribute pods as dynamic/static as per client apps
+* Update contract
+
 ## 0.1.3
 * Release version 0.1.3
 
