@@ -313,6 +313,14 @@ class CourierEventHandler implements ICourierEventHandler {
             connectionInfo: connectionInfo));
         break;
 
+      case "Operation Discarded":
+        eventStreamController.add(OperationDiscardedEvent(
+            name: eventName,
+            operationName: eventProps['operationName'] ?? '',
+            reason: eventProps['reason'] ?? '',
+            connectionInfo: connectionInfo));
+        break;
+
       default:
         break;
     }

@@ -1,3 +1,8 @@
+## 0.2.0
+* Update native Courier Android SDK from 0.0.3 to 0.3.10
+* Add the Operation Discarded event
+* Use the MqttConnectOptions builder and register the event handler on the client
+
 ## 0.1.2
 * Revert the CourierDartSdkPlugin changes on by v0.1.0 changes due to issues multiple registrations
 
