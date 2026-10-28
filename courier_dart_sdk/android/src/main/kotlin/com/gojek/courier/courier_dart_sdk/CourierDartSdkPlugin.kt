@@ -151,15 +151,15 @@ class CourierDartSdkPlugin: FlutterPlugin, MethodCallHandler {
       throw IllegalArgumentException("Arguments must be present while connecting")
     }
     mainThreadHandler.removeCallbacks(disconnectRunnable)
-    val mqttConnectOptions = MqttConnectOptions(
-        clientId = arguments["clientId"]!! as String,
-        username = arguments["username"]!! as String,
-        password = arguments["password"]!! as String,
-        serverUris = listOf(ServerUri(arguments["host"]!! as String, arguments["port"] as Int, arguments["scheme"]!! as String)),
-        keepAlive = KeepAlive(arguments["keepAliveSeconds"] as Int),
-        isCleanSession = arguments["cleanSession"]!! as Boolean,
-        readTimeoutSecs = readTimeoutSeconds
-    )
+    val mqttConnectOptions = MqttConnectOptions.Builder()
+        .clientId(arguments["clientId"]!! as String)
+        .userName(arguments["username"]!! as String)
+        .password(arguments["password"]!! as String)
+        .serverUris(listOf(ServerUri(arguments["host"]!! as String, arguments["port"] as Int, arguments["scheme"]!! as String)))
+        .keepAlive(KeepAlive(arguments["keepAliveSeconds"] as Int))
+        .cleanSession(arguments["cleanSession"]!! as Boolean)
+        .readTimeoutSecs(readTimeoutSeconds)
+        .build()
     mqttClientDelegate.connect(mqttConnectOptions)
   }
 
