@@ -55,6 +55,9 @@ post_install do |installer|
         
         if target.name == 'CourierMQTT' || target.name == 'CourierMQTTChuck' || target.name == 'CourierCore'
           config.build_settings['BUILD_LIBRARY_FOR_DISTRIBUTION'] = 'YES'
+          # The 1.0.17 podspecs declare Swift 6, but CourierMQTT's bundled RxSwift code
+          # fails Swift 6 strict concurrency checks. Compile in Swift 5 language mode.
+          config.build_settings['SWIFT_VERSION'] = '5.0'
         end
     end
   end
