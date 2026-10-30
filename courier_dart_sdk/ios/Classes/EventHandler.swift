@@ -187,7 +187,7 @@ final class EventHandler: ICourierEventHandler {
                 "qos": qos.rawValue,
                 "sizeBytes": sizeBytes
             ]
-        case let .messageSendSuccess(topic, qos, sizeBytes):
+        case let .messageSendSuccess(topic, qos, sizeBytes, _):
             os_log("Courier event: messageSendSuccess event")
             eventMap["name"] = "Mqtt Message Send Success"
             eventMap["properties"] = [
