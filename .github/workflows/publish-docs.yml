@@ -23,12 +23,14 @@ jobs:
       - name: Build website
         run: |
           cd docs
-          yarn install --frozen-lockfile
-          yarn build
+          npm ci
+          npm run build
       - name: Setup git config
+        if: github.event_name == 'push'
         run: |
           git remote set-url origin https://github.com/gojek/courier-flutter.git
       - name: Release to GitHub Pages
+        if: github.event_name == 'push'
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
