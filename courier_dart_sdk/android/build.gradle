@@ -46,7 +46,7 @@ android {
 }
 
 ext {
-    courier_version = "0.0.3"
+    courier_version = "0.1.0"
 }
 
 dependencies {
