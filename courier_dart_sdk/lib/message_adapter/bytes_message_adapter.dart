@@ -1,5 +1,4 @@
 import 'dart:typed_data';
-import 'dart:developer';
 import 'package:courier_dart_sdk/message_adapter/message_adapter.dart';
 
 class BytesMessageAdapter extends MessageAdapter {

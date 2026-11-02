@@ -289,7 +289,7 @@ class _CourierClientImpl implements CourierClient {
 
     try {
       log('Message receive: ${utf8.decode(bytes)} on topic: $topic');
-    } on Exception catch (e) {
+    } on Exception {
       log('Message receive: failed to decode using utf 8');
     }
 
