@@ -1,20 +1,31 @@
 name: Publish to Pub.dev
 
+# Uses pub.dev automated publishing (GitHub OIDC), so no credentials are stored in the repo.
+# Requires "Automated publishing" to be enabled on pub.dev for courier_dart_sdk with
+# repository gojek/courier-flutter and tag pattern {{version}}.
 on:
   push:
-    tags: 
-      - '*'   
+    tags:
+      - '[0-9]+.[0-9]+.[0-9]+*'
 
 jobs:
   publishing:
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write # Required to exchange the GitHub OIDC token for a pub.dev token
     steps:
-      - name: 'Checkout'
-        uses: actions/checkout@v2
-        
-      - name: '>> Dart package <<'
-        uses: k-paxian/dart-package-publisher@master
+      - uses: actions/checkout@v4
+      - uses: dart-lang/setup-dart@v1
+      - uses: subosito/flutter-action@v2
         with:
-          credentialJson: ${{ secrets.CREDENTIAL_JSON }}
-          relativePath: courier_dart_sdk
-          dryRunOnly: true # set to false for real publishing later
+          flutter-version: '3.38.1'
+          channel: 'stable'
+      - name: Install dependencies
+        working-directory: courier_dart_sdk
+        run: flutter pub get
+      - name: Publish (dry run)
+        working-directory: courier_dart_sdk
+        run: flutter pub publish --dry-run
+      - name: Publish
+        working-directory: courier_dart_sdk
+        run: flutter pub publish --force
