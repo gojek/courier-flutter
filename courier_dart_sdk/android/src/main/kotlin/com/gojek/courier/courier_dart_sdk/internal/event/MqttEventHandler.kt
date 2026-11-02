@@ -151,6 +151,9 @@ class MqttEventHandler(val eventConsumer: (Map<String, Any>) -> Unit) : EventHan
             is MqttEvent.HandlerThreadNotAliveEvent -> {
                 handleEvent("Handler Thread Not Alive", mapOf("isInterrupted" to mqttEvent.isInterrupted, "state" to mqttEvent.state.name),  connectionInfo)
             }
+            is MqttEvent.OperationDiscardedEvent -> {
+                handleEvent("Operation Discarded", mapOf("operationName" to mqttEvent.name, "reason" to mqttEvent.reason), connectionInfo)
+            }
             else -> {
                 // do nothing
             }
