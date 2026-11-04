@@ -12,19 +12,13 @@ class ConnectRetryPolicy(
     private val random = Random()
 
     @Synchronized
-    override fun getConnRetryTimeSecs(): Int {
+    override fun getConnRetryTimeSecs(forceExp: Boolean): Int {
         if (currentRetryTime >= maxTimeSecs) {
             return maxTimeSecs.withJitter()
         }
         currentRetryTime = min(maxTimeSecs, currentRetryTime * 2)
         return currentRetryTime.withJitter()
     }
-
-    override fun getConnRetryTimeSecs(forceExp: Boolean) = 0
-
-    override fun getCurrentRetryTime() = 0
-
-    override fun getRetryCount() = 0
 
     @Synchronized
     override fun resetParams() {

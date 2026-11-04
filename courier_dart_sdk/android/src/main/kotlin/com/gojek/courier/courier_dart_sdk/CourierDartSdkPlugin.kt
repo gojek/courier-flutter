@@ -25,6 +25,7 @@ import com.gojek.mqtt.model.MqttConnectOptions
 import com.gojek.mqtt.model.ServerUri
 import com.gojek.mqtt.policies.connecttimeout.ConnectTimeoutConfig
 import com.gojek.mqtt.policies.connecttimeout.ConnectTimeoutPolicy
+import com.gojek.timer.pingsender.TimerPingSenderConfig
 import com.gojek.timer.pingsender.TimerPingSenderFactory
 
 import io.flutter.embedding.engine.plugins.FlutterPlugin
@@ -95,7 +96,7 @@ class CourierDartSdkPlugin: FlutterPlugin, MethodCallHandler {
     val activityCheckIntervalSeconds = arguments["activityCheckIntervalSeconds"]!! as Int
     val inactivityTimeoutSeconds = arguments["inactivityTimeoutSeconds"]!! as Int
     val pingSender = if (arguments["timerPingSenderEnabled"]!! as Boolean) {
-      TimerPingSenderFactory.create()
+      TimerPingSenderFactory.create(TimerPingSenderConfig())
     } else {
       AlarmPingSenderFactory.createMqttPingSender(context, AlarmPingSenderConfig())
     }
@@ -131,7 +132,6 @@ class CourierDartSdkPlugin: FlutterPlugin, MethodCallHandler {
         ),
         pingSender = pingSender,
         mqttInterceptorList = if (enableMqttChuck) listOf(MqttChuckInterceptor(context, MqttChuckConfig())) else emptyList(),
-        eventHandler = MqttEventHandler(::handleEvent),
         authFailureHandler = object : AuthFailureHandler {
           override fun handleAuthFailure() {
             handleAuthFailureInternal()
@@ -139,6 +139,7 @@ class CourierDartSdkPlugin: FlutterPlugin, MethodCallHandler {
         }
     )
     mqttClientDelegate = MqttClientDelegate(context, mqttConfiguration)
+    mqttClientDelegate.addEventHandler(MqttEventHandler(::handleEvent))
     mqttClientDelegate.receive(object : MessageListener {
       override fun onMessageReceived(mqttMessage: MqttMessage) {
         handleMqttMessageReceive(mqttMessage)
@@ -151,15 +152,15 @@ class CourierDartSdkPlugin: FlutterPlugin, MethodCallHandler {
       throw IllegalArgumentException("Arguments must be present while connecting")
     }
     mainThreadHandler.removeCallbacks(disconnectRunnable)
-    val mqttConnectOptions = MqttConnectOptions(
-        clientId = arguments["clientId"]!! as String,
-        username = arguments["username"]!! as String,
-        password = arguments["password"]!! as String,
-        serverUris = listOf(ServerUri(arguments["host"]!! as String, arguments["port"] as Int, arguments["scheme"]!! as String)),
-        keepAlive = KeepAlive(arguments["keepAliveSeconds"] as Int),
-        isCleanSession = arguments["cleanSession"]!! as Boolean,
-        readTimeoutSecs = readTimeoutSeconds
-    )
+    val mqttConnectOptions = MqttConnectOptions.Builder()
+        .clientId(arguments["clientId"]!! as String)
+        .userName(arguments["username"]!! as String)
+        .password(arguments["password"]!! as String)
+        .serverUris(listOf(ServerUri(arguments["host"]!! as String, arguments["port"] as Int, arguments["scheme"]!! as String)))
+        .keepAlive(KeepAlive(arguments["keepAliveSeconds"] as Int))
+        .cleanSession(arguments["cleanSession"]!! as Boolean)
+        .readTimeoutSecs(readTimeoutSeconds)
+        .build()
     mqttClientDelegate.connect(mqttConnectOptions)
   }
 

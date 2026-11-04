@@ -6,6 +6,7 @@ import com.gojek.courier.QoS
 import com.gojek.mqtt.client.config.v3.MqttV3Configuration
 import com.gojek.mqtt.client.factory.MqttClientFactory
 import com.gojek.mqtt.client.listener.MessageListener
+import com.gojek.mqtt.event.EventHandler
 import com.gojek.mqtt.model.MqttConnectOptions
 
 internal class MqttClientDelegate(
@@ -15,6 +16,10 @@ internal class MqttClientDelegate(
     private val mqttClient = MqttClientFactory.create(
         context, mqttConfiguration
     )
+
+    fun addEventHandler(eventHandler: EventHandler) {
+        mqttClient.addEventHandler(eventHandler)
+    }
 
     fun connect(mqttConnectOptions: MqttConnectOptions) {
         mqttClient.connect(mqttConnectOptions)

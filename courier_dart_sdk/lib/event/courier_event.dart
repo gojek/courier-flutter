@@ -878,3 +878,28 @@ class AuthenticatorErrorEvent implements CourierEvent {
     };
   }
 }
+
+class OperationDiscardedEvent implements CourierEvent {
+  @override
+  final String name;
+
+  @override
+  final ConnectionInfo? connectionInfo;
+
+  final String operationName;
+  final String reason;
+
+  OperationDiscardedEvent(
+      {required this.name,
+      required this.operationName,
+      required this.reason,
+      this.connectionInfo});
+
+  @override
+  Map<String, dynamic> getEventPropertiesMap() {
+    return {
+      ...{"operationName": operationName, "reason": reason},
+      ...connectionInfo?.convertToMap() ?? {}
+    };
+  }
+}
