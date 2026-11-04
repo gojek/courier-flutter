@@ -214,7 +214,7 @@
 		A0650A283CEB97F9498BE218EE47C536 /* NotificationPermissionStrategy.m in Sources */ = {isa = PBXBuildFile; fileRef = 8B7B8DD1A8E33994C78F88F15200C344 /* NotificationPermissionStrategy.m */; };
 		A2946AFE2A2E13CE77D3D3CED4439E23 /* Sink.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFEED48398FF1D5B576487541B08711D /* Sink.swift */; };
 		A40F7EDCDC6F1DE5973543D9FE8184C9 /* IdleActivityTimeoutPolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7741E260D164949952567B14B6BB0F50 /* IdleActivityTimeoutPolicy.swift */; };
-		A48402BC8DA74E157B8FFA9BDC185D5F /* Pods-Runner-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = D647505D22C08B8E9F7A45B8E608CD15 /* Pods-Runner-dummy.m */; };
+		A48402BC8DA74E157B8FFA9BDC185D5F /* Pods-Runner-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = E327F2724AD228E525A39F7A2F96A48A /* Pods-Runner-dummy.m */; };
 		A60423C0EB43E482E0860D6991B5A4B3 /* PermissionHandlerEnums.h in Headers */ = {isa = PBXBuildFile; fileRef = A7B4224C110E03ECEAB581B161F35471 /* PermissionHandlerEnums.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		A607F73DC59D2E0B872F6E0CD8338791 /* AuthService.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3B3D256D20278C3DE230B1DB74CB635 /* AuthService.swift */; };
 		A670A7A9E5212951848298F445D8D1D7 /* Courier_iOS-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = D0FBE7921C27587D3AD8A934DA50A6C7 /* Courier_iOS-dummy.m */; };
@@ -307,7 +307,7 @@
 		F7F7C872EB5E4379DB1B71E6233E605E /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = DADE54BC089A4974631377780B655F66 /* PrivacyInfo.xcprivacy */; };
 		F81F7A99ACECCF3C65D05690C6C87048 /* DisposeBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5801B85656883B363DCFA866F896B003 /* DisposeBase.swift */; };
 		F848D30A2252ACAC480EA8C41DC9545C /* Just.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5FD0CA65B46011C733C930626E7BE59 /* Just.swift */; };
-		F8C8C19F83ACD4D9D5C1DAFCE6663304 /* Pods-Runner-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = 0DF785CCAF72D753F11EF2F739FD0167 /* Pods-Runner-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		F8C8C19F83ACD4D9D5C1DAFCE6663304 /* Pods-Runner-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = F3FD89A3C35F3ED2DDAE100615C517D1 /* Pods-Runner-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		F9047A521746E4D38D37569630BE844C /* AnonymousDisposable.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD9F468BC3959EAF7C72E6C0A2AEADD0 /* AnonymousDisposable.swift */; };
 		F9F19448D66F90D08BD00F6016E6E69C /* PhotoPermissionStrategy.h in Headers */ = {isa = PBXBuildFile; fileRef = 0F539496468490854BE58071BA4F6146 /* PhotoPermissionStrategy.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		FAE4613C88507CDF94C37B97475FBE4F /* SingleAssignmentDisposable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25D3BCCC7C2A16E3E0CD31C8EDB3FC6A /* SingleAssignmentDisposable.swift */; };
@@ -510,7 +510,6 @@
 		04EEF68085F14512E6E9EDAFD8488B21 /* Courier_iOS-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Courier_iOS-Info.plist"; sourceTree = "<group>"; };
 		05C41302183AA0508A4D779D4B8E5F08 /* CoreBrand.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = CoreBrand.swift; path = Sources/Courier_iOS/Modules/CoreBrand.swift; sourceTree = "<group>"; };
 		074B7AD87A9E4E09AB1E0A92D4D7EE8C /* IMQTTSession.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = IMQTTSession.swift; path = "CourierMQTT/MQTT/Connection/MQTT-Client-Framework/IMQTTSession.swift"; sourceTree = "<group>"; };
-		078E527AF5F360F32D4242E8DE602489 /* Pods-Runner-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-Runner-Info.plist"; sourceTree = "<group>"; };
 		08CDDC564C83DB5D629E1A827503EA7B /* Filter.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Filter.swift; path = CourierMQTT/Publishers/RxSwift/Observables/Filter.swift; sourceTree = "<group>"; };
 		0928F438E3AA11CCBE0DBF576541CCB9 /* permission_handler_apple-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "permission_handler_apple-Info.plist"; sourceTree = "<group>"; };
 		097D8D5F98B67F4C25049C5B76523C6D /* IAuthFailureHandler.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = IAuthFailureHandler.swift; path = CourierMQTT/MQTT/Handler/IAuthFailureHandler.swift; sourceTree = "<group>"; };
@@ -519,13 +518,11 @@
 		0B6AA890FFC1C3030E92E3844DD3C9A3 /* UnknownPermissionStrategy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = UnknownPermissionStrategy.m; path = "../../../../../../../../../../../.pub-cache/hosted/pub.dev/permission_handler_apple-9.1.4/ios/Classes/strategies/UnknownPermissionStrategy.m"; sourceTree = "<group>"; };
 		0B8593B102A46AB02D43FBD478B52EF8 /* QoS.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = QoS.swift; path = CourierCore/Models/QoS.swift; sourceTree = "<group>"; };
 		0B93189D7CEF44D9F6694554C2501D51 /* Constants.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Constants.swift; path = CourierCore/Internal/Helpers/Constants.swift; sourceTree = "<group>"; };
-		0CB4BE22914F355C255E51F30DA50CB1 /* Pods-Runner-acknowledgements.markdown */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = "Pods-Runner-acknowledgements.markdown"; sourceTree = "<group>"; };
 		0D0238A11CCD5F68A789DA7E2084FB01 /* courier_flutter.podspec */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; lastKnownFileType = text; name = courier_flutter.podspec; path = "../../../../../../../../../.pub-cache/hosted/pub.dev/courier_flutter-2.4.1/ios/courier_flutter.podspec"; sourceTree = "<group>"; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		0D0E91AF78D7493E84D1F7DB6A3F3402 /* CourierCore */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = CourierCore; path = CourierCore.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		0D267F889A7E3357771FD333235D4B0E /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; name = LICENSE; path = "../../../../../../../../../.pub-cache/hosted/pub.dev/courier_flutter-2.4.1/LICENSE"; sourceTree = "<group>"; };
 		0D40F666857814B06D8141CB02722EBC /* permission_handler_apple.podspec */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; lastKnownFileType = text; name = permission_handler_apple.podspec; path = "../../../../../../../../../.pub-cache/hosted/pub.dev/permission_handler_apple-9.1.4/ios/permission_handler_apple.podspec"; sourceTree = "<group>"; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		0DD79E18A72F521458E2D7E60615F138 /* ReachabilitySwift-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "ReachabilitySwift-prefix.pch"; sourceTree = "<group>"; };
-		0DF785CCAF72D753F11EF2F739FD0167 /* Pods-Runner-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Pods-Runner-umbrella.h"; sourceTree = "<group>"; };
 		0F539496468490854BE58071BA4F6146 /* PhotoPermissionStrategy.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = PhotoPermissionStrategy.h; path = "../../../../../../../../../../../.pub-cache/hosted/pub.dev/permission_handler_apple-9.1.4/ios/Classes/strategies/PhotoPermissionStrategy.h"; sourceTree = "<group>"; };
 		0F9C4D4B88DBCE981D2969726114B7A5 /* IMQTTPersistence.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = IMQTTPersistence.swift; path = "CourierMQTT/MQTT/Connection/MQTT-Client-Framework/IMQTTPersistence.swift"; sourceTree = "<group>"; };
 		0FC0BF9B0211A076794697838495A14F /* ImmediateSchedulerType.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ImmediateSchedulerType.swift; path = CourierMQTT/Publishers/RxSwift/ImmediateSchedulerType.swift; sourceTree = "<group>"; };
@@ -536,19 +533,21 @@
 		12CD6DE7E18003041568147D399C095D /* CourierInboxPaginationCell.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = CourierInboxPaginationCell.swift; path = Sources/Courier_iOS/UI/Inbox/CourierInboxPaginationCell.swift; sourceTree = "<group>"; };
 		12E7BA2C3C8C9E90B3A36E5B629494B5 /* JSONMessageAdapter.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = JSONMessageAdapter.swift; path = CourierMQTT/MQTT/Message/Adapters/JSONMessageAdapter.swift; sourceTree = "<group>"; };
 		133EFA3A09F68F1BE93A0253FD18B123 /* MQTTClientGJ.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = MQTTClientGJ.release.xcconfig; sourceTree = "<group>"; };
-		139ADC8F1F2B4A48D4DA58E48F16EB8F /* Pods-Runner.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-Runner.release.xcconfig"; sourceTree = "<group>"; };
 		15DB17C483E3ED72E2D02215CA081DDE /* MainScheduler.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = MainScheduler.swift; path = CourierMQTT/Publishers/RxSwift/Schedulers/MainScheduler.swift; sourceTree = "<group>"; };
 		164030CE1FF9DBBC19A191FEB2216DC7 /* CourierPreferencesTheme.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = CourierPreferencesTheme.swift; path = Sources/Courier_iOS/UI/Preferences/CourierPreferencesTheme.swift; sourceTree = "<group>"; };
+		167F1E5A155A90F6D091BB034814E7C0 /* Pods-Runner.profile.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-Runner.profile.xcconfig"; sourceTree = "<group>"; };
 		16D7B14A8445A3CAC05B71E5FB1B7AE2 /* ObserverType.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ObserverType.swift; path = CourierMQTT/Publishers/RxSwift/ObserverType.swift; sourceTree = "<group>"; };
 		187D260A2756390971F7EE8D427CC0D1 /* AuthError.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = AuthError.swift; path = CourierCore/Models/AuthError.swift; sourceTree = "<group>"; };
 		18CC0E7180F8479A727B587F910D2E05 /* BluetoothPermissionStrategy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = BluetoothPermissionStrategy.m; path = "../../../../../../../../../../../.pub-cache/hosted/pub.dev/permission_handler_apple-9.1.4/ios/Classes/strategies/BluetoothPermissionStrategy.m"; sourceTree = "<group>"; };
 		18F5E36F4E2BF4806658D709BCD2A172 /* IMessageReceiverListenerFactory.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = IMessageReceiverListenerFactory.swift; path = CourierMQTT/MQTT/Message/Factory/IMessageReceiverListenerFactory.swift; sourceTree = "<group>"; };
 		199E01E8135D3B95249C77AEC4612FFA /* IConnectTimeoutPolicy.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = IConnectTimeoutPolicy.swift; path = CourierMQTT/MQTT/Policies/IConnectTimeoutPolicy.swift; sourceTree = "<group>"; };
+		19E9B742E6CC05D299852854B0FAAF81 /* Pods-Runner-resources.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-Runner-resources.sh"; sourceTree = "<group>"; };
 		1A49EAB1A2A7D4C029A26DA730F16D9A /* MQTTChuckViewModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = MQTTChuckViewModel.swift; path = CourierMQTTChuck/MQTTChuckViewModel.swift; sourceTree = "<group>"; };
 		1B3C052395409E93C72791CC864AD54A /* ScheduledDisposable.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ScheduledDisposable.swift; path = CourierMQTT/Publishers/RxSwift/Disposables/ScheduledDisposable.swift; sourceTree = "<group>"; };
 		1E2A1F521A11EA27341F1FB1A9DF1153 /* MQTTCourierClient+EventHandler.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "MQTTCourierClient+EventHandler.swift"; path = "CourierMQTT/MQTT/MQTTCourierClient+EventHandler.swift"; sourceTree = "<group>"; };
 		1F6201D96C692B532687BD03C0574589 /* ID.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ID.swift; path = Sources/Courier_iOS/Utils/ID.swift; sourceTree = "<group>"; };
 		20694EEC51A21C0A24A7A1DE83D76B40 /* PermissionManager.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = PermissionManager.h; path = "../../../../../../../../../../.pub-cache/hosted/pub.dev/permission_handler_apple-9.1.4/ios/Classes/PermissionManager.h"; sourceTree = "<group>"; };
+		21469BBE5222E7D6B6F83B24820F1EC7 /* Pods-Runner-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-Runner-Info.plist"; sourceTree = "<group>"; };
 		21B03CA622E690725A6626C088E1D09F /* ReachabilitySwift */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = ReachabilitySwift; path = Reachability.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		21C9A7B3D24EF5A7E07883E6D09CB079 /* Switch.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Switch.swift; path = CourierMQTT/Publishers/RxSwift/Observables/Switch.swift; sourceTree = "<group>"; };
 		2231835FC32826EB855002D57C57D0C7 /* CourierPushProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = CourierPushProvider.swift; path = Sources/Courier_iOS/Models/Public/CourierPushProvider.swift; sourceTree = "<group>"; };
@@ -569,6 +568,7 @@
 		2EED145F513BAE9AA323D7911AF7922C /* InvocableType.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = InvocableType.swift; path = CourierMQTT/Publishers/RxSwift/Schedulers/Internal/InvocableType.swift; sourceTree = "<group>"; };
 		2F3ACD0D58317E8431BF7DAFB06FCDDD /* MQTTPacket.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = MQTTPacket.swift; path = CourierMQTT/MQTT/Models/MQTTPacket.swift; sourceTree = "<group>"; };
 		30174FDD35A3CD7BAE76693FE1CA7008 /* CurrentThreadScheduler.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = CurrentThreadScheduler.swift; path = CourierMQTT/Publishers/RxSwift/Schedulers/CurrentThreadScheduler.swift; sourceTree = "<group>"; };
+		3038D58B1D3F2FDA1398C12BCF14D248 /* Pods-Runner.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-Runner.debug.xcconfig"; sourceTree = "<group>"; };
 		304219688F9496CE8061810F4505DB9B /* SubscribeOn.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SubscribeOn.swift; path = CourierMQTT/Publishers/RxSwift/Observables/SubscribeOn.swift; sourceTree = "<group>"; };
 		30E3B32CF4D876B1D7543D552CF6A9C3 /* PrimitiveSequence.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = PrimitiveSequence.swift; path = CourierMQTT/Publishers/RxSwift/Traits/PrimitveSequence/PrimitiveSequence.swift; sourceTree = "<group>"; };
 		3110C295860686DE4A671ABC992561FB /* Infallible+Operators.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "Infallible+Operators.swift"; path = "CourierMQTT/Publishers/RxSwift/Infallible/Infallible+Operators.swift"; sourceTree = "<group>"; };
@@ -610,7 +610,6 @@
 		4C9A7E5358569A3F924845300F023F17 /* StoragePermissionStrategy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = StoragePermissionStrategy.m; path = "../../../../../../../../../../../.pub-cache/hosted/pub.dev/permission_handler_apple-9.1.4/ios/Classes/strategies/StoragePermissionStrategy.m"; sourceTree = "<group>"; };
 		4D49E43D8530B62D4AA78BD7A03540E8 /* Reachability.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Reachability.swift; path = Sources/Reachability.swift; sourceTree = "<group>"; };
 		502582351BD8AED2A23CE11FE37D2902 /* CourierTask.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = CourierTask.swift; path = Sources/Courier_iOS/Tasks/CourierTask.swift; sourceTree = "<group>"; };
-		50BE728FF2BA0EB1D96A97EBEE18F49B /* Pods-Runner.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = "Pods-Runner.modulemap"; sourceTree = "<group>"; };
 		524D88F4740F10CEE2ECEF8F25FB1AED /* AppTrackingTransparencyPermissionStrategy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = AppTrackingTransparencyPermissionStrategy.m; path = "../../../../../../../../../../../.pub-cache/hosted/pub.dev/permission_handler_apple-9.1.4/ios/Classes/strategies/AppTrackingTransparencyPermissionStrategy.m"; sourceTree = "<group>"; };
 		52A72B1DB1BF7286E4EBC45F58E7CE89 /* courier_dart_sdk-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "courier_dart_sdk-prefix.pch"; sourceTree = "<group>"; };
 		52B11ACCF7B1985F02B6A56E66A6EDF1 /* AsyncLock.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = AsyncLock.swift; path = CourierMQTT/Publishers/RxSwift/Concurrency/AsyncLock.swift; sourceTree = "<group>"; };
@@ -638,13 +637,13 @@
 		6213171706CD7C46B89719957FE961CE /* InvocableScheduledItem.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = InvocableScheduledItem.swift; path = CourierMQTT/Publishers/RxSwift/Schedulers/Internal/InvocableScheduledItem.swift; sourceTree = "<group>"; };
 		6256A6D4EAF42BA5FD55A480657D7041 /* Flutter.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = Flutter.debug.xcconfig; sourceTree = "<group>"; };
 		62A4274CEBE023D9E10031662F84A620 /* CourierUserPreferences.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = CourierUserPreferences.swift; path = Sources/Courier_iOS/Models/Public/CourierUserPreferences.swift; sourceTree = "<group>"; };
+		62E1181A0CFD348A8D591F2613A4494B /* Pods-Runner-frameworks.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-Runner-frameworks.sh"; sourceTree = "<group>"; };
 		63D26CA69CB885A4A7B239AE28869D37 /* courier_flutter-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "courier_flutter-umbrella.h"; sourceTree = "<group>"; };
 		64A423B0EB7B421A03A3E76C5D4A0C89 /* CourierMQTTChuck-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "CourierMQTTChuck-umbrella.h"; sourceTree = "<group>"; };
 		64EB429B914D314C6364172E33AC8316 /* Bag+Rx.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "Bag+Rx.swift"; path = "CourierMQTT/Publishers/RxSwift/Extensions/Bag+Rx.swift"; sourceTree = "<group>"; };
 		65244BFA72C87D4921DD62D6C8FDDE55 /* State.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = State.swift; path = Sources/Courier_iOS/UI/State.swift; sourceTree = "<group>"; };
 		65A88BA6A8F9AE7CC11A22D240164CD9 /* Map.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Map.swift; path = CourierMQTT/Publishers/RxSwift/Observables/Map.swift; sourceTree = "<group>"; };
 		66380A92309FA36F69D8C9F67B56D847 /* Atomic.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Atomic.swift; path = CourierMQTT/Utils/Atomic.swift; sourceTree = "<group>"; };
-		6696DA048BA8D0F7EF9587343AA80E22 /* Pods-Runner.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-Runner.debug.xcconfig"; sourceTree = "<group>"; };
 		669E8F25E1897672BDB80B7EB784DA24 /* Pods-Runner */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = "Pods-Runner"; path = Pods_Runner.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		67B269A3B2F5056EE41E80E8E66BCA0F /* AudioVideoPermissionStrategy.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = AudioVideoPermissionStrategy.h; path = "../../../../../../../../../../../.pub-cache/hosted/pub.dev/permission_handler_apple-9.1.4/ios/Classes/strategies/AudioVideoPermissionStrategy.h"; sourceTree = "<group>"; };
 		68A128D36F071E5A7F3F629F3D677634 /* NopDisposable.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = NopDisposable.swift; path = CourierMQTT/Publishers/RxSwift/Disposables/NopDisposable.swift; sourceTree = "<group>"; };
@@ -655,7 +654,6 @@
 		6C66D0B3635D9BABEF28ED90F8278063 /* Courier_iOS-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Courier_iOS-prefix.pch"; sourceTree = "<group>"; };
 		6DF000AB006C99C91F3D5E252399CEB5 /* CourierMQTT.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = CourierMQTT.release.xcconfig; sourceTree = "<group>"; };
 		6DF95D8365DCAC81B9406DE98AB79E24 /* TextMessageAdapter.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = TextMessageAdapter.swift; path = CourierMQTT/MQTT/Message/Adapters/TextMessageAdapter.swift; sourceTree = "<group>"; };
-		6F49B4428DD6C5310911D3B27A845681 /* Pods-Runner.profile.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-Runner.profile.xcconfig"; sourceTree = "<group>"; };
 		6F51F3D8F759D15118AC186FA51F4841 /* Date+Extension.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "Date+Extension.swift"; path = "CourierMQTT/MQTT/Date+Extension.swift"; sourceTree = "<group>"; };
 		6F6734D308CB59DD39912F203E8E83CE /* Flutter.podspec */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; lastKnownFileType = text; path = Flutter.podspec; sourceTree = "<group>"; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		702CF8366FC50791B9E35E90E02412BA /* ReachabilitySwift-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "ReachabilitySwift-Info.plist"; sourceTree = "<group>"; };
@@ -680,6 +678,7 @@
 		7CCB3C3778ACA143D62578CA30EE42CA /* PrintDebug.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = PrintDebug.swift; path = CourierMQTT/Utils/PrintDebug.swift; sourceTree = "<group>"; };
 		7D9F56F2689D7E4B8D9B90DA6B0A81A3 /* ContactPermissionStrategy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = ContactPermissionStrategy.m; path = "../../../../../../../../../../../.pub-cache/hosted/pub.dev/permission_handler_apple-9.1.4/ios/Classes/strategies/ContactPermissionStrategy.m"; sourceTree = "<group>"; };
 		7F869857DA1FFA6A0542DD06F3438D2F /* courier_flutter.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = courier_flutter.debug.xcconfig; sourceTree = "<group>"; };
+		80BF9B6370D3FDB139ABC19C7736EC86 /* Pods-Runner.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-Runner.release.xcconfig"; sourceTree = "<group>"; };
 		822931CEF9073282DC49D93DF2AAA1EA /* RecursiveLock.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = RecursiveLock.swift; path = CourierMQTT/Publishers/RxSwift/Platform/RecursiveLock.swift; sourceTree = "<group>"; };
 		82F110B533106C74B12547F7C436F51C /* CourierMQTTChuck */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = CourierMQTTChuck; path = CourierMQTTChuck.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		842AED998605C42F2C05F53985DA2DF5 /* ReachabilitySwift-ReachabilitySwift */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; name = "ReachabilitySwift-ReachabilitySwift"; path = ReachabilitySwift.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -735,6 +734,7 @@
 		AA83A60AFE2C61BE5A4D8D3A88A77054 /* IConnectionServiceProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = IConnectionServiceProvider.swift; path = CourierCore/Connection/IConnectionServiceProvider.swift; sourceTree = "<group>"; };
 		AAC82316800E6E86D50C26D242C39661 /* CoreInbox.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = CoreInbox.swift; path = Sources/Courier_iOS/Modules/CoreInbox.swift; sourceTree = "<group>"; };
 		ABA5EDA822CC3E444CDB3BE627CC5399 /* courier_dart_sdk-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "courier_dart_sdk-Info.plist"; sourceTree = "<group>"; };
+		AC07E0A06E92595FA267D23AE55EECFE /* Pods-Runner-acknowledgements.markdown */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = "Pods-Runner-acknowledgements.markdown"; sourceTree = "<group>"; };
 		AC30B79B15023D7B304E58B9B81B3423 /* SynchronizedOnType.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SynchronizedOnType.swift; path = CourierMQTT/Publishers/RxSwift/Concurrency/SynchronizedOnType.swift; sourceTree = "<group>"; };
 		AC8A97F5968DDFBE6C68B94E5E6044F5 /* courier_flutter-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "courier_flutter-Info.plist"; sourceTree = "<group>"; };
 		AE241EAE8B9F7B157FE30F92A8F365AE /* SerialDisposable.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SerialDisposable.swift; path = CourierMQTT/Publishers/RxSwift/Disposables/SerialDisposable.swift; sourceTree = "<group>"; };
@@ -773,6 +773,7 @@
 		C59DA5C14A1EF6633834AE433D4E9236 /* Infallible.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Infallible.swift; path = CourierMQTT/Publishers/RxSwift/Infallible/Infallible.swift; sourceTree = "<group>"; };
 		C63E54B011FB3DCCDC818F9F2E26DD8A /* PreferencesSheetViewController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = PreferencesSheetViewController.swift; path = Sources/Courier_iOS/UI/Preferences/PreferencesSheetViewController.swift; sourceTree = "<group>"; };
 		C6F9BA65B2D4856FDFEB725EDF7B7710 /* CourierPreferenceSettingCell.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = CourierPreferenceSettingCell.swift; path = Sources/Courier_iOS/UI/Preferences/CourierPreferenceSettingCell.swift; sourceTree = "<group>"; };
+		C7939B277753A90B7D85D7F8476FB02F /* Pods-Runner.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = "Pods-Runner.modulemap"; sourceTree = "<group>"; };
 		C7A45A01DBE13DF5B9D56B32CE3F02EE /* BehaviorSubject.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = BehaviorSubject.swift; path = CourierMQTT/Publishers/RxSwift/Subjects/BehaviorSubject.swift; sourceTree = "<group>"; };
 		C7AD28D5FB25A8DEDF61F78996932FA6 /* permission_handler_apple */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = permission_handler_apple; path = permission_handler_apple.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C884ADA1DAF8B163446DE5F63C531ACC /* CourierClient.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = CourierClient.swift; path = CourierCore/CourierClient.swift; sourceTree = "<group>"; };
@@ -795,7 +796,6 @@
 		D4FA90E3558ACDAEDBF6AF238BF0EDBB /* CourierInbox.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = CourierInbox.swift; path = Sources/Courier_iOS/UI/Inbox/CourierInbox.swift; sourceTree = "<group>"; };
 		D5B98D11564ADB54D2524ABF1C927341 /* permission_handler_apple-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "permission_handler_apple-umbrella.h"; sourceTree = "<group>"; };
 		D5E1646E1918B954575E6FBF3FFBE21D /* CourierTrackingIds.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = CourierTrackingIds.swift; path = Sources/Courier_iOS/Models/Public/CourierTrackingIds.swift; sourceTree = "<group>"; };
-		D647505D22C08B8E9F7A45B8E608CD15 /* Pods-Runner-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-Runner-dummy.m"; sourceTree = "<group>"; };
 		D92CD03C9F8E9091EF1848AB115B163C /* CourierMessage.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = CourierMessage.swift; path = ../../../../../../../courier_dart_sdk/ios/Classes/CourierMessage.swift; sourceTree = "<group>"; };
 		DA59806278BE839290BA3BC5A69C8B2C /* Courier_iOS.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = Courier_iOS.modulemap; sourceTree = "<group>"; };
 		DADE54BC089A4974631377780B655F66 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; name = PrivacyInfo.xcprivacy; path = Sources/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
@@ -811,6 +811,7 @@
 		E07F8918FA4DF3B7534583D01E325E7D /* CourierMQTT */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = CourierMQTT; path = CourierMQTT.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E1369A91A499A09AD326B2E938DEB6CD /* Theme.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Theme.swift; path = Sources/Courier_iOS/UI/Theme.swift; sourceTree = "<group>"; };
 		E2F2FA75A41EA37C927C5CABF746A496 /* ConnectRetryTimePolicy.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ConnectRetryTimePolicy.swift; path = CourierMQTT/MQTT/Policies/ConnectRetryTimePolicy.swift; sourceTree = "<group>"; };
+		E327F2724AD228E525A39F7A2F96A48A /* Pods-Runner-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-Runner-dummy.m"; sourceTree = "<group>"; };
 		E384FB922E2F493B144B4C6F2A368319 /* TrackingRepository.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = TrackingRepository.swift; path = Sources/Courier_iOS/Repositories/TrackingRepository.swift; sourceTree = "<group>"; };
 		E3DAAD10B637113866422CDC4963618A /* BinaryDisposable.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = BinaryDisposable.swift; path = CourierMQTT/Publishers/RxSwift/Disposables/BinaryDisposable.swift; sourceTree = "<group>"; };
 		E3ED4A6D8EFF1CAA2669D69A95B8E806 /* CorePreferences.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = CorePreferences.swift; path = Sources/Courier_iOS/Modules/CorePreferences.swift; sourceTree = "<group>"; };
@@ -834,16 +835,16 @@
 		EE35BC9FC2597DA91999EA5E8B8162B3 /* CourierInboxTheme.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = CourierInboxTheme.swift; path = Sources/Courier_iOS/UI/Inbox/CourierInboxTheme.swift; sourceTree = "<group>"; };
 		EF0E0F81BD86CC089F760D2DEEC1F435 /* CourierMQTTChuck.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = CourierMQTTChuck.modulemap; sourceTree = "<group>"; };
 		EF4D222BDC24804A62DF09B0521D2508 /* IMQTTConnectionFactory.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = IMQTTConnectionFactory.swift; path = CourierMQTT/MQTT/Connection/Factory/IMQTTConnectionFactory.swift; sourceTree = "<group>"; };
+		EF54BEED02A5A4DE8C36633724F64B59 /* Pods-Runner-acknowledgements.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-Runner-acknowledgements.plist"; sourceTree = "<group>"; };
 		EFBADFE5A9A4535C6F39631EC53F3BE0 /* CourierCore-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "CourierCore-umbrella.h"; sourceTree = "<group>"; };
 		F0EA6E405FFF2A780B0F92102E076CAA /* MQTTMessageReceiveListener.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = MQTTMessageReceiveListener.swift; path = CourierMQTT/MQTT/Message/MQTTMessageReceiveListener.swift; sourceTree = "<group>"; };
+		F3FD89A3C35F3ED2DDAE100615C517D1 /* Pods-Runner-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Pods-Runner-umbrella.h"; sourceTree = "<group>"; };
 		F4060552A4BB993CF8245AC5CBE1AA47 /* DiskSubscriptionStore.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DiskSubscriptionStore.swift; path = CourierMQTT/MQTT/Subscriptions/DiskSubscriptionStore.swift; sourceTree = "<group>"; };
-		F4F896AFE723940CF3E9B818A7222DCF /* Pods-Runner-acknowledgements.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-Runner-acknowledgements.plist"; sourceTree = "<group>"; };
 		F57FD132A7EC908404E3D89C57748A91 /* CourierActionButton.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = CourierActionButton.swift; path = Sources/Courier_iOS/UI/CourierActionButton.swift; sourceTree = "<group>"; };
 		F5A9AA6FC79F4F781FE86FC517930B99 /* CourierBar.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = CourierBar.swift; path = Sources/Courier_iOS/UI/CourierBar.swift; sourceTree = "<group>"; };
 		F6DEA4D7DCCF2EFEFED9A53B53163A93 /* IMQTTClientFrameworkFactory.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = IMQTTClientFrameworkFactory.swift; path = "CourierMQTT/MQTT/Connection/MQTT-Client-Framework/IMQTTClientFrameworkFactory.swift"; sourceTree = "<group>"; };
 		F6F7C1FDC1050874FD5997F333437B1C /* Empty.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Empty.swift; path = CourierMQTT/Publishers/RxSwift/Observables/Empty.swift; sourceTree = "<group>"; };
 		F8894B4AADBE2AC4E7027B68ECD17947 /* courier_flutter-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "courier_flutter-prefix.pch"; sourceTree = "<group>"; };
-		F8AFAE5B77C66D5C7BB362290948A52B /* Pods-Runner-resources.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-Runner-resources.sh"; sourceTree = "<group>"; };
 		F8E47C8090CD71050FF82343A9292D83 /* CriticalAlertsPermissionStrategy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = CriticalAlertsPermissionStrategy.m; path = "../../../../../../../../../../../.pub-cache/hosted/pub.dev/permission_handler_apple-9.1.4/ios/Classes/strategies/CriticalAlertsPermissionStrategy.m"; sourceTree = "<group>"; };
 		FD563061FB8428B804B36DC4659EE0A7 /* Publisher.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Publisher.swift; path = CourierMQTT/Publishers/Publisher.swift; sourceTree = "<group>"; };
 		FDF13EBA59E90DAE3DFFAD8BD9741BA9 /* PermissionStrategy.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = PermissionStrategy.h; path = "../../../../../../../../../../../.pub-cache/hosted/pub.dev/permission_handler_apple-9.1.4/ios/Classes/strategies/PermissionStrategy.h"; sourceTree = "<group>"; };
@@ -1032,6 +1033,25 @@
 			);
 			name = ios;
 			path = ios;
+			sourceTree = "<group>";
+		};
+		22AF639ACF9A41217B5CE48652CCC36F /* Pods-Runner */ = {
+			isa = PBXGroup;
+			children = (
+				C7939B277753A90B7D85D7F8476FB02F /* Pods-Runner.modulemap */,
+				AC07E0A06E92595FA267D23AE55EECFE /* Pods-Runner-acknowledgements.markdown */,
+				EF54BEED02A5A4DE8C36633724F64B59 /* Pods-Runner-acknowledgements.plist */,
+				E327F2724AD228E525A39F7A2F96A48A /* Pods-Runner-dummy.m */,
+				62E1181A0CFD348A8D591F2613A4494B /* Pods-Runner-frameworks.sh */,
+				21469BBE5222E7D6B6F83B24820F1EC7 /* Pods-Runner-Info.plist */,
+				19E9B742E6CC05D299852854B0FAAF81 /* Pods-Runner-resources.sh */,
+				F3FD89A3C35F3ED2DDAE100615C517D1 /* Pods-Runner-umbrella.h */,
+				3038D58B1D3F2FDA1398C12BCF14D248 /* Pods-Runner.debug.xcconfig */,
+				167F1E5A155A90F6D091BB034814E7C0 /* Pods-Runner.profile.xcconfig */,
+				80BF9B6370D3FDB139ABC19C7736EC86 /* Pods-Runner.release.xcconfig */,
+			);
+			name = "Pods-Runner";
+			path = "Target Support Files/Pods-Runner";
 			sourceTree = "<group>";
 		};
 		2877D6D507E387737FA6C734AACB6C18 /* .. */ = {
@@ -1379,14 +1399,6 @@
 			path = ..;
 			sourceTree = "<group>";
 		};
-		791C6E4B424AF06279F8918FA67B8ED6 /* Targets Support Files */ = {
-			isa = PBXGroup;
-			children = (
-				DDA5FA1574535853DB99F3ECAD797BD3 /* Pods-Runner */,
-			);
-			name = "Targets Support Files";
-			sourceTree = "<group>";
-		};
 		7A65B3AADF585DD9B0667F81D019125B /* Pod */ = {
 			isa = PBXGroup;
 			children = (
@@ -1394,6 +1406,14 @@
 				0D267F889A7E3357771FD333235D4B0E /* LICENSE */,
 			);
 			name = Pod;
+			sourceTree = "<group>";
+		};
+		7BFBD40CEA58281397A76A48B8C3BCD1 /* Targets Support Files */ = {
+			isa = PBXGroup;
+			children = (
+				22AF639ACF9A41217B5CE48652CCC36F /* Pods-Runner */,
+			);
+			name = "Targets Support Files";
 			sourceTree = "<group>";
 		};
 		85075EFD3E21BEB74C70A8F69E9937F5 /* Pod */ = {
@@ -1682,7 +1702,7 @@
 				D210D550F4EA176C3123ED886F8F87F5 /* Frameworks */,
 				CD98BF8DB636A99DBC11A3FA48C2F005 /* Pods */,
 				0A4F571CE31D7A2D745FF5973AA32145 /* Products */,
-				791C6E4B424AF06279F8918FA67B8ED6 /* Targets Support Files */,
+				7BFBD40CEA58281397A76A48B8C3BCD1 /* Targets Support Files */,
 			);
 			sourceTree = "<group>";
 		};
@@ -1737,24 +1757,6 @@
 			);
 			name = "Support Files";
 			path = "../Target Support Files/Courier_iOS";
-			sourceTree = "<group>";
-		};
-		DDA5FA1574535853DB99F3ECAD797BD3 /* Pods-Runner */ = {
-			isa = PBXGroup;
-			children = (
-				50BE728FF2BA0EB1D96A97EBEE18F49B /* Pods-Runner.modulemap */,
-				0CB4BE22914F355C255E51F30DA50CB1 /* Pods-Runner-acknowledgements.markdown */,
-				F4F896AFE723940CF3E9B818A7222DCF /* Pods-Runner-acknowledgements.plist */,
-				D647505D22C08B8E9F7A45B8E608CD15 /* Pods-Runner-dummy.m */,
-				078E527AF5F360F32D4242E8DE602489 /* Pods-Runner-Info.plist */,
-				F8AFAE5B77C66D5C7BB362290948A52B /* Pods-Runner-resources.sh */,
-				0DF785CCAF72D753F11EF2F739FD0167 /* Pods-Runner-umbrella.h */,
-				6696DA048BA8D0F7EF9587343AA80E22 /* Pods-Runner.debug.xcconfig */,
-				6F49B4428DD6C5310911D3B27A845681 /* Pods-Runner.profile.xcconfig */,
-				139ADC8F1F2B4A48D4DA58E48F16EB8F /* Pods-Runner.release.xcconfig */,
-			);
-			name = "Pods-Runner";
-			path = "Target Support Files/Pods-Runner";
 			sourceTree = "<group>";
 		};
 		DE628268A2C17072CECC19A51C70D771 /* .symlinks */ = {
@@ -3222,7 +3224,7 @@
 		};
 		33380A7E96CE1C771439C8117FB0D497 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 6696DA048BA8D0F7EF9587343AA80E22 /* Pods-Runner.debug.xcconfig */;
+			baseConfigurationReference = 3038D58B1D3F2FDA1398C12BCF14D248 /* Pods-Runner.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
 				CLANG_ENABLE_OBJC_WEAK = NO;
@@ -3597,7 +3599,7 @@
 		};
 		70895A226DA55828D61F91714043101B /* Profile */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 6F49B4428DD6C5310911D3B27A845681 /* Pods-Runner.profile.xcconfig */;
+			baseConfigurationReference = 167F1E5A155A90F6D091BB034814E7C0 /* Pods-Runner.profile.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
 				CLANG_ENABLE_OBJC_WEAK = NO;
@@ -4509,7 +4511,7 @@
 		};
 		E94D0D5D291F13E4898C81DF9BAA33A7 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 139ADC8F1F2B4A48D4DA58E48F16EB8F /* Pods-Runner.release.xcconfig */;
+			baseConfigurationReference = 80BF9B6370D3FDB139ABC19C7736EC86 /* Pods-Runner.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
 				CLANG_ENABLE_OBJC_WEAK = NO;

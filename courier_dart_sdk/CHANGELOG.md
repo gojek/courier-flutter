@@ -1,7 +1,18 @@
+## 0.2.1
+* Fix iOS: restore CourierCore, CourierMQTT and CourierMQTTChuck pods to 1.0.19 (0.2.0 was published with 1.0.17)
+* Sync iOS podspec version with the package version
+
 ## 0.2.0
 * Update native Courier Android SDK from 0.0.3 to 0.3.10
 * Add the Operation Discarded event
 * Use the MqttConnectOptions builder and register the event handler on the client
+
+## 0.1.4
+* Distribute pods as dynamic/static as per client apps
+* Update contract
+
+## 0.1.3
+* Release version 0.1.3
 
 ## 0.1.2
 * Revert the CourierDartSdkPlugin changes on by v0.1.0 changes due to issues multiple registrations
